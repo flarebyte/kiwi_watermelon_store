@@ -153,3 +153,117 @@ At query engine setup, one serialization format must be selected for list/set ty
 - Enums: Case-sensitive, enum validation enabled
 - Lists: Comma-separated string with no escaping
 - Sets: Treated as lists with uniqueness enforced before storing
+
+## State Management and Event Tracking (Single-User Local Context)
+
+**Scope Adjustment**  
+This design assumes the store is used by a single user in a local environment (e.g., in-browser storage for applications, games, or tools). Multi-user scenarios or syncing to a backend are considered specialized and out of scope unless explicitly required.
+
+**Savepoints and Restore Points**
+
+- Savepoints capture the full state of the store under a named snapshot.
+- Intended primarily for interactive or game-style scenarios (e.g., return to a prior step).
+- Savepoints are local to the current user/session unless explicitly exported.
+- Functionality includes:
+  - Create: `save("checkpoint1")`
+  - Restore: `restore("checkpoint1")`
+  - List: to retrieve available savepoint names
+  - Delete: remove one or more savepoints
+- Savepoints are stored in memory and optionally serializable for persistence.
+
+**History Tracking**
+
+- Tracks changes over time to allow rollback, replays, or debugging.
+- History log is tied to the local store instance (not externally synced).
+- Each entry includes:
+  - Timestamp (optional for lighter storage)
+  - Operation (`set`, `inc`, `clear`, etc.)
+  - Key affected
+  - Prior and new values (optional)
+  - Source (optional: "user", "query", etc.)
+- History is:
+  - Append-only
+  - Session-local unless exported
+  - Configurable in size (e.g., max entries) or retention strategy
+- Primary use cases:
+  - Reverting individual operations
+  - Viewing past states
+  - Implementing time-travel debugging or undo/redo
+
+**Event Tracking**
+
+- Lightweight hooks emit events when store is mutated.
+- Events are intended for real-time responses (e.g., UI updates, metrics).
+- Event listeners may be attached to:
+  - All changes
+  - Changes to specific keys or scopes
+- Event payloads are lightweight and do not include full state diffs unless configured.
+- Events are not persisted—designed for in-session use only.
+
+**Limitations**
+
+- No built-in support for collaborative access or concurrent modification.
+- Savepoints and history are not encrypted or secured—assumed local and trusted.
+- Events are transient and not queued or reliable for audit-level logging.
+- No per-key versioning; history is sequential across the entire store.
+
+The store should **allow modifications after restoring to a savepoint**, meaning:
+
+- A restore operation sets the current state to the snapshot without locking or freezing it.
+- The user can continue making changes as normal.
+- Subsequent changes after a restore will be added to the history as new entries.
+- Optionally, a flag or marker can identify restored state boundaries in the history (for visual or debugging context), but it's not mandatory.
+
+This behavior supports flexible workflows like:
+
+- Replaying or testing different actions from a known state.
+- Using restore as a fork point in games or interactive tools.
+- Rolling back unintended changes without restricting further interaction.
+
+## Extended Savepoint Features
+
+**Tagged Savepoints**
+
+- Each savepoint can include optional metadata (e.g., label, timestamp, description).
+- Metadata can help identify the purpose or context of a savepoint.
+- Tags are stored with the snapshot and retrievable via the savepoint list.
+- Examples of metadata fields:
+  - `label`: Short title (e.g., "Level 5 checkpoint")
+  - `timestamp`: Auto-generated at save time
+  - `note`: Free-form description (non-sensitive, optional)
+- These tags are not required but enhance debugging and UI presentation.
+
+**Automatic Savepoint Creation**
+
+- The store can be configured to automatically create savepoints before:
+  - Destructive operations (e.g., `clear`, `restore`, `delete`)
+  - Specific mutating operations (e.g., `set`, `inc`) based on rule
+- Auto-savepoints have system-generated names (e.g., `_auto_1`, `_auto_2`) and can include metadata like reason and operation type.
+- Optional limit on the number of auto-savepoints can prevent unbounded growth.
+- These automatic snapshots support features like:
+  - "Undo last destructive change"
+  - Recovery after accidental overwrites
+  - Session-safe experimentation
+
+## Finalized Savepoint Enhancements
+
+**Fixed Metadata Schema for Savepoints**
+
+- All savepoints (manual or automatic) include the following metadata:
+  - `label`: Short identifier string (required for manual, auto-generated for automatic)
+  - `timestamp`: ISO 8601 string, set at save time (probably overkill)
+  - `type`: Enum (`manual`, `automatic`)
+  - `source`: Enum (`user`, `query`, `system`)
+- Metadata is attached to each savepoint and included in the listing and introspection APIs.
+
+**Auto-Savepoint Trigger Rules**
+
+- If auto-savepoints are enabled, a new savepoint is automatically created:
+  - Before the execution of any update query via the query language interface
+- Auto-savepoint behavior:
+  - Name is system-generated, e.g., `_auto_20250328T154100Z` or based on a counter.
+  - `type` is `automatic`, `source` is `query`
+  - Retains the full pre-query store state
+- Optional configurations:
+  - Maximum number of auto-savepoints (with oldest overwritten or pruned)
+  - Whether to exclude no-op queries from triggering savepoints
