@@ -62,3 +62,94 @@ Implement a key-value store library in Dart where all keys follow the format `sc
 - Does not enforce full i18n of keys—minimal support for multilingual variable names is acceptable.
 - Does not persist to disk unless explicitly exported; memory-backed by default.
 - Event store features should be lightweight—deep querying or indexing is not required.
+
+## Query Language for Store Manipulation
+
+**Purpose**
+
+Introduce a structured query language to update the key-value store using simple, readable commands. This query language enables user-submitted input to manipulate store values within defined constraints, with safety and control mechanisms in place.
+
+**Syntax Overview**  
+The language uses a semicolon-separated sequence of simple operations. Examples include:
+
+- `set env:name1 to 2;`
+- `inc env:counter 1;`
+- `dec env:counter2 1;`
+- `clear env:name3;`
+- `set env:name21 truthy;`
+- `list append env:mylist 2;`
+- `set append env:myset blue;`
+
+**Supported Commands**
+
+- `set scope:name to value`: Sets the variable to a value.
+- `inc scope:name amount`: Increments numeric value by an amount.
+- `dec scope:name amount`: Decrements numeric value by an amount.
+- `clear scope:name`: Removes the variable from the store.
+- `list append scope:name value`: Appends a value to a list variable.
+- `set scope:name value`: Appends a value to a set variable.
+
+**Value Types**
+
+- Only integer, float, and predefined enums (e.g., `truthy`) are supported.
+- Enum mappings (e.g., `truthy` → `T`) must be configured externally and are validated during query processing.
+- Free text string values are disallowed to reduce injection or misuse risks.
+
+**Data Serialization for List/Set Types**
+
+- Configuration must define how compound types (list, set) are stored as strings.
+- Supported strategies may include delimiter-separated strings, JSON arrays, or indexed key variants.
+- Serialization and deserialization strategies must be enforced consistently at both write and read time.
+
+**Query Components**
+
+- **Lexer**: Tokenizes commands into structured operations.
+- **Semantic Analyzer**: Validates command structure, types, allowed scopes, and enum values.
+- **Executor**: Applies validated commands to the store.
+
+**Security and Safety**
+
+- User-submitted queries are not trusted and must be parsed strictly.
+- Only predefined scopes, commands, and values are permitted.
+- Optional schema rules can define acceptable keys and value types.
+- Error handling strategy (ignore, reject, log) should be configurable for invalid queries.
+
+**Limitations**
+
+- Queries do not support arbitrary text strings as values.
+- Nested or chained commands are not allowed (e.g., no `if` or `while`).
+- Only primitive operations are supported; no function calls or complex expressions.
+- Scope must be explicit or defaulted; ambiguous commands are rejected.
+- Enum translation must be exact and case-sensitive unless configured otherwise.
+
+**Enum Definitions**
+
+- Enum values must be provided as a mapping at query engine initialization. Example:
+  - `truthy → T`
+  - `falsy → F`
+  - `on → 1`
+  - `off → 0`
+- Enums must be explicitly defined per use case; undefined enums are rejected.
+- Case sensitivity should be configurable (e.g., `truthy` vs `Truthy`).
+- Mappings are one-way: the query language uses enums, and the store receives the translated value.
+
+**List/Set Serialization Formats**
+
+At query engine setup, one serialization format must be selected for list/set types:
+
+- **Delimited Strings**
+
+  - Values stored as `value1,value2,value3`
+  - Delimiter (e.g., comma, semicolon) must be defined and consistent
+  - Escaping rules (if any) should be specified
+
+- **JSON Strings**
+  - Values stored as valid JSON arrays: `["value1", "value2"]`
+  - Parsing uses Dart JSON utilities
+  - Safer but more verbose
+
+**Default Behavior (if unspecified)**
+
+- Enums: Case-sensitive, enum validation enabled
+- Lists: Comma-separated string with no escaping
+- Sets: Treated as lists with uniqueness enforced before storing
