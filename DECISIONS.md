@@ -79,6 +79,8 @@ The language uses a semicolon-separated sequence of simple operations. Examples 
 - `set env:name21 truthy;`
 - `list append env:mylist 2;`
 - `set append env:myset blue;`
+- `inc env:counter 1 start 1 mod 3;`
+- `inc env:counter 1 start 1 end 3;`
 
 **Supported Commands**
 
