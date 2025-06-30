@@ -4,7 +4,7 @@
 
 > Dig into your data with our fruity key-value store
 
-todo
+A key value store that can be used on the device
 
 ![Hero image for kiwi\_watermelon\_store](doc/kiwi_watermelon_store.jpeg)
 

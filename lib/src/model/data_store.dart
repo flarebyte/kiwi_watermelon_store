@@ -19,4 +19,3 @@ abstract class BaseDataStore {
   /// Add multiple values at once
   void addAll(Map<String, String> other);
 }
-

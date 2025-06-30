@@ -2,7 +2,6 @@ import '../model/token.dart';
 import 'semantic_exception.dart';
 import 'tokeniser.dart';
 
-
 /// A stream-based iterator for traversing a list of [KiwiWatermelonToken]s
 /// without modifying the original list.
 ///
@@ -37,7 +36,8 @@ class KiwiWatermelonTokenStream {
   /// Throws a [KiwiWatermelonSemanticException] if the stream is at the end.
   KiwiWatermelonToken get current {
     if (isAtEnd) {
-      throw KiwiWatermelonSemanticException("Unexpected end of tokens.", _tokens.last);
+      throw KiwiWatermelonSemanticException(
+          "Unexpected end of tokens.", _tokens.last);
     }
     return _tokens[_index];
   }
@@ -89,7 +89,8 @@ class KiwiWatermelonTokenStream {
   /// Returns the consumed [KiwiWatermelonToken].
   KiwiWatermelonToken consume() {
     if (isAtEnd) {
-      throw KiwiWatermelonSemanticException("Unexpected end of tokens.", _tokens.last);
+      throw KiwiWatermelonSemanticException(
+          "Unexpected end of tokens.", _tokens.last);
     }
     return _tokens[_index++];
   }

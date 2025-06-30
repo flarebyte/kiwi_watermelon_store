@@ -4,5 +4,4 @@ class KiwiWatermelonActionResult {
   final KiwiActionEvent? event;
 
   KiwiWatermelonActionResult({required this.event});
-  
 }
