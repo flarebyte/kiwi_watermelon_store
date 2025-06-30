@@ -1,4 +1,4 @@
-import '../undo/action_event.dart';
+import 'action_event.dart';
 
 class KiwiWatermelonActionResult {
   final KiwiActionEvent? event;
