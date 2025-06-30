@@ -1,4 +1,3 @@
-
 import 'model/data_store.dart';
 
 /// A simple in-memory implementation of [BaseDataStore] using [Map].
@@ -40,5 +39,15 @@ class KiwiWatermelonDataStore implements BaseDataStore {
   @override
   String toString() {
     return 'RhapsodyDataStore{_store: $_store}';
+  }
+
+  toUnmodifiableMap() {
+    return Map.unmodifiable(_store);
+  }
+
+  static KiwiWatermelonDataStore fromMap(Map<String, String> keyValues) {
+    final newStore = KiwiWatermelonDataStore();
+    newStore.addAll(keyValues);
+    return newStore;
   }
 }
