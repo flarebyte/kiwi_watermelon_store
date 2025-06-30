@@ -1,10 +1,10 @@
 import '../model/token.dart';
 
 /// Thrown when the semantic analyser encounters an unexpected token.
-class SemanticException implements Exception {
+class KiwiWatermelonSemanticException implements Exception {
   final String message;
-  final RhapsodyToken token;
-  SemanticException(this.message, this.token);
+  final KiwiWatermelonToken token;
+  KiwiWatermelonSemanticException(this.message, this.token);
 
   @override
   String toString() =>

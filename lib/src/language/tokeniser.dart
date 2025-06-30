@@ -18,10 +18,10 @@ class TokenTypes {
 
 /// A lightweight tokeniser for Rhapsody rule expressions.
 ///
-/// This class converts a source [code] string into a sequence of [RhapsodyToken]s,
+/// This class converts a source [code] string into a sequence of [KiwiWatermelonToken]s,
 /// preserving positional information for accurate error reporting and debugging.
 /// It now captures line comments as tokens and uses constants for token types.
-class RhapsodyTokeniser {
+class KiwiWatermelonTokeniser {
   /// This tokeniser processes a textual representation of the Rhapsody rule language,
   /// splitting the source code into a sequence of lexical tokens. It recognizes:
   ///   - Identifiers (including prefixed variables like "prefix:a")
@@ -37,11 +37,11 @@ class RhapsodyTokeniser {
   /// parentheses, and complete rule declarations (e.g., "rule 23 = (func1(prefix:a) or func2(b))
   /// and not rule42;"). This design focuses solely on lexical analysis, deferring semantic
   /// validation to subsequent stages.
-  RhapsodyTokeniser();
+  KiwiWatermelonTokeniser();
 
-  /// Parses the provided [code] into a list of [RhapsodyToken]s.
-  List<RhapsodyToken> parse(String code) {
-    final List<RhapsodyToken> tokens = [];
+  /// Parses the provided [code] into a list of [KiwiWatermelonToken]s.
+  List<KiwiWatermelonToken> parse(String code) {
+    final List<KiwiWatermelonToken> tokens = [];
     int index = 0;
     int line = 0;
     int column = 0;
@@ -62,8 +62,8 @@ class RhapsodyTokeniser {
       }
 
       final int tokenStartIndex = index;
-      final RhapsodyPosition startPosition =
-          RhapsodyPosition(row: line, column: column);
+      final KiwiWatermelonPosition startPosition =
+          KiwiWatermelonPosition(row: line, column: column);
 
       // Capture comments starting with '#'.
       if (currentChar == '#') {
@@ -72,9 +72,9 @@ class RhapsodyTokeniser {
           column++;
         }
         final String tokenText = code.substring(tokenStartIndex, index);
-        final RhapsodyPosition endPosition =
-            RhapsodyPosition(row: line, column: column);
-        tokens.add(RhapsodyToken(
+        final KiwiWatermelonPosition endPosition =
+            KiwiWatermelonPosition(row: line, column: column);
+        tokens.add(KiwiWatermelonToken(
           type: TokenTypes.comment,
           text: tokenText,
           startIndex: tokenStartIndex,
@@ -96,9 +96,9 @@ class RhapsodyTokeniser {
         if (tokenText == 'and' || tokenText == 'or' || tokenText == 'not') {
           tokenType = TokenTypes.operatorType;
         }
-        final RhapsodyPosition endPosition =
-            RhapsodyPosition(row: line, column: column);
-        tokens.add(RhapsodyToken(
+        final KiwiWatermelonPosition endPosition =
+            KiwiWatermelonPosition(row: line, column: column);
+        tokens.add(KiwiWatermelonToken(
           type: tokenType,
           text: tokenText,
           startIndex: tokenStartIndex,
@@ -116,9 +116,9 @@ class RhapsodyTokeniser {
           column++;
         }
         final String tokenText = code.substring(tokenStartIndex, index);
-        final RhapsodyPosition endPosition =
-            RhapsodyPosition(row: line, column: column);
-        tokens.add(RhapsodyToken(
+        final KiwiWatermelonPosition endPosition =
+            KiwiWatermelonPosition(row: line, column: column);
+        tokens.add(KiwiWatermelonToken(
           type: TokenTypes.number,
           text: tokenText,
           startIndex: tokenStartIndex,
@@ -156,9 +156,9 @@ class RhapsodyTokeniser {
       index++;
       column++;
       final String tokenText = code.substring(tokenStartIndex, index);
-      final RhapsodyPosition endPosition =
-          RhapsodyPosition(row: line, column: column);
-      tokens.add(RhapsodyToken(
+      final KiwiWatermelonPosition endPosition =
+          KiwiWatermelonPosition(row: line, column: column);
+      tokens.add(KiwiWatermelonToken(
         type: tokenType,
         text: tokenText,
         startIndex: tokenStartIndex,
@@ -173,7 +173,7 @@ class RhapsodyTokeniser {
   }
 
   /// Reconstructs the source code from a list of [tokens].
-  String unparse(List<RhapsodyToken> tokens) {
+  String unparse(List<KiwiWatermelonToken> tokens) {
     if (tokens.isEmpty) return '';
     final StringBuffer buffer = StringBuffer();
     for (int i = 0; i < tokens.length; i++) {

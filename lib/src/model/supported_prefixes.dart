@@ -1,11 +1,11 @@
 /// Represents a collection of supported prefixes for references.
 /// Provides utilities to validate and assert the use of these prefixes.
-class RhapsodySupportedPrefixes {
+class KiwiWatermelonSupportedPrefixes {
   /// List of supported prefixes.
   final List<String> prefixes;
 
   /// Constructs an instance of `RhapsodySupportedPrefixes` with the provided prefixes.
-  RhapsodySupportedPrefixes(this.prefixes);
+  KiwiWatermelonSupportedPrefixes(this.prefixes);
 
   /// Checks if the given reference starts with any of the supported prefixes.
   ///

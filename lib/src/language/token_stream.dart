@@ -3,20 +3,20 @@ import 'semantic_exception.dart';
 import 'tokeniser.dart';
 
 
-/// A stream-based iterator for traversing a list of [RhapsodyToken]s
+/// A stream-based iterator for traversing a list of [KiwiWatermelonToken]s
 /// without modifying the original list.
 ///
 /// Maintains immutability by using an internal index for traversal
 /// instead of removing or altering tokens. Supports lookahead, token
 /// validation, and consumption operations.
-class RhapsodyTokenStream {
-  final List<RhapsodyToken> _tokens;
+class KiwiWatermelonTokenStream {
+  final List<KiwiWatermelonToken> _tokens;
   int _index = 0;
 
-  /// Creates a token stream from the provided list of [RhapsodyToken]s.
+  /// Creates a token stream from the provided list of [KiwiWatermelonToken]s.
   ///
   /// The list is not modified during traversal.
-  RhapsodyTokenStream(this._tokens);
+  KiwiWatermelonTokenStream(this._tokens);
 
   /// Indicates whether all tokens have been consumed.
   ///
@@ -34,10 +34,10 @@ class RhapsodyTokenStream {
 
   /// Retrieves the current token without advancing the stream.
   ///
-  /// Throws a [SemanticException] if the stream is at the end.
-  RhapsodyToken get current {
+  /// Throws a [KiwiWatermelonSemanticException] if the stream is at the end.
+  KiwiWatermelonToken get current {
     if (isAtEnd) {
-      throw SemanticException("Unexpected end of tokens.", _tokens.last);
+      throw KiwiWatermelonSemanticException("Unexpected end of tokens.", _tokens.last);
     }
     return _tokens[_index];
   }
@@ -46,7 +46,7 @@ class RhapsodyTokenStream {
   ///
   /// The returned list is a view of the original token list and
   /// remains unchanged by further stream operations.
-  List<RhapsodyToken> get remainingTokens => _tokens.sublist(_index);
+  List<KiwiWatermelonToken> get remainingTokens => _tokens.sublist(_index);
 
   /// Checks if the current token’s [type] matches the specified [value].
   ///
@@ -84,12 +84,12 @@ class RhapsodyTokenStream {
 
   /// Consumes and returns the current token, advancing the stream position by one.
   ///
-  /// Throws a [SemanticException] if no tokens remain to be consumed.
+  /// Throws a [KiwiWatermelonSemanticException] if no tokens remain to be consumed.
   ///
-  /// Returns the consumed [RhapsodyToken].
-  RhapsodyToken consume() {
+  /// Returns the consumed [KiwiWatermelonToken].
+  KiwiWatermelonToken consume() {
     if (isAtEnd) {
-      throw SemanticException("Unexpected end of tokens.", _tokens.last);
+      throw KiwiWatermelonSemanticException("Unexpected end of tokens.", _tokens.last);
     }
     return _tokens[_index++];
   }
@@ -126,15 +126,15 @@ class RhapsodyTokenStream {
   /// Consumes the current token and validates its [type] and optionally its [text]
   /// and [contextual] information.
   ///
-  /// [type]: The expected type of the token. Throws [SemanticException] if it does not match.
+  /// [type]: The expected type of the token. Throws [KiwiWatermelonSemanticException] if it does not match.
   /// [text]: The expected text of the token. If provided, must match exactly,
-  ///         or a [SemanticException] is thrown.
+  ///         or a [KiwiWatermelonSemanticException] is thrown.
   ///
-  /// Returns the consumed [RhapsodyToken] if all validations pass.
+  /// Returns the consumed [KiwiWatermelonToken] if all validations pass.
   ///
   /// Throws:
-  /// - [SemanticException] if either the type or text does not match the expected values.
-  RhapsodyToken consumeAndValidate(String type,
+  /// - [KiwiWatermelonSemanticException] if either the type or text does not match the expected values.
+  KiwiWatermelonToken consumeAndValidate(String type,
       {String? text, String? contextual}) {
     final token = consume();
     if (token.type != type) {
@@ -145,7 +145,7 @@ class RhapsodyTokenStream {
         'but got',
         friendlyToken(token.type)
       ].nonNulls.join(' ');
-      throw SemanticException(message, token);
+      throw KiwiWatermelonSemanticException(message, token);
     }
     if (text != null && token.text != text) {
       final String message = [
@@ -155,7 +155,7 @@ class RhapsodyTokenStream {
         'but got',
         token.text
       ].nonNulls.join(' ');
-      throw SemanticException(message, token);
+      throw KiwiWatermelonSemanticException(message, token);
     }
     return token;
   }

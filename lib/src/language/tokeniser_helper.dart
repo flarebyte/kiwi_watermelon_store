@@ -20,7 +20,7 @@ bool isLetterOrDigitOr_(String char) =>
 /// Determines whether a space should be inserted between two tokens.
 ///
 /// Inserts a space if both tokens consist solely of alphanumeric characters.
-bool needsSpace(RhapsodyToken previous, RhapsodyToken current) {
+bool needsSpace(KiwiWatermelonToken previous, KiwiWatermelonToken current) {
   return RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(previous.text) &&
       RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(current.text);
 }
