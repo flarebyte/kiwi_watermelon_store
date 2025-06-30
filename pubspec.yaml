@@ -1,0 +1,14 @@
+name: kiwi_watermelon_store
+description: Dig into your data with our fruity key-value store
+version: 1.0.0
+
+environment:
+  sdk: ^3.6.1
+
+# Add regular dependencies here.
+dependencies:
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^5.1.1
+  test: ^1.24.0

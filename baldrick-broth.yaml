@@ -1,7 +1,7 @@
 model:
   project:
     title: Dig into your data with our fruity key-value store
-    description: todo
+    description: A key value store that can be used on the device
     version: 0.3.0
     keywords:
       - todo
