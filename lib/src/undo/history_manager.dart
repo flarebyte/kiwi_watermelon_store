@@ -9,24 +9,26 @@ class KiwiHistoryManager {
 
   KiwiHistoryManager({required this.store});
 
-void performAction(KiwiWatermelonAction action) {
-  undoStack.add(action);
-  redoStack.clear();
-  action.execute(store);
-}
+  void performAction(KiwiWatermelonAction action) {
+    redoStack.clear();
+    final result = action.execute(store);
+    final event = result.event;
+    if (event != null) {
+      undoStack.add(event);
+    }
+  }
 
-void undo() {
-  if (undoStack.isEmpty) return;
-  KiwiActionEvent lastAction = undoStack.removeLast();
-  lastAction.undo.applyPatch(store);
-  redoStack.add(lastAction);
-}
+  void undo() {
+    if (undoStack.isEmpty) return;
+    KiwiActionEvent lastAction = undoStack.removeLast();
+    lastAction.undo.applyPatch(store);
+    redoStack.add(lastAction);
+  }
 
-void redo() {
-  if (redoStack.isEmpty) return;
-  Action action = redoStack.removeLast();
-  action.execute();
-  undoStack.add(action);
-}
-
+  void redo() {
+    if (redoStack.isEmpty) return;
+    final event = redoStack.removeLast();
+    event.redo.applyPatch(store);
+    undoStack.add(event);
+  }
 }

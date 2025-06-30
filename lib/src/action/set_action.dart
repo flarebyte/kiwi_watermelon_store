@@ -1,4 +1,5 @@
 import '../data_store.dart';
+import '../undo/action_event.dart';
 import 'action_result.dart';
 import 'base_action.dart';
 
@@ -11,7 +12,16 @@ class KiwiSetAction extends KiwiWatermelonAction {
 
   @override
   KiwiWatermelonActionResult execute(KiwiWatermelonDataStore store) {
+    final previousValue = store.get(key);
+    final undo = previousValue == null
+        ? KiwiActionPatch(updates: {}, deletions: [key])
+        : KiwiActionPatch(
+            updates: {}.putIfAbsent(key, () => value.toString()),
+            deletions: []);
     store.set(key, value.toString());
-    return new KiwiWatermelonActionResult();
+    final KiwiActionEvent event = KiwiActionEvent(
+        redo: KiwiActionPatch(updates: {key: value.toString()}, deletions: []),
+        undo: undo);
+    return new KiwiWatermelonActionResult(event: event);
   }
 }

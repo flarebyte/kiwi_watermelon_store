@@ -12,9 +12,8 @@ class KiwiActionPatch {
 }
 
 class KiwiActionEvent {
-  final int id;
   final KiwiActionPatch redo;
   final KiwiActionPatch undo;
 
-  KiwiActionEvent({required this.id, required this.redo, required this.undo});
+  KiwiActionEvent({required this.redo, required this.undo});
 }
