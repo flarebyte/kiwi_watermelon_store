@@ -5,32 +5,38 @@ import 'action/action_event.dart';
 class KiwiWatermelonManager {
   KiwiWatermelonDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
-  List<KiwiActionEvent> undoStack = [];
-  List<KiwiActionEvent> redoStack = [];
+  List<KiwiRedoUndo> undoStack = [];
+  List<KiwiRedoUndo> redoStack = [];
 
   KiwiWatermelonManager({required this.store});
 
   void performActions(List<KiwiWatermelonAction> actions) {
     redoStack.clear();
-    final events = [];
+    final List<KiwiActionPatch> patches = [];
     for (var action in actions) {
-       final result = action.execute(store);
-       final event = result.event;
-       if (event != null) {
-        events.add(event);
-       }
+      final result = action.execute(store);
+      final patch = result.patch;
+      if (patch != null) {
+        patches.add(patch);
+      }
     }
-   
-    if (events.isNotEmpty) {
-      undoStack.add(event);
+
+    if (patches.isEmpty) {
+      return;
     }
+
+    final redoPatch = KiwiActionPatch.mergePatches(patches);
+    final undoPatch = redoPatch.revertPatch(store);
+    redoPatch.applyPatch(store);
+
+    undoStack.add(KiwiRedoUndo(redo: redoPatch, undo: undoPatch));
   }
 
   void undo() {
     if (undoStack.isEmpty) return;
-    KiwiActionEvent lastAction = undoStack.removeLast();
-    lastAction.undo.applyPatch(store);
-    redoStack.add(lastAction);
+    final lastUndo = undoStack.removeLast();
+    lastUndo.undo.applyPatch(store);
+    redoStack.add(lastUndo);
   }
 
   void redo() {

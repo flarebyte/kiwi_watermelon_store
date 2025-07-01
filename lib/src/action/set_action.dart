@@ -12,7 +12,6 @@ class KiwiSetAction extends KiwiWatermelonAction {
 
   @override
   KiwiWatermelonActionResult execute(KiwiWatermelonDataStore store) {
-    store.set(key, value.toString());// should I change the store ?
     return new KiwiWatermelonActionResult(
         patch:
             KiwiActionPatch(updates: {key: value.toString()}, deletions: []));

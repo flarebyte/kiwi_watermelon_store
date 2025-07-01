@@ -19,3 +19,10 @@ class KiwiActionPatch {
   }
 }
 
+class KiwiRedoUndo {
+  final KiwiActionPatch redo;
+  final KiwiActionPatch undo;
+
+  KiwiRedoUndo({required this.redo, required this.undo});
+}
+
