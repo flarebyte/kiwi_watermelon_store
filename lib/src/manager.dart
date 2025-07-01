@@ -1,13 +1,14 @@
-import '../action/base_action.dart';
-import '../data_store.dart';
-import '../action/action_event.dart';
+import 'action/base_action.dart';
+import 'data_store.dart';
+import 'action/action_event.dart';
 
-class KiwiHistoryManager {
-  final KiwiWatermelonDataStore store;
+class KiwiWatermelonManager {
+  KiwiWatermelonDataStore store;
+  final Map<String, Map<String, String>> snapshots = {};
   List<KiwiActionEvent> undoStack = [];
   List<KiwiActionEvent> redoStack = [];
 
-  KiwiHistoryManager({required this.store});
+  KiwiWatermelonManager({required this.store});
 
   void performAction(KiwiWatermelonAction action) {
     redoStack.clear();
@@ -30,5 +31,20 @@ class KiwiHistoryManager {
     final event = redoStack.removeLast();
     event.redo.applyPatch(store);
     undoStack.add(event);
+  }
+
+  void save(String key) {
+    snapshots.putIfAbsent(key, () => store.toUnmodifiableMap());
+  }
+
+  void restore(String key) {
+    final restorable = snapshots[key];
+    if (restorable != null) {
+      store = KiwiWatermelonDataStore.fromMap(restorable);
+    }
+  }
+
+  KiwiWatermelonDataStore getStore() {
+    return store;
   }
 }
