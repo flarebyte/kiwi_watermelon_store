@@ -9,11 +9,13 @@ class KiwiActionPatch {
   applyPatch(KiwiWatermelonDataStore store) {
     //todo
   }
+  revertPatch(KiwiWatermelonDataStore store) {
+    //todo
+  }
+
+  static KiwiActionPatch mergePatches(List<KiwiActionPatch> patches){
+    //todo
+    return patches[0];
+  }
 }
 
-class KiwiActionEvent {
-  final KiwiActionPatch redo;
-  final KiwiActionPatch undo;
-
-  KiwiActionEvent({required this.redo, required this.undo});
-}

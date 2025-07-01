@@ -12,16 +12,9 @@ class KiwiSetAction extends KiwiWatermelonAction {
 
   @override
   KiwiWatermelonActionResult execute(KiwiWatermelonDataStore store) {
-    final previousValue = store.get(key);
-    final undo = previousValue == null
-        ? KiwiActionPatch(updates: {}, deletions: [key])
-        : KiwiActionPatch(
-            updates: {}.putIfAbsent(key, () => value.toString()),
-            deletions: []);
-    store.set(key, value.toString());
-    final KiwiActionEvent event = KiwiActionEvent(
-        redo: KiwiActionPatch(updates: {key: value.toString()}, deletions: []),
-        undo: undo);
-    return new KiwiWatermelonActionResult(event: event);
+    store.set(key, value.toString());// should I change the store ?
+    return new KiwiWatermelonActionResult(
+        patch:
+            KiwiActionPatch(updates: {key: value.toString()}, deletions: []));
   }
 }

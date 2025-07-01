@@ -1,7 +1,7 @@
 import 'action_event.dart';
 
 class KiwiWatermelonActionResult {
-  final KiwiActionEvent? event;
+  final KiwiActionPatch? patch;
 
-  KiwiWatermelonActionResult({required this.event});
+  KiwiWatermelonActionResult({required this.patch});
 }
