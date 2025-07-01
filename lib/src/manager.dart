@@ -10,11 +10,18 @@ class KiwiWatermelonManager {
 
   KiwiWatermelonManager({required this.store});
 
-  void performAction(KiwiWatermelonAction action) {
+  void performActions(List<KiwiWatermelonAction> actions) {
     redoStack.clear();
-    final result = action.execute(store);
-    final event = result.event;
-    if (event != null) {
+    final events = [];
+    for (var action in actions) {
+       final result = action.execute(store);
+       final event = result.event;
+       if (event != null) {
+        events.add(event);
+       }
+    }
+   
+    if (events.isNotEmpty) {
       undoStack.add(event);
     }
   }
