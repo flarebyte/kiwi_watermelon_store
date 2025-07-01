@@ -53,7 +53,8 @@ class KiwiWatermelonManager {
   void restore(String key) {
     final restorable = snapshots[key];
     if (restorable != null) {
-      store = KiwiWatermelonDataStore.fromMap(restorable);
+      store.clear();
+      store.addAll(restorable);
     }
   }
 
