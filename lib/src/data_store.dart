@@ -67,6 +67,15 @@ class KiwiWatermelonDataStore implements BaseDataStore {
     set(key, value.toString());
   }
 
+  void setWithMapping(String key, String value) {
+    final mapped = options.mapping[value];
+    if (mapped == null) {
+      errorHandler('The value is not supprted as mapping:' + value);
+    } else {
+      set(key, mapped);
+    }
+  }
+
   void incNumber(String key, num value) {
     final previous = get(key);
     if (previous == null) {
