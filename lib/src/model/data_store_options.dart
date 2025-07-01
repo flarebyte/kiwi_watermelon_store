@@ -1,11 +1,8 @@
-/// Represents a collection of supported prefixes for references.
-/// Provides utilities to validate and assert the use of these prefixes.
-class KiwiWatermelonSupportedPrefixes {
-  /// List of supported prefixes.
+class DataStoreOptions {
   final List<String> prefixes;
+  final Map<String, String> mapping;
 
-  /// Constructs an instance of `RhapsodySupportedPrefixes` with the provided prefixes.
-  KiwiWatermelonSupportedPrefixes(this.prefixes);
+  DataStoreOptions({required this.prefixes, required this.mapping});
 
   /// Checks if the given reference starts with any of the supported prefixes.
   ///
