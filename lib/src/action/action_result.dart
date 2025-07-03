@@ -1,4 +1,4 @@
-import 'action_event.dart';
+import 'action_patch.dart';
 
 class KiwiWatermelonActionResult {
   final KiwiActionPatch? patch;
