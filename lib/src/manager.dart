@@ -1,6 +1,7 @@
 import 'action/base_action.dart';
 import 'data_store.dart';
 import 'action/action_patch.dart';
+import 'listener/update_event.dart';
 
 class KiwiWatermelonManager {
   KiwiWatermelonDataStore store;
@@ -65,5 +66,11 @@ class KiwiWatermelonManager {
 
   KiwiWatermelonDataStore getStore() {
     return store;
+  }
+
+  publishEvent(KiwiActionPatch patch, String actor){
+    //todo
+    KiwiWatermelonUpdateEvent event = KiwiWatermelonUpdateEvent(patch: patch, id:0, actor: actor);
+
   }
 }
