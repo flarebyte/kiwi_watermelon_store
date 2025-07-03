@@ -18,11 +18,7 @@ class KiwiActionPatch {
     //todo
     return patches[0];
   }
-
-  static KiwiPatches splitPatch(DataStoreOptions options, KiwiActionPatch patch){
-    //todo
-    return KiwiPatches(admin: patch, user: null);
-  }
+  
 }
 
 class KiwiRedoUndo {
@@ -37,5 +33,10 @@ class KiwiPatches {
   final KiwiActionPatch? admin;
 
   KiwiPatches({required this.user, required this.admin});
+  
+  static KiwiPatches splitPatch(DataStoreOptions options, KiwiActionPatch patch){
+    //todo
+    return KiwiPatches(admin: patch, user: patch);
+  }
 }
 

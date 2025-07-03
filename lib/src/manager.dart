@@ -26,10 +26,15 @@ class KiwiWatermelonManager {
     }
 
     final redoPatch = KiwiActionPatch.mergePatches(patches);
-    final undoPatch = redoPatch.revertPatch(store);
+    final redoPatches = KiwiPatches.splitPatch(store.options, redoPatch);
+    final userRedoPatch = redoPatches.user;
+
     redoPatch.applyPatch(store);
 
-    undoStack.add(KiwiRedoUndo(redo: redoPatch, undo: undoPatch));
+    if (userRedoPatch != null) {
+      final undoPatch = userRedoPatch.revertPatch(store);
+      undoStack.add(KiwiRedoUndo(redo: redoPatch, undo: undoPatch));
+    }
   }
 
   void undo() {
