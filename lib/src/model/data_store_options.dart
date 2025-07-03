@@ -1,8 +1,21 @@
 class DataStoreOptions {
   final List<String> prefixes;
+  final List<String> userPrefixes;
   final Map<String, String> mapping;
 
-  DataStoreOptions({required this.prefixes, required this.mapping});
+  static bool arePrefixesIncluded(List<String> candidates, List<String> pool) {
+    return Set.from(pool).containsAll(candidates);
+  }
+
+  DataStoreOptions(
+      {required this.prefixes,
+      required this.mapping,
+      required this.userPrefixes}) {
+    if (!arePrefixesIncluded(userPrefixes, prefixes)) {
+      throw Exception(
+          "All user prefixes [$userPrefixes] should be included in all prefixes");
+    }
+  }
 
   /// Checks if the given reference starts with any of the supported prefixes.
   ///
@@ -27,5 +40,9 @@ class DataStoreOptions {
       final prefixesDisplay = prefixes.map((prefix) => "$prefix:").join(", ");
       throw Exception("The ref $ref should start with any of $prefixesDisplay");
     }
+  }
+
+  bool isUserPrefix(String ref) {
+    return userPrefixes.any((prefix) => ref.startsWith("$prefix:"));
   }
 }
