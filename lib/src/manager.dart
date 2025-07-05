@@ -3,7 +3,15 @@ import 'store/mem_data_store.dart';
 import 'action/action_patch.dart';
 import 'listener/update_event.dart';
 
-class KiwiWatermelonSessionManager {
+abstract class KiwiWatermelonBaseSessionManager {
+  void performActions(List<KiwiWatermelonAction> actions);
+  void undo();
+  void redo();
+  void save(String key);
+  void restore(String key);
+}
+
+class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   KiwiWatermelonDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];
@@ -68,9 +76,9 @@ class KiwiWatermelonSessionManager {
     return store;
   }
 
-  publishEvent(KiwiActionPatch patch, String actor){
+  publishEvent(KiwiActionPatch patch, String actor) {
     //todo
-    KiwiWatermelonUpdateEvent event = KiwiWatermelonUpdateEvent(patch: patch, id:0, actor: actor);
-
+    KiwiWatermelonUpdateEvent event =
+        KiwiWatermelonUpdateEvent(patch: patch, id: 0, actor: actor);
   }
 }
