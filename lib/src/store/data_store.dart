@@ -18,6 +18,10 @@ abstract class BaseTypedDataStore<T> {
 
   /// Add multiple values at once
   void addAll(Map<String, T> other);
+
+  /// Convert to Unmodifiable Map
+  Map<String, T> toUnmodifiableMap(); 
+  
 }
 
 /// Represents a key-value data store that supports prefix validation

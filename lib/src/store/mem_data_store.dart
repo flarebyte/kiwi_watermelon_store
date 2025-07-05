@@ -1,14 +1,12 @@
-import '../listener/handler.dart';
 import 'data_store.dart';
 import '../model/data_store_options.dart';
 
 /// A simple in-memory implementation of [BaseStringDataStore] using [Map].
 class KiwiWatermelonDataStore implements BaseStringDataStore {
   final Map<String, String> _store = <String, String>{};
-  final KiwiWatermelonErrorHandler errorHandler;
   final DataStoreOptions options;
 
-  KiwiWatermelonDataStore({required this.errorHandler, required this.options});
+  KiwiWatermelonDataStore({required this.options});
 
   /// {@macro KiwiWatermelonDataStore.get}
   @override
@@ -52,7 +50,7 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
     return 'KiwiWatermelonDataStore{_store: $_store}';
   }
 
-  toUnmodifiableMap() {
+  Map<String, String> toUnmodifiableMap() {
     return Map.unmodifiable(_store);
   }
 
@@ -67,15 +65,17 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
     set(key, value.toString());
   }
 
+  // Move out
   void setWithMapping(String key, String value) {
     final mapped = options.mapping[value];
     if (mapped == null) {
-      errorHandler('The value is not supprted as mapping:' + value);
+      throw Exception('The value is not supprted as mapping:' + value);
     } else {
       set(key, mapped);
     }
   }
 
+  ///Move out
   void incNumber(String key, num value) {
     final previous = get(key);
     if (previous == null) {
@@ -83,7 +83,8 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
     } else {
       final previousNum = num.tryParse(previous);
       if (previousNum == null) {
-        errorHandler('The value for the existing key is not a number:' + key);
+        throw Exception(
+            'The value for the existing key is not a number:' + key);
       } else {
         final newValue = previousNum + value;
         set(key, newValue.toString());

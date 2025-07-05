@@ -2,6 +2,7 @@ import 'package:kiwi_watermelon_store/src/listener/handler.dart';
 
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
+import 'model/data_store_options.dart';
 import 'store/mem_data_store.dart';
 import 'action/action_patch.dart';
 
@@ -14,20 +15,25 @@ abstract class KiwiWatermelonBaseSessionManager {
   void restore(String key);
 
   BaseStringDataStore mainStore();
-  
-  void registerPrimaryView<T>(KiwiWatermelonViewReducer<T> reducer, KiwiWatermelonOnViewUpdate onUpdate);
-  BaseTypedDataStore<T> primaryView<T>();
-  
 }
 
-class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
-  KiwiWatermelonDataStore store;
+abstract class KiwiWatermelonViewManager<T> {
+  void registerView(KiwiWatermelonViewReducer<T> reducer,
+      KiwiWatermelonOnViewUpdate onUpdate);
+  BaseTypedDataStore<T> view();
+}
+
+class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
+  DataStoreOptions options;
+  late BaseStringDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
 
-  KiwiWatermelonSessionManager({required this.store});
-  
+  KiwiWatermelonSessionManager({required this.options}) {
+    store = KiwiWatermelonDataStore(options: options);
+  }
+
   @override
   void performActions(List<KiwiWatermelonAction> actions) {
     redoStack.clear();
@@ -45,7 +51,7 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     }
 
     final redoPatch = KiwiWatermelonPatch.mergePatches(patches);
-    final redoPatches = KiwiPatches.splitPatch(store.options, redoPatch);
+    final redoPatches = KiwiPatches.splitPatch(options, redoPatch);
     final userRedoPatch = redoPatches.user;
 
     redoPatch.applyPatch(store);
@@ -71,7 +77,7 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     event.redo.applyPatch(store);
     undoStack.add(event);
   }
-  
+
   @override
   void save(String key) {
     snapshots.putIfAbsent(key, () => store.toUnmodifiableMap());
@@ -86,23 +92,8 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     }
   }
 
-  KiwiWatermelonDataStore getStore() {
-    return store;
-  }
-  
-  @override
-  BaseTypedDataStore<T> primaryView<T>() {
-    // TODO: implement primaryView
-    throw UnimplementedError();
-  }
-  
-  @override
-  void registerPrimaryView<T>(KiwiWatermelonViewReducer<T> reducer, KiwiWatermelonOnViewUpdate onUpdate) {
-    // TODO: implement registerPrimaryView
-  }
-  
   @override
   BaseStringDataStore mainStore() {
-   return store;
+    return store;
   }
 }

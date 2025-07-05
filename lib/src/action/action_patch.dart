@@ -1,4 +1,4 @@
-import '../store/mem_data_store.dart';
+import '../../kiwi_watermelon_store.dart';
 import '../model/data_store_options.dart';
 
 class KiwiWatermelonPatch {
@@ -7,10 +7,10 @@ class KiwiWatermelonPatch {
 
   KiwiWatermelonPatch({required this.updates, required this.deletions});
 
-  applyPatch(KiwiWatermelonDataStore store) {
+  applyPatch(BaseStringDataStore store) {
     //todo
   }
-  revertPatch(KiwiWatermelonDataStore store) {
+  revertPatch(BaseStringDataStore store) {
     //todo
   }
 

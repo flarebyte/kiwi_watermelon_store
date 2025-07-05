@@ -1,4 +1,4 @@
-import '../store/mem_data_store.dart';
+import '../../kiwi_watermelon_store.dart';
 import 'action_patch.dart';
 import 'action_result.dart';
 import 'base_action.dart';
@@ -11,7 +11,7 @@ class KiwiSetAction extends KiwiWatermelonAction {
   KiwiSetAction({required this.key, required this.value});
 
   @override
-  KiwiWatermelonActionResult execute(KiwiWatermelonDataStore store) {
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     return new KiwiWatermelonActionResult(
         patch:
             KiwiWatermelonPatch(updates: {key: value.toString()}, deletions: []));
