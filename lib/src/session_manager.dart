@@ -1,3 +1,5 @@
+import 'package:kiwi_watermelon_store/src/view_manager.dart';
+
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
 import 'store/manager_options.dart';
@@ -12,6 +14,8 @@ abstract class KiwiWatermelonBaseSessionManager {
   void save(String key);
   void restore(String key);
 
+  void registerPrimaryViewManager(KiwiWatermelonViewManager manager);
+
   BaseStringDataStore mainStore();
 }
 
@@ -21,6 +25,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
+  KiwiWatermelonViewManager? primaryViewManager = null;
 
   KiwiWatermelonSessionManager({required this.options}) {
     store = KiwiWatermelonDataStore(options: options);
@@ -87,5 +92,10 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   @override
   BaseStringDataStore mainStore() {
     return store;
+  }
+
+  @override
+  void registerPrimaryViewManager(KiwiWatermelonViewManager manager) {
+    primaryViewManager = manager;
   }
 }
