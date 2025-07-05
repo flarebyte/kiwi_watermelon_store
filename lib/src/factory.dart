@@ -4,21 +4,21 @@ import 'store/mem_data_store.dart';
 
 abstract class KiwiWatermelonBaseFactory {
   BaseTypedDataStore<T> createTypedDataStore<T>(
-      KiwiWatermelonOptions options);
+      {required KiwiWatermelonOptions options});
   BaseStringDataStore createStringDataStore(
-      KiwiWatermelonOptions options);
+      {required KiwiWatermelonOptions options});
 }
 
 class KiwiWatermelonDefaultFactory extends KiwiWatermelonBaseFactory {
   @override
   BaseStringDataStore createStringDataStore(
-      KiwiWatermelonOptions options) {
+      {required KiwiWatermelonOptions options}) {
     return KiwiWatermelonDataStore(options: options);
   }
 
   @override
   BaseTypedDataStore<T> createTypedDataStore<T>(
-      KiwiWatermelonOptions options) {
+      {required KiwiWatermelonOptions options}) {
     return KiwiWatermelonTypedDataStore(options: options);
   }
 }

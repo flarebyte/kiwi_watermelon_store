@@ -1,21 +1,30 @@
 import '../kiwi_watermelon_store.dart';
-import './store/mem_data_store.dart';
+import 'factory.dart';
 import 'listener/handler.dart';
+import 'store/manager_options.dart';
 
 abstract class KiwiWatermelonBaseViewManager<T> {
   BaseTypedDataStore<T> view();
 }
 
 class KiwiWatermelonViewManager<T> extends KiwiWatermelonBaseViewManager<T> {
-  final KiwiWatermelonTypedDataStore<T> store;
+  final KiwiWatermelonOptions options;
+  final KiwiWatermelonBaseFactory factory;
+  late BaseTypedDataStore<T> storeView;
   final KiwiWatermelonViewReducer<T> reducer;
   final KiwiWatermelonOnViewUpdate onUpdate;
 
   KiwiWatermelonViewManager(
-      {required this.store, required this.onUpdate, required this.reducer});
+      {required this.options,
+      required this.factory,
+      required this.storeView,
+      required this.onUpdate,
+      required this.reducer}){
+        storeView = factory.createTypedDataStore<T>(options: options);
+      }
 
   @override
   BaseTypedDataStore<T> view() {
-    return store;
+    return storeView;
   }
 }
