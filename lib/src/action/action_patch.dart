@@ -1,5 +1,5 @@
 import '../../kiwi_watermelon_store.dart';
-import '../model/data_store_options.dart';
+import '../store/manager_options.dart';
 
 class KiwiWatermelonPatch {
   final Map<String, String> updates;
@@ -34,7 +34,7 @@ class KiwiPatches {
 
   KiwiPatches({required this.user, required this.admin});
   
-  static KiwiPatches splitPatch(DataStoreOptions options, KiwiWatermelonPatch patch){
+  static KiwiPatches splitPatch(KiwiWatermelonSessionManagerOptions options, KiwiWatermelonPatch patch){
     //todo
     return KiwiPatches(admin: patch, user: patch);
   }

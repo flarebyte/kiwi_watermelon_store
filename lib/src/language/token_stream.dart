@@ -1,4 +1,4 @@
-import '../model/token.dart';
+import 'token.dart';
 import 'semantic_exception.dart';
 import 'tokeniser.dart';
 

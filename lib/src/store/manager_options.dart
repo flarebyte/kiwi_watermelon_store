@@ -1,4 +1,4 @@
-class DataStoreOptions {
+class KiwiWatermelonSessionManagerOptions {
   final List<String> prefixes;
   final List<String> userPrefixes;
   final Map<String, String> mapping;
@@ -7,7 +7,7 @@ class DataStoreOptions {
     return Set.from(pool).containsAll(candidates);
   }
 
-  DataStoreOptions(
+  KiwiWatermelonSessionManagerOptions(
       {required this.prefixes,
       required this.mapping,
       required this.userPrefixes}) {

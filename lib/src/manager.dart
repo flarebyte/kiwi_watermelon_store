@@ -2,7 +2,7 @@ import 'package:kiwi_watermelon_store/src/listener/handler.dart';
 
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
-import 'model/data_store_options.dart';
+import 'store/manager_options.dart';
 import 'store/mem_data_store.dart';
 import 'action/action_patch.dart';
 
@@ -24,7 +24,7 @@ abstract class KiwiWatermelonViewManager<T> {
 }
 
 class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
-  DataStoreOptions options;
+  KiwiWatermelonSessionManagerOptions options;
   late BaseStringDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];

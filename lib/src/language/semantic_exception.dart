@@ -1,4 +1,4 @@
-import '../model/token.dart';
+import 'token.dart';
 
 /// Thrown when the semantic analyser encounters an unexpected token.
 class KiwiWatermelonSemanticException implements Exception {
