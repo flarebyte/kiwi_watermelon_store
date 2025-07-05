@@ -1,11 +1,11 @@
 import '../store/mem_data_store.dart';
 import '../model/data_store_options.dart';
 
-class KiwiActionPatch {
+class KiwiWatermelonPatch {
   final Map<String, String> updates;
   final List<String> deletions;
 
-  KiwiActionPatch({required this.updates, required this.deletions});
+  KiwiWatermelonPatch({required this.updates, required this.deletions});
 
   applyPatch(KiwiWatermelonDataStore store) {
     //todo
@@ -14,7 +14,7 @@ class KiwiActionPatch {
     //todo
   }
 
-  static KiwiActionPatch mergePatches(List<KiwiActionPatch> patches){
+  static KiwiWatermelonPatch mergePatches(List<KiwiWatermelonPatch> patches){
     //todo
     return patches[0];
   }
@@ -22,19 +22,19 @@ class KiwiActionPatch {
 }
 
 class KiwiRedoUndo {
-  final KiwiActionPatch redo;
-  final KiwiActionPatch undo;
+  final KiwiWatermelonPatch redo;
+  final KiwiWatermelonPatch undo;
 
   KiwiRedoUndo({required this.redo, required this.undo});
 }
 
 class KiwiPatches {
-  final KiwiActionPatch? user;
-  final KiwiActionPatch? admin;
+  final KiwiWatermelonPatch? user;
+  final KiwiWatermelonPatch? admin;
 
   KiwiPatches({required this.user, required this.admin});
   
-  static KiwiPatches splitPatch(DataStoreOptions options, KiwiActionPatch patch){
+  static KiwiPatches splitPatch(DataStoreOptions options, KiwiWatermelonPatch patch){
     //todo
     return KiwiPatches(admin: patch, user: patch);
   }

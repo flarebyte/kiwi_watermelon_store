@@ -14,6 +14,6 @@ class KiwiSetAction extends KiwiWatermelonAction {
   KiwiWatermelonActionResult execute(KiwiWatermelonDataStore store) {
     return new KiwiWatermelonActionResult(
         patch:
-            KiwiActionPatch(updates: {key: value.toString()}, deletions: []));
+            KiwiWatermelonPatch(updates: {key: value.toString()}, deletions: []));
   }
 }

@@ -4,7 +4,6 @@ import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
 import 'store/mem_data_store.dart';
 import 'action/action_patch.dart';
-import 'listener/update_event.dart';
 
 abstract class KiwiWatermelonBaseSessionManager {
   void performActions(List<KiwiWatermelonAction> actions);
@@ -32,7 +31,7 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   @override
   void performActions(List<KiwiWatermelonAction> actions) {
     redoStack.clear();
-    final List<KiwiActionPatch> patches = [];
+    final List<KiwiWatermelonPatch> patches = [];
     for (var action in actions) {
       final result = action.execute(store);
       final patch = result.patch;
@@ -45,7 +44,7 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
       return;
     }
 
-    final redoPatch = KiwiActionPatch.mergePatches(patches);
+    final redoPatch = KiwiWatermelonPatch.mergePatches(patches);
     final redoPatches = KiwiPatches.splitPatch(store.options, redoPatch);
     final userRedoPatch = redoPatches.user;
 
@@ -89,12 +88,6 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
 
   KiwiWatermelonDataStore getStore() {
     return store;
-  }
-
-  _publishEvent(KiwiActionPatch patch) {
-    //todo
-    KiwiWatermelonUpdateEvent event =
-        KiwiWatermelonUpdateEvent(patch: patch);
   }
   
   @override
