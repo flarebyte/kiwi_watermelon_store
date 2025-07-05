@@ -1,5 +1,3 @@
-import 'package:kiwi_watermelon_store/src/listener/handler.dart';
-
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
 import 'store/manager_options.dart';
@@ -15,12 +13,6 @@ abstract class KiwiWatermelonBaseSessionManager {
   void restore(String key);
 
   BaseStringDataStore mainStore();
-}
-
-abstract class KiwiWatermelonViewManager<T> {
-  void registerView(KiwiWatermelonViewReducer<T> reducer,
-      KiwiWatermelonOnViewUpdate onUpdate);
-  BaseTypedDataStore<T> view();
 }
 
 class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
