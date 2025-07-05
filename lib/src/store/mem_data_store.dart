@@ -2,8 +2,8 @@ import '../listener/handler.dart';
 import 'data_store.dart';
 import '../model/data_store_options.dart';
 
-/// A simple in-memory implementation of [BaseDataStore] using [Map].
-class KiwiWatermelonDataStore implements BaseDataStore {
+/// A simple in-memory implementation of [BaseStringDataStore] using [Map].
+class KiwiWatermelonDataStore implements BaseStringDataStore {
   final Map<String, String> _store = <String, String>{};
   final ErrorHandler errorHandler;
   final DataStoreOptions options;

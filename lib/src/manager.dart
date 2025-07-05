@@ -15,7 +15,7 @@ abstract class KiwiWatermelonBaseSessionManager {
   void restore(String key);
   
   void registerView(String name, KiwiWatermelonViewReducer reducer);
-  BaseDataStore view(String name);
+  BaseStringDataStore view(String name);
 }
 
 class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
@@ -101,7 +101,7 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   }
   
   @override
-  BaseDataStore view(String name) {
+  BaseStringDataStore view(String name) {
     // TODO: implement view
     throw UnimplementedError();
   }
