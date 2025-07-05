@@ -1,22 +1,21 @@
 import '../kiwi_watermelon_store.dart';
+import './store/mem_data_store.dart';
 import 'listener/handler.dart';
 
 abstract class KiwiWatermelonBaseViewManager<T> {
-  void registerView(KiwiWatermelonViewReducer<T> reducer,
-      KiwiWatermelonOnViewUpdate onUpdate);
   BaseTypedDataStore<T> view();
 }
 
-class KiwiWatermelonViewManager<T> extends KiwiWatermelonBaseViewManager<T>{
-  @override
-  void registerView(KiwiWatermelonViewReducer<T> reducer, KiwiWatermelonOnViewUpdate onUpdate) {
-    // TODO: implement registerView
-  }
+class KiwiWatermelonViewManager<T> extends KiwiWatermelonBaseViewManager<T> {
+  final KiwiWatermelonTypedDataStore<T> store;
+  final KiwiWatermelonViewReducer<T> reducer;
+  final KiwiWatermelonOnViewUpdate onUpdate;
+
+  KiwiWatermelonViewManager(
+      {required this.store, required this.onUpdate, required this.reducer});
 
   @override
   BaseTypedDataStore<T> view() {
-    // TODO: implement view
-    throw UnimplementedError();
+    return store;
   }
-
 }
