@@ -1,3 +1,6 @@
+import 'package:kiwi_watermelon_store/src/listener/handler.dart';
+
+import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
 import 'store/mem_data_store.dart';
 import 'action/action_patch.dart';
@@ -7,8 +10,12 @@ abstract class KiwiWatermelonBaseSessionManager {
   void performActions(List<KiwiWatermelonAction> actions);
   void undo();
   void redo();
+
   void save(String key);
   void restore(String key);
+  
+  void registerView(String name, KiwiWatermelonViewReducer reducer);
+  BaseDataStore view(String name);
 }
 
 class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
@@ -18,7 +25,8 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   List<KiwiRedoUndo> redoStack = [];
 
   KiwiWatermelonSessionManager({required this.store});
-
+  
+  @override
   void performActions(List<KiwiWatermelonAction> actions) {
     redoStack.clear();
     final List<KiwiActionPatch> patches = [];
@@ -46,6 +54,7 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     }
   }
 
+  @override
   void undo() {
     if (undoStack.isEmpty) return;
     final lastUndo = undoStack.removeLast();
@@ -53,17 +62,20 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     redoStack.add(lastUndo);
   }
 
+  @override
   void redo() {
     if (redoStack.isEmpty) return;
     final event = redoStack.removeLast();
     event.redo.applyPatch(store);
     undoStack.add(event);
   }
-
+  
+  @override
   void save(String key) {
     snapshots.putIfAbsent(key, () => store.toUnmodifiableMap());
   }
 
+  @override
   void restore(String key) {
     final restorable = snapshots[key];
     if (restorable != null) {
@@ -76,9 +88,21 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     return store;
   }
 
-  publishEvent(KiwiActionPatch patch, String actor) {
+  _publishEvent(KiwiActionPatch patch, String actor) {
     //todo
     KiwiWatermelonUpdateEvent event =
         KiwiWatermelonUpdateEvent(patch: patch, id: 0, actor: actor);
+  }
+  
+  @override
+  registerView(String name, KiwiWatermelonViewReducer reducer) {
+    // TODO: implement registerView
+    throw UnimplementedError();
+  }
+  
+  @override
+  BaseDataStore view(String name) {
+    // TODO: implement view
+    throw UnimplementedError();
   }
 }
