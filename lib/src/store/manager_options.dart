@@ -1,4 +1,4 @@
-class KiwiWatermelonSessionManagerOptions {
+class KiwiWatermelonOptions {
   final List<String> prefixes;
   final List<String> userPrefixes;
   final Map<String, String> mapping;
@@ -7,7 +7,7 @@ class KiwiWatermelonSessionManagerOptions {
     return Set.from(pool).containsAll(candidates);
   }
 
-  KiwiWatermelonSessionManagerOptions(
+  KiwiWatermelonOptions(
       {required this.prefixes,
       required this.mapping,
       required this.userPrefixes}) {

@@ -4,7 +4,7 @@ import 'manager_options.dart';
 /// A simple in-memory implementation of [BaseStringDataStore] using [Map].
 class KiwiWatermelonDataStore implements BaseStringDataStore {
   final Map<String, String> _store = <String, String>{};
-  final KiwiWatermelonSessionManagerOptions options;
+  final KiwiWatermelonOptions options;
 
   KiwiWatermelonDataStore({required this.options});
 
@@ -97,7 +97,7 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
 /// A simple in-memory implementation of [BaseTypedDataStore] using [Map].
 class KiwiWatermelonTypedDataStore<T> implements BaseTypedDataStore<T> {
   final Map<String, T> _store = <String, T>{};
-  final KiwiWatermelonSessionManagerOptions options;
+  final KiwiWatermelonOptions options;
 
   KiwiWatermelonTypedDataStore({required this.options});
 

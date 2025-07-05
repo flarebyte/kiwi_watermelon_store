@@ -34,7 +34,7 @@ class KiwiPatches {
 
   KiwiPatches({required this.user, required this.admin});
   
-  static KiwiPatches splitPatch(KiwiWatermelonSessionManagerOptions options, KiwiWatermelonPatch patch){
+  static KiwiPatches splitPatch(KiwiWatermelonOptions options, KiwiWatermelonPatch patch){
     //todo
     return KiwiPatches(admin: patch, user: patch);
   }

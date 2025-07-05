@@ -20,7 +20,7 @@ abstract class KiwiWatermelonBaseSessionManager {
 }
 
 class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
-  KiwiWatermelonSessionManagerOptions options;
+  KiwiWatermelonOptions options;
   late BaseStringDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];
