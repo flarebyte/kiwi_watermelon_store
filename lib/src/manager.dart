@@ -14,8 +14,9 @@ abstract class KiwiWatermelonBaseSessionManager {
   void save(String key);
   void restore(String key);
   
-  void registerView(String name, KiwiWatermelonViewReducer reducer);
-  BaseStringDataStore view(String name);
+  void registerPrimaryView<T>(KiwiWatermelonViewReducer<T> reducer, KiwiWatermelonOnViewUpdate onUpdate);
+  BaseTypedDataStore<T> primaryView<T>();
+  
 }
 
 class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
@@ -91,18 +92,17 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   _publishEvent(KiwiActionPatch patch, String actor) {
     //todo
     KiwiWatermelonUpdateEvent event =
-        KiwiWatermelonUpdateEvent(patch: patch, id: 0, actor: actor);
+        KiwiWatermelonUpdateEvent(patch: patch);
   }
   
   @override
-  registerView(String name, KiwiWatermelonViewReducer reducer) {
-    // TODO: implement registerView
+  BaseTypedDataStore<T> primaryView<T>() {
+    // TODO: implement primaryView
     throw UnimplementedError();
   }
   
   @override
-  BaseStringDataStore view(String name) {
-    // TODO: implement view
-    throw UnimplementedError();
+  void registerPrimaryView<T>(KiwiWatermelonViewReducer<T> reducer, KiwiWatermelonOnViewUpdate onUpdate) {
+    // TODO: implement registerPrimaryView
   }
 }

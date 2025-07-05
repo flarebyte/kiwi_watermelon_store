@@ -5,7 +5,7 @@ import '../model/data_store_options.dart';
 /// A simple in-memory implementation of [BaseStringDataStore] using [Map].
 class KiwiWatermelonDataStore implements BaseStringDataStore {
   final Map<String, String> _store = <String, String>{};
-  final ErrorHandler errorHandler;
+  final KiwiWatermelonErrorHandler errorHandler;
   final DataStoreOptions options;
 
   KiwiWatermelonDataStore({required this.errorHandler, required this.options});
