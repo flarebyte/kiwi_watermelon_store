@@ -1,15 +1,15 @@
 import 'action/base_action.dart';
-import 'data_store.dart';
+import 'store/mem_data_store.dart';
 import 'action/action_patch.dart';
 import 'listener/update_event.dart';
 
-class KiwiWatermelonManager {
+class KiwiWatermelonSessionManager {
   KiwiWatermelonDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
 
-  KiwiWatermelonManager({required this.store});
+  KiwiWatermelonSessionManager({required this.store});
 
   void performActions(List<KiwiWatermelonAction> actions) {
     redoStack.clear();

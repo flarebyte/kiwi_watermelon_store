@@ -1,3 +1,3 @@
 library;
 
-export 'src/model/data_store.dart';
+export 'src/store/data_store.dart';

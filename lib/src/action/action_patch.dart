@@ -1,4 +1,4 @@
-import '../data_store.dart';
+import '../store/mem_data_store.dart';
 import '../model/data_store_options.dart';
 
 class KiwiActionPatch {
