@@ -1,3 +1,5 @@
+import 'package:kiwi_watermelon_store/src/action/action_patch.dart';
+
 import '../kiwi_watermelon_store.dart';
 import 'factory.dart';
 import 'listener/handler.dart';
@@ -5,6 +7,7 @@ import 'store/manager_options.dart';
 
 abstract class KiwiWatermelonBaseViewManager<T> {
   BaseTypedDataStore<T> view();
+  void applyPatch(KiwiWatermelonPatch patch);
 }
 
 class KiwiWatermelonViewManager<T> extends KiwiWatermelonBaseViewManager<T> {
@@ -26,5 +29,11 @@ class KiwiWatermelonViewManager<T> extends KiwiWatermelonBaseViewManager<T> {
   @override
   BaseTypedDataStore<T> view() {
     return storeView;
+  }
+  
+  @override
+  void applyPatch(KiwiWatermelonPatch patch) {
+    reducer(storeView, patch);
+    onUpdate(patch);
   }
 }

@@ -105,5 +105,8 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
 
   void executePatch(KiwiWatermelonPatch patch) {
     patchExecutor.executePatch(store, patch);
+    for (var viewManager in viewManagers) {
+      viewManager.applyPatch(patch);
+    }
   }
 }
