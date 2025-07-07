@@ -1,5 +1,3 @@
-import '../action/action_patch.dart';
-
 /// Represents a key-value data store that supports prefix validation
 /// and optional typed value decoding.
 abstract class BaseTypedDataStore<T> {
@@ -23,15 +21,8 @@ abstract class BaseTypedDataStore<T> {
 
   /// Convert to Unmodifiable Map
   Map<String, T> toUnmodifiableMap();
-
-  applyPatch(KiwiWatermelonPatch patch) {
-    
-  }
-  
 }
 
 /// Represents a key-value data store that supports prefix validation
 /// and optional typed value decoding.
-abstract class BaseStringDataStore extends BaseTypedDataStore<String> {
-  
-}
+abstract class BaseStringDataStore extends BaseTypedDataStore<String> {}

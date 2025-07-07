@@ -3,6 +3,7 @@ import 'package:kiwi_watermelon_store/src/view_manager.dart';
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
 import 'factory.dart';
+import 'patch_executor.dart';
 import 'store/manager_options.dart';
 import 'action/action_patch.dart';
 
@@ -24,12 +25,14 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   final KiwiWatermelonBaseFactory factory;
   late BaseStringDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
+  late KiwiPatchExecutor patchExecutor;
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
   List<KiwiWatermelonViewManager> viewManagers = [];
 
   KiwiWatermelonSessionManager({required this.options, required this.factory}) {
     store = factory.createStringDataStore(options: options);
+    patchExecutor = KiwiPatchExecutor(options: options);
   }
 
   @override
@@ -52,7 +55,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
     final redoPatches = KiwiPatches.splitPatch(options, redoPatch);
     final userRedoPatch = redoPatches.user;
 
-    store.applyPatch(redoPatch);
+    executePatch(redoPatch);
 
     if (userRedoPatch != null) {
       final undoPatch = userRedoPatch.revertPatch(store);
@@ -64,7 +67,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   void undo() {
     if (undoStack.isEmpty) return;
     final lastUndo = undoStack.removeLast();
-    store.applyPatch(lastUndo.undo);
+    executePatch(lastUndo.undo);
     redoStack.add(lastUndo);
   }
 
@@ -72,7 +75,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   void redo() {
     if (redoStack.isEmpty) return;
     final event = redoStack.removeLast();
-    store.applyPatch(event.redo);
+    executePatch(event.redo);
     undoStack.add(event);
   }
 
@@ -98,5 +101,9 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   @override
   void registerViewManager(KiwiWatermelonViewManager manager) {
     viewManagers.add(manager);
+  }
+
+  void executePatch(KiwiWatermelonPatch patch) {
+    patchExecutor.executePatch(store, patch);
   }
 }
