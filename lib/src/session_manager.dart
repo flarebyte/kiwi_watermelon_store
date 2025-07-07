@@ -52,7 +52,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
     final redoPatches = KiwiPatches.splitPatch(options, redoPatch);
     final userRedoPatch = redoPatches.user;
 
-    redoPatch.applyPatch(store);
+    store.applyPatch(redoPatch);
 
     if (userRedoPatch != null) {
       final undoPatch = userRedoPatch.revertPatch(store);
@@ -64,7 +64,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   void undo() {
     if (undoStack.isEmpty) return;
     final lastUndo = undoStack.removeLast();
-    lastUndo.undo.applyPatch(store);
+    store.applyPatch(lastUndo.undo);
     redoStack.add(lastUndo);
   }
 
@@ -72,7 +72,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   void redo() {
     if (redoStack.isEmpty) return;
     final event = redoStack.removeLast();
-    event.redo.applyPatch(store);
+    store.applyPatch(event.redo);
     undoStack.add(event);
   }
 

@@ -7,9 +7,6 @@ class KiwiWatermelonPatch {
 
   KiwiWatermelonPatch({required this.updates, required this.deletions});
 
-  applyPatch(BaseStringDataStore store) {
-    //todo
-  }
   revertPatch(BaseStringDataStore store) {
     //todo
   }
