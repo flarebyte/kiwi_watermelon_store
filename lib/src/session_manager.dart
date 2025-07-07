@@ -14,7 +14,7 @@ abstract class KiwiWatermelonBaseSessionManager {
   void save(String key);
   void restore(String key);
 
-  void registerPrimaryViewManager(KiwiWatermelonViewManager manager);
+  void registerViewManager(KiwiWatermelonViewManager manager);
 
   BaseStringDataStore mainStore();
 }
@@ -26,7 +26,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   final Map<String, Map<String, String>> snapshots = {};
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
-  KiwiWatermelonViewManager? primaryViewManager = null;
+  List<KiwiWatermelonViewManager> viewManagers = [];
 
   KiwiWatermelonSessionManager({required this.options, required this.factory}) {
     store = factory.createStringDataStore(options: options);
@@ -96,7 +96,7 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   }
 
   @override
-  void registerPrimaryViewManager(KiwiWatermelonViewManager manager) {
-    primaryViewManager = manager;
+  void registerViewManager(KiwiWatermelonViewManager manager) {
+    viewManagers.add(manager);
   }
 }
