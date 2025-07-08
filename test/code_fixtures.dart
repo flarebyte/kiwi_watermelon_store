@@ -3,33 +3,38 @@ class QuickQueryMaker {
 
   QuickQueryMaker({required this.prefix});
 
-  String setValue(String name, num value, num? start, num? end) {
-    final String? starting = start == null ? null : " start $start";
-    final String? ending = end == null ? null : " end $end";
-    return "set $prefix:$name to $value;";
+  /** Let's try to be compatible with a subset of Redis commands */
+  String setNum(String name, num value) {
+    return "SET $prefix:$name $value";
   }
 
-  String incValue(String name, num value) {
-    return "inc $prefix:$name $value;";
+  String setEnum(String name, String value) {
+    return "SET $prefix:$name $value";
   }
 
-  String decValue(String name, num value) {
-    return "dec $prefix:$name $value;";
+  String setUUID(String name, String value) {
+    return "SET $prefix:$name $value";
   }
 
-  String clearValue(String name) {
-    return "clear $prefix:$name;";
+  String incrBy(String name, int value) {
+    return "INCRBY $prefix:$name $value";
   }
 
-  String setEnumValue(String name, String value) {
-    return "set $prefix:$name $value;";
+  String incr(String name) {
+    return "INCR $prefix:$name";
   }
 
-  String listAppend(String name, String value) {
-    return "list append $prefix:$name $value;";
+  String decr(String name) {
+    return "DECR $prefix:$name";
   }
 
-  String setAppend(String name, String value) {
-    return "set append $prefix:$name $value;";
+  String decrBY(String name, int value) {
+    return "DECRBY $prefix:$name $value;";
   }
+
+  String del(List<String> keys) {
+    final values = keys.map((key) => "$prefix:$key").join(' ');
+    return "DEL $values";
+  }
+
 }
