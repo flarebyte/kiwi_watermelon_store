@@ -3,6 +3,7 @@ import 'package:kiwi_watermelon_store/src/view_manager.dart';
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
 import 'factory.dart';
+import 'listener/handler.dart';
 import 'patch_executor.dart';
 import 'store/manager_options.dart';
 import 'action/action_patch.dart';
@@ -26,11 +27,12 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   late BaseStringDataStore store;
   final Map<String, Map<String, String>> snapshots = {};
   late KiwiPatchExecutor patchExecutor;
+  KiwiWatermelonOnViewUpdate? onUpdate;
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
   List<KiwiWatermelonViewManager> viewManagers = [];
 
-  KiwiWatermelonSessionManager({required this.options, required this.factory}) {
+  KiwiWatermelonSessionManager({required this.options, required this.factory, this.onUpdate}) {
     store = factory.createStringDataStore(options: options);
     patchExecutor = KiwiPatchExecutor(options: options);
   }
@@ -108,5 +110,6 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
     for (var viewManager in viewManagers) {
       viewManager.applyPatch(patch);
     }
+      onUpdate!(patch);
   }
 }
