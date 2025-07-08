@@ -22,18 +22,20 @@ class KiwiWatermelonViewManager<T> extends KiwiWatermelonBaseViewManager<T> {
       required this.factory,
       required this.storeView,
       required this.onUpdate,
-      required this.reducer}){
-        storeView = factory.createTypedDataStore<T>(options: options);
-      }
+      required this.reducer}) {
+    storeView = factory.createTypedDataStore<T>(options: options);
+  }
 
   @override
   BaseTypedDataStore<T> view() {
     return storeView;
   }
-  
+
   @override
   void applyPatch(KiwiWatermelonPatch patch) {
-    reducer(storeView, patch);
-    onUpdate(patch);
+    final hasChanged = reducer(storeView, patch);
+    if (hasChanged) {
+      onUpdate(patch);
+    }
   }
 }
