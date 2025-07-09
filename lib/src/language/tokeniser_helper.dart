@@ -17,6 +17,45 @@ bool isDigit(String char) => RegExp(r'[0-9]').hasMatch(char);
 bool isLetterOrDigitOr_(String char) =>
     isLetter(char) || isDigit(char) || isUnderscore(char);
 
+/// Returns `true` if [char] is a colon `:`.
+bool isColon(String char) => char == ':';
+
+/// Returns `true` if [char] is a slash `/`.
+bool isSlash(String char) => char == '/';
+
+/// Returns `true` if [char] is a question mark `?`.
+bool isQuestion(String char) => char == '?';
+
+/// Returns `true` if [char] is an equals sign `=`.
+bool isEqual(String char) => char == '=';
+
+/// Returns `true` if [char] is a semicolon `;`.
+bool isSemicolon(String char) => char == ';';
+
+/// Returns `true` if [char] is an asterisk `*`.
+bool isAsterisk(String char) => char == '*';
+
+/// Returns `true` if [char] is a hyphen-minus `-`.
+bool isHyphen(String char) => char == '-';
+
+/// Returns `true` if [char] is a hexadecimal character (0-9, a-f, A-F).
+bool isHexChar(String char) => RegExp(r'[0-9a-fA-F]').hasMatch(char);
+
+/// Returns `true` if [token] is a valid UUID (version-agnostic).
+bool isUuid(String token) =>
+    RegExp(r'^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$')
+        .hasMatch(token);
+
+/// Returns `true` if [token] is a float (e.g., `12.4`, `0.75`).
+bool isFloat(String token) => RegExp(r'^\d+\.\d+$').hasMatch(token);
+
+/// Returns `true` if [token] is an integer.
+bool isInteger(String token) => RegExp(r'^\d+$').hasMatch(token);
+
+/// Returns `true` if [char] can appear in a Redis-like key.
+bool isKeyChar(String char) =>
+    isLetterOrDigitOr_(char) || isColon(char) || isSlash(char) || isHyphen(char);
+
 /// Determines whether a space should be inserted between two tokens.
 ///
 /// Inserts a space if both tokens consist solely of alphanumeric characters.

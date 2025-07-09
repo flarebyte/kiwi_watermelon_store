@@ -109,4 +109,76 @@ void main() {
       expect(needsSpace(tokenComma, tokenWorld), isFalse);
     });
   });
+
+  group('Character helpers', () {
+    test('isColon', () {
+      expect(isColon(':'), isTrue);
+      expect(isColon('/'), isFalse);
+    });
+
+    test('isSlash', () {
+      expect(isSlash('/'), isTrue);
+      expect(isSlash(':'), isFalse);
+    });
+
+    test('isQuestion', () {
+      expect(isQuestion('?'), isTrue);
+      expect(isQuestion('&'), isFalse);
+    });
+
+    test('isEqual', () {
+      expect(isEqual('='), isTrue);
+      expect(isEqual('!'), isFalse);
+    });
+
+    test('isSemicolon', () {
+      expect(isSemicolon(';'), isTrue);
+      expect(isSemicolon(','), isFalse);
+    });
+
+    test('isAsterisk', () {
+      expect(isAsterisk('*'), isTrue);
+      expect(isAsterisk('#'), isFalse);
+    });
+
+    test('isHyphen', () {
+      expect(isHyphen('-'), isTrue);
+      expect(isHyphen('_'), isFalse);
+    });
+
+    test('isHexChar', () {
+      expect(isHexChar('f'), isTrue);
+      expect(isHexChar('A'), isTrue);
+      expect(isHexChar('9'), isTrue);
+      expect(isHexChar('g'), isFalse);
+    });
+  });
+
+  group('Pattern helpers', () {
+    test('isUuid', () {
+      expect(isUuid('9df93b15-646f-4f52-aa3d-cbadb57173f7'), isTrue);
+      expect(isUuid('invalid-uuid'), isFalse);
+    });
+
+    test('isFloat', () {
+      expect(isFloat('0.75'), isTrue);
+      expect(isFloat('12.0'), isTrue);
+      expect(isFloat('12.'), isFalse);
+      expect(isFloat('.25'), isFalse);
+    });
+
+    test('isInteger', () {
+      expect(isInteger('42'), isTrue);
+      expect(isInteger('0'), isTrue);
+      expect(isInteger('3.14'), isFalse);
+    });
+
+    test('isKeyChar', () {
+      expect(isKeyChar('a'), isTrue);
+      expect(isKeyChar('/'), isTrue);
+      expect(isKeyChar('-'), isTrue);
+      expect(isKeyChar('@'), isFalse);
+    });
+  });
+
 }
