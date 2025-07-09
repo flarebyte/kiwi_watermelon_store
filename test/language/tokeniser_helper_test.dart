@@ -146,6 +146,11 @@ void main() {
       expect(isHyphen('_'), isFalse);
     });
 
+    test('isAmpersand', () {
+      expect(isAmpersand('&'), isTrue);
+      expect(isSemicolon(','), isFalse);
+    });
+
     test('isHexChar', () {
       expect(isHexChar('f'), isTrue);
       expect(isHexChar('A'), isTrue);
@@ -180,5 +185,4 @@ void main() {
       expect(isKeyChar('@'), isFalse);
     });
   });
-
 }

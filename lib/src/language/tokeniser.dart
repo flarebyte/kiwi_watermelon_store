@@ -14,9 +14,10 @@ class TokenTypes {
   static const String comma = 'comma';
   static const String semicolon = 'semicolon';
   static const String colon = 'colon';
-  static const String question = 'question'; 
+  static const String question = 'question';
   static const String asterisk = 'asterisk';
   static const String slash = 'slash';
+  static const String ampersand = 'ampersand'; // for '&'
   static const String comment = 'comment';
   static const String unknown = 'unknown';
 }
