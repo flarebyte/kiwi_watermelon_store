@@ -32,7 +32,8 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
   List<KiwiRedoUndo> redoStack = [];
   List<KiwiWatermelonViewManager> viewManagers = [];
 
-  KiwiWatermelonSessionManager({required this.options, required this.factory, this.onUpdate}) {
+  KiwiWatermelonSessionManager(
+      {required this.options, required this.factory, this.onUpdate}) {
     store = factory.createStringDataStore(options: options);
     patchExecutor = KiwiPatchExecutor(options: options);
   }
@@ -110,6 +111,6 @@ class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
     for (var viewManager in viewManagers) {
       viewManager.applyPatch(patch);
     }
-      onUpdate!(patch);
+    onUpdate!(patch);
   }
 }

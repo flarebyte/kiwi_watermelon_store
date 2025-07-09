@@ -13,7 +13,7 @@ class KiwiSetAction extends KiwiWatermelonAction {
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     return new KiwiWatermelonActionResult(
-        patch:
-            KiwiWatermelonPatch(updates: {key: value.toString()}, deletions: []));
+        patch: KiwiWatermelonPatch(
+            updates: {key: value.toString()}, deletions: []));
   }
 }

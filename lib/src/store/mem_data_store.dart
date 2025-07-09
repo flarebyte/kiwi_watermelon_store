@@ -93,7 +93,6 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
   }
 }
 
-
 /// A simple in-memory implementation of [BaseTypedDataStore] using [Map].
 class KiwiWatermelonTypedDataStore<T> implements BaseTypedDataStore<T> {
   final Map<String, T> _store = <String, T>{};
@@ -146,5 +145,4 @@ class KiwiWatermelonTypedDataStore<T> implements BaseTypedDataStore<T> {
   Map<String, T> toUnmodifiableMap() {
     return Map.unmodifiable(_store);
   }
-
 }

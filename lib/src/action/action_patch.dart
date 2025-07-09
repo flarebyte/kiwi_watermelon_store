@@ -11,11 +11,10 @@ class KiwiWatermelonPatch {
     //todo
   }
 
-  static KiwiWatermelonPatch mergePatches(List<KiwiWatermelonPatch> patches){
+  static KiwiWatermelonPatch mergePatches(List<KiwiWatermelonPatch> patches) {
     //todo
     return patches[0];
   }
-  
 }
 
 class KiwiRedoUndo {
@@ -30,10 +29,10 @@ class KiwiPatches {
   final KiwiWatermelonPatch? admin;
 
   KiwiPatches({required this.user, required this.admin});
-  
-  static KiwiPatches splitPatch(KiwiWatermelonOptions options, KiwiWatermelonPatch patch){
+
+  static KiwiPatches splitPatch(
+      KiwiWatermelonOptions options, KiwiWatermelonPatch patch) {
     //todo
     return KiwiPatches(admin: patch, user: patch);
   }
 }
-
