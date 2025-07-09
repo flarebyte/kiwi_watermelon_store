@@ -179,12 +179,12 @@ final List<String> validCommands = [
 
   // INCR/DECR
   maker.incrBy('metrics/api/calls?version=2', 10),
-  maker.incr('metrics/api/total'),
+  maker.incr('metrics/api/total?color=blue&status=ready'),
   maker.decr('metrics/cache/misses'),
   maker.decrBY('metrics/errors/timeout', 3),
 
   // DEL command
-  maker.del(['temp/keys/1', 'temp/keys/2', 'temp/keys/3']),
+  maker.del(['temp/keys/1', 'temp/keys/2', 'temp/keys/3?version=2']),
 
   // List commands
   maker.lpush('queue/jobs/pending', [123, uuid(), 42.5]),
