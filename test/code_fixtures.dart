@@ -93,4 +93,11 @@ class QuickQueryMaker {
   String flushDb() {
     return 'FLUSHDB';
   }
+  // Not Redis-like
+
+  // Delete keys that matches patterns
+  String delKeys(String name, List<String> patterns) {
+    final list = patterns.join(" ");
+    return "DELKEYS $list";
+  }
 }
