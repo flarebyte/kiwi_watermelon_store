@@ -5,13 +5,18 @@ import 'tokeniser_helper.dart';
 class TokenTypes {
   static const String identifier = 'identifier';
   static const String number = 'number';
+  static const String float = 'float';
+  static const String uuid = 'uuid';
   static const String operatorType = 'operator';
   static const String equal = 'equal';
-  static const String lparen = 'lparen';
-  static const String rparen = 'rparen';
+  static const String lparen = 'lparen'; //we may not need this
+  static const String rparen = 'rparen'; //we may not need this
   static const String comma = 'comma';
   static const String semicolon = 'semicolon';
   static const String colon = 'colon';
+  static const String question = 'question'; 
+  static const String asterisk = 'asterisk';
+  static const String slash = 'slash';
   static const String comment = 'comment';
   static const String unknown = 'unknown';
 }

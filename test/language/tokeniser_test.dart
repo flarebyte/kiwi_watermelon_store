@@ -7,6 +7,7 @@ void main() {
   final tokeniser = KiwiWatermelonTokeniser();
 
   group('RhapsodyTokeniser command coverage', () {
+    print(validCommands.join('\n'));
     for (final command in validCommands) {
       test('tokenises command: $command', () {
         final tokens = tokeniser.parse(command);
