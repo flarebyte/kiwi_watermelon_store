@@ -102,11 +102,15 @@ class KiwiWatermelonTokenStream {
       case TokenTypes.rparen:
         return 'right parenthesis ")"';
       case TokenTypes.operatorType:
-        return 'operator (or, and, not)';
+        return 'operator (e.g. SET, DEL)';
       case TokenTypes.identifier:
         return 'identifier';
       case TokenTypes.number:
         return 'number';
+      case TokenTypes.float:
+        return 'floating-point number';
+      case TokenTypes.uuid:
+        return 'UUID';
       case TokenTypes.equal:
         return 'equal "="';
       case TokenTypes.comma:
@@ -115,10 +119,18 @@ class KiwiWatermelonTokenStream {
         return 'semicolon ";"';
       case TokenTypes.colon:
         return 'colon ":"';
+      case TokenTypes.slash:
+        return 'slash "/"';
+      case TokenTypes.question:
+        return 'question mark "?"';
+      case TokenTypes.ampersand:
+        return 'ampersand "&"';
+      case TokenTypes.asterisk:
+        return 'asterisk "*"';
       case TokenTypes.comment:
         return 'comment "# ..."';
       case TokenTypes.unknown:
-        return 'unknown';
+        return 'unknown character';
       default:
         return token;
     }
