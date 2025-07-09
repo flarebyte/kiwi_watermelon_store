@@ -7,16 +7,25 @@ class QuickQueryMaker {
 
   QuickQueryMaker({required this.prefix});
 
+  bool _isUuid(String input) {
+    final uuidRegex = RegExp(
+      r'^[0-9a-fA-F]{8}-'
+      r'[0-9a-fA-F]{4}-'
+      r'[1-5][0-9a-fA-F]{3}-'
+      r'[89abAB][0-9a-fA-F]{3}-'
+      r'[0-9a-fA-F]{12}$',
+    );
+    return uuidRegex.hasMatch(input);
+  }
+
   bool _isValidRedisValue(Object value) {
-    return value is int ||
-        value is double ||
-        value.runtimeType.toString() == 'Uuid';
+    return value is int || value is double || _isUuid(value.toString());
   }
 
   void _validateRedisValues(List<RedisValue> values) {
     for (final value in values) {
       assert(_isValidRedisValue(value),
-          'Unsupported Redis value type: ${value.runtimeType}');
+          'Unsupported Redis value type: ${value.runtimeType} for $value');
     }
   }
 
