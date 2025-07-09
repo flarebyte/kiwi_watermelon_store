@@ -335,3 +335,20 @@ This behavior supports flexible workflows like:
 -   Optional configurations:
     -   Maximum number of auto-savepoints (with oldest overwritten or pruned)
     -   Whether to exclude no-op queries from triggering savepoints
+
+## Threads
+
+The core operations should be executed synchronously on the main thread
+without involving `Future`, `async/await`, or `Isolate`. This constraint
+simplifies both the implementation and API surface, and aims to avoid
+premature optimization or complexity.
+
+## Syntax refinements
+
+The strategy is to adopt a simplified, familiar command syntax inspired by
+Redis for modifying key-value data, using a limited subset of its language
+such as `SET`, `GET`, `DEL`, and `INCR`. This leverages Redis's widespread
+recognition and ease of use to streamline onboarding and minimize cognitive
+load, especially in environments influenced by generative AI. The command
+model should remain flexible to allow for future extensions beyond Redis
+semantics as needed, while keeping the initial scope focused and minimal.
