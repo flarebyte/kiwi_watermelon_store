@@ -156,9 +156,22 @@ class KiwiWatermelonTokeniser {
         case ':':
           tokenType = TokenTypes.colon;
           break;
+        case '/':
+          tokenType = TokenTypes.slash;
+          break;
+        case '?':
+          tokenType = TokenTypes.question;
+          break;
+        case '*':
+          tokenType = TokenTypes.asterisk;
+          break;
+        case '&':
+          tokenType = TokenTypes.ampersand;
+          break;
         default:
           tokenType = TokenTypes.unknown;
       }
+
       index++;
       column++;
       final String tokenText = code.substring(tokenStartIndex, index);
