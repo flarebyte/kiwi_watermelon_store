@@ -1,7 +1,22 @@
+typedef RedisValue = Object; // convention: int, double, or Uuid
+
 class QuickQueryMaker {
   final String prefix;
 
   QuickQueryMaker({required this.prefix});
+
+  bool _isValidRedisValue(Object value) {
+    return value is int ||
+        value is double ||
+        value.runtimeType.toString() == 'Uuid';
+  }
+
+  void _validateRedisValues(List<RedisValue> values) {
+    for (final value in values) {
+      assert(_isValidRedisValue(value),
+          'Unsupported Redis value type: ${value.runtimeType}');
+    }
+  }
 
   /** Let's try to be compatible with a subset of Redis commands */
   String setNum(String name, num value) {
@@ -38,17 +53,21 @@ class QuickQueryMaker {
   }
 
 // List Commands
-  String lpush(String name, List<Object> values) {
+  String lpush(String name, List<RedisValue> values) {
+    _validateRedisValues(values);
     final joined = values.join(' ');
     return 'LPUSH $prefix:$name $joined';
   }
 
-  String rpush(String name, List<Object> values) {
+  String rpush(String name, List<RedisValue> values) {
+    _validateRedisValues(values);
     final joined = values.join(' ');
     return 'RPUSH $prefix:$name $joined';
   }
 
-  String lrem(String name, int count, Object value) {
+  String lrem(String name, int count, RedisValue value) {
+    assert(_isValidRedisValue(value),
+        'Unsupported Redis value type: ${value.runtimeType}');
     return 'LREM $prefix:$name $count $value';
   }
 
@@ -66,17 +85,21 @@ class QuickQueryMaker {
 
   // Set commands
 
-  String sadd(String name, List<Object> members) {
+  String sadd(String name, List<RedisValue> members) {
+    _validateRedisValues(members);
     final joined = members.join(' ');
     return 'SADD $prefix:$name $joined';
   }
 
-  String srem(String name, List<Object> members) {
+  String srem(String name, List<RedisValue> members) {
+    _validateRedisValues(members);
     final joined = members.join(' ');
     return 'SREM $prefix:$name $joined';
   }
 
-  String smove(String source, String destination, Object member) {
+  String smove(String source, String destination, RedisValue member) {
+    assert(_isValidRedisValue(member),
+        'Unsupported Redis value type: ${member.runtimeType}');
     return 'SMOVE $prefix:$source $prefix:$destination $member';
   }
 
@@ -95,7 +118,7 @@ class QuickQueryMaker {
   }
   // Not Redis-like
 
-  // Delete keys that matches patterns
+  // Delete keys that matches patterns like
   String delKeys(String name, List<String> patterns) {
     final list = patterns.join(" ");
     return "DELKEYS $list";
