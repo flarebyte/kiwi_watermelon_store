@@ -115,17 +115,30 @@ class KiwiWatermelonTokeniser {
         continue;
       }
 
-      // Identify numeric literals.
+      // Identify numeric or floating-point literals.
       if (isDigit(currentChar)) {
-        while (index < code.length && isDigit(code[index])) {
-          index++;
-          column++;
+        bool hasDot = false;
+        while (index < code.length) {
+          if (isDigit(code[index])) {
+            index++;
+            column++;
+          } else if (!hasDot &&
+              code[index] == '.' &&
+              index + 1 < code.length &&
+              isDigit(code[index + 1])) {
+            // First dot and followed by digit → valid float
+            hasDot = true;
+            index++;
+            column++;
+          } else {
+            break;
+          }
         }
         final String tokenText = code.substring(tokenStartIndex, index);
         final KiwiWatermelonPosition endPosition =
             KiwiWatermelonPosition(row: line, column: column);
         tokens.add(KiwiWatermelonToken(
-          type: TokenTypes.number,
+          type: hasDot ? TokenTypes.float : TokenTypes.number,
           text: tokenText,
           startIndex: tokenStartIndex,
           endIndex: index,
