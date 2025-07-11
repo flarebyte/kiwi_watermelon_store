@@ -7,7 +7,6 @@ class TokenTypes {
   static const String number = 'number';
   static const String float = 'float';
   static const String uuid = 'uuid';
-  static const String operatorType = 'operator';
   static const String lparen = 'lparen'; //we may not need this
   static const String rparen = 'rparen'; //we may not need this
   static const String comma = 'comma';
@@ -87,19 +86,19 @@ class KiwiWatermelonTokeniser {
         continue;
       }
 
-      // Identify identifiers and keywords.
+      // Identify identifiers or UUIDs.
       if (isLetter(currentChar)) {
         while (index < code.length && isLetterOrDigitOr_(code[index])) {
           index++;
           column++;
         }
         final String tokenText = code.substring(tokenStartIndex, index);
-        String tokenType = TokenTypes.identifier;
-        if (tokenText == 'and' || tokenText == 'or' || tokenText == 'not') {
-          tokenType = TokenTypes.operatorType;
-        }
+        final String tokenType =
+            isUuid(tokenText) ? TokenTypes.uuid : TokenTypes.identifier;
+
         final KiwiWatermelonPosition endPosition =
             KiwiWatermelonPosition(row: line, column: column);
+
         tokens.add(KiwiWatermelonToken(
           type: tokenType,
           text: tokenText,
