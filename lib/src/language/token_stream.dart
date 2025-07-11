@@ -111,20 +111,12 @@ class KiwiWatermelonTokenStream {
         return 'floating-point number';
       case TokenTypes.uuid:
         return 'UUID';
-      case TokenTypes.equal:
-        return 'equal "="';
       case TokenTypes.comma:
         return 'comma ","';
       case TokenTypes.semicolon:
         return 'semicolon ";"';
       case TokenTypes.colon:
         return 'colon ":"';
-      case TokenTypes.slash:
-        return 'slash "/"';
-      case TokenTypes.question:
-        return 'question mark "?"';
-      case TokenTypes.ampersand:
-        return 'ampersand "&"';
       case TokenTypes.asterisk:
         return 'asterisk "*"';
       case TokenTypes.comment:

@@ -173,36 +173,36 @@ final maker =
 
 final List<String> validCommands = [
   // SET commands
-  maker.setNum('metrics/cpu/load', 0.75),
-  maker.setEnum('settings/display/mode', 'dark'),
-  maker.setUUID('session/users/1234/token', uuid()),
+  maker.setNum('metrics:cpu:load', 0.75),
+  maker.setEnum('settings:display:mode', 'dark'),
+  maker.setUUID('session:users:1234:token', uuid()),
 
   // INCR/DECR
-  maker.incrBy('metrics/api/calls?version=2', 10),
-  maker.incr('metrics/api/total?color=blue&status=ready'),
-  maker.decr('metrics/cache/misses'),
-  maker.decrBY('metrics/errors/timeout', 3),
+  maker.incrBy('metrics:api:calls:version:2', 10),
+  maker.incr('metrics:api:total:color:blue:status:ready'),
+  maker.decr('metrics:cache:misses'),
+  maker.decrBY('metrics:errors:timeout', 3),
 
   // DEL command
-  maker.del(['temp/keys/1', 'temp/keys/2', 'temp/keys/3?version=2']),
+  maker.del(['temp:keys:1', 'temp:keys:2', 'temp:keys:3:version:2']),
 
   // List commands
-  maker.lpush('queue/jobs/pending', [123, uuid(), 42.5]),
-  maker.rpush('queue/jobs/complete', [1, 2]),
-  maker.lrem('queue/jobs/failed', 2, uuid()),
-  maker.ltrim('queue/jobs/batch', 0, 9),
-  maker.rpoplpush('queue/jobs/active', 'queue/jobs/retry'),
-  maker.lmove('queue/one', 'queue/two', 'LEFT', 'RIGHT'),
+  maker.lpush('queue:jobs:pending', [123, uuid(), 42.5]),
+  maker.rpush('queue:jobs:complete', [1, 2]),
+  maker.lrem('queue:jobs:failed', 2, uuid()),
+  maker.ltrim('queue:jobs:batch', 0, 9),
+  maker.rpoplpush('queue:jobs:active', 'queue:jobs:retry'),
+  maker.lmove('queue:one', 'queue:two', 'LEFT', 'RIGHT'),
 
   // Set commands
-  maker.sadd('users/roles/admin', [uuid(), uuid()]),
-  maker.srem('users/roles/guest', [12345]),
-  maker.smove('users/roles/temp', 'users/roles/active', uuid()),
+  maker.sadd('users:roles:admin', [uuid(), uuid()]),
+  maker.srem('users:roles:guest', [12345]),
+  maker.smove('users:roles:temp', 'users:roles:active', uuid()),
 
   // Key commands
-  maker.rename('cache/a', 'cache/b'),
-  maker.renamenx('tmp/a', 'tmp/b'),
+  maker.rename('cache:a', 'cache:b'),
+  maker.renamenx('tmp:a', 'tmp:b'),
 
   // Custom deletion (non-Redis)
-  maker.delKeys('cache/views', ['cache/views/*', 'cache/users/*']),
+  maker.delKeys('cache:views', ['cache:views:*', 'cache:users:*']),
 ];

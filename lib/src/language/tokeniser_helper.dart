@@ -20,26 +20,11 @@ bool isLetterOrDigitOr_(String char) =>
 /// Returns `true` if [char] is a colon `:`.
 bool isColon(String char) => char == ':';
 
-/// Returns `true` if [char] is a slash `/`.
-bool isSlash(String char) => char == '/';
-
-/// Returns `true` if [char] is a question mark `?`.
-bool isQuestion(String char) => char == '?';
-
-/// Returns `true` if [char] is an equals sign `=`.
-bool isEqual(String char) => char == '=';
-
 /// Returns `true` if [char] is a semicolon `;`.
 bool isSemicolon(String char) => char == ';';
 
 /// Returns `true` if [char] is an asterisk `*`.
 bool isAsterisk(String char) => char == '*';
-
-/// Returns `true` if [char] is a hyphen-minus `-`.
-bool isHyphen(String char) => char == '-';
-
-/// Returns `true` if [char] is a ambersand `&`.
-bool isAmpersand(String char) => char == '&';
 
 /// Returns `true` if [char] is a hexadecimal character (0-9, a-f, A-F).
 bool isHexChar(String char) => RegExp(r'[0-9a-fA-F]').hasMatch(char);
@@ -58,9 +43,7 @@ bool isInteger(String token) => RegExp(r'^\d+$').hasMatch(token);
 /// Returns `true` if [char] can appear in a Redis-like key.
 bool isKeyChar(String char) =>
     isLetterOrDigitOr_(char) ||
-    isColon(char) ||
-    isSlash(char) ||
-    isHyphen(char);
+    isColon(char);
 
 /// Determines whether a space should be inserted between two tokens.
 ///

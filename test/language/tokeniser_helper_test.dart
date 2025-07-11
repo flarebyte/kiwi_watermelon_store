@@ -116,21 +116,6 @@ void main() {
       expect(isColon('/'), isFalse);
     });
 
-    test('isSlash', () {
-      expect(isSlash('/'), isTrue);
-      expect(isSlash(':'), isFalse);
-    });
-
-    test('isQuestion', () {
-      expect(isQuestion('?'), isTrue);
-      expect(isQuestion('&'), isFalse);
-    });
-
-    test('isEqual', () {
-      expect(isEqual('='), isTrue);
-      expect(isEqual('!'), isFalse);
-    });
-
     test('isSemicolon', () {
       expect(isSemicolon(';'), isTrue);
       expect(isSemicolon(','), isFalse);
@@ -139,16 +124,6 @@ void main() {
     test('isAsterisk', () {
       expect(isAsterisk('*'), isTrue);
       expect(isAsterisk('#'), isFalse);
-    });
-
-    test('isHyphen', () {
-      expect(isHyphen('-'), isTrue);
-      expect(isHyphen('_'), isFalse);
-    });
-
-    test('isAmpersand', () {
-      expect(isAmpersand('&'), isTrue);
-      expect(isSemicolon(','), isFalse);
     });
 
     test('isHexChar', () {
@@ -180,8 +155,8 @@ void main() {
 
     test('isKeyChar', () {
       expect(isKeyChar('a'), isTrue);
-      expect(isKeyChar('/'), isTrue);
-      expect(isKeyChar('-'), isTrue);
+      expect(isKeyChar(':'), isTrue);
+      expect(isKeyChar('7'), isTrue);
       expect(isKeyChar('@'), isFalse);
     });
   });
