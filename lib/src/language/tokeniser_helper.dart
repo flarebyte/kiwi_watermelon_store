@@ -32,6 +32,9 @@ bool isAsterisk(String char) => char == '*';
 /// Returns `true` if [char] is a hexadecimal character (0-9, a-f, A-F).
 bool isHexChar(String char) => RegExp(r'[0-9a-fA-F]').hasMatch(char);
 
+/// Returns `true` if [char] is a hexadecimal character part.
+bool isHexOrDash(String char) => isHexChar(char) || isDash(char);
+
 /// Returns `true` if [token] is a valid UUID (version-agnostic).
 bool isUuid(String token) =>
     RegExp(r'^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$')
