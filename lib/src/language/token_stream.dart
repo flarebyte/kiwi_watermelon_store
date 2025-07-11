@@ -101,8 +101,6 @@ class KiwiWatermelonTokenStream {
         return 'left parenthesis "("';
       case TokenTypes.rparen:
         return 'right parenthesis ")"';
-      case TokenTypes.operatorType:
-        return 'operator (e.g. SET, DEL)';
       case TokenTypes.identifier:
         return 'identifier';
       case TokenTypes.number:

@@ -88,7 +88,8 @@ class KiwiWatermelonTokeniser {
 
       // Identify identifiers or UUIDs.
       if (isLetter(currentChar)) {
-        while (index < code.length && isLetterOrDigitOr_(code[index])) {
+        while (index < code.length &&
+            (isLetterOrDigitOr_(code[index]) || isDash(code[index]))) {
           index++;
           column++;
         }
