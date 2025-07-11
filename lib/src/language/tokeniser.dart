@@ -110,8 +110,36 @@ class KiwiWatermelonTokeniser {
         continue;
       }
 
-      // Identify numeric or floating-point literals.
+      // Identify number, float, or UUID (starting with digit).
       if (isDigit(currentChar)) {
+        int tempIndex = index;
+        int tempColumn = column;
+
+        while (tempIndex < code.length &&
+            (isHexChar(code[tempIndex]) || isDash(code[tempIndex]))) {
+          tempIndex++;
+          tempColumn++;
+        }
+
+        final String candidate = code.substring(index, tempIndex);
+
+        if (isUuid(candidate)) {
+          index = tempIndex;
+          column = tempColumn;
+          final KiwiWatermelonPosition endPosition =
+              KiwiWatermelonPosition(row: line, column: column);
+          tokens.add(KiwiWatermelonToken(
+            type: TokenTypes.uuid,
+            text: candidate,
+            startIndex: tokenStartIndex,
+            endIndex: index,
+            startPosition: startPosition,
+            endPosition: endPosition,
+          ));
+          continue;
+        }
+
+        // Standard number or float
         bool hasDot = false;
         while (index < code.length) {
           if (isDigit(code[index])) {
@@ -121,7 +149,6 @@ class KiwiWatermelonTokeniser {
               code[index] == '.' &&
               index + 1 < code.length &&
               isDigit(code[index + 1])) {
-            // First dot and followed by digit → valid float
             hasDot = true;
             index++;
             column++;
@@ -129,6 +156,7 @@ class KiwiWatermelonTokeniser {
             break;
           }
         }
+
         final String tokenText = code.substring(tokenStartIndex, index);
         final KiwiWatermelonPosition endPosition =
             KiwiWatermelonPosition(row: line, column: column);

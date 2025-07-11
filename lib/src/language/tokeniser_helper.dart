@@ -7,6 +7,9 @@ bool isWhitespace(String char) =>
 /// Returns `true` if [char] is the underscore character.
 bool isUnderscore(String char) => char == '_';
 
+/// Returns `true` if [char] is the dash character.
+bool isDash(String char) => char == '-';
+
 /// Returns `true` if [char] is an alphabetic letter.
 bool isLetter(String char) => RegExp(r'[a-zA-Z]').hasMatch(char);
 
