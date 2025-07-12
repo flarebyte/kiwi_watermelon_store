@@ -11,7 +11,8 @@ void main() async {
     converter: TokenInfoConverter(),
   );
 
-  Map<String, TokenInfo> tokenInfos = {};
+  Map<String, TokenInfo> tokenInfos = await store.load();
+  ;
 
   group('Tokeniser command coverage', () {
     for (final command in validCommands) {
@@ -28,9 +29,12 @@ void main() async {
         }
         final tokenTypes = tokens.map((token) => token.type).toList();
         final tokentexts = tokens.map((token) => token.text).toList();
-        tokenInfos[command] =
-            TokenInfo(code: command, types: tokenTypes, texts: tokentexts);
-        await store.save(tokenInfos);
+        final expected = tokenInfos[command];
+        expect(tokenTypes, equals(expected?.types));
+        expect(tokentexts, equals(expected?.texts));
+        // tokenInfos[command] =
+        //     TokenInfo(code: command, types: tokenTypes, texts: tokentexts);
+        // await store.save(tokenInfos);
       });
     }
   });

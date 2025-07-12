@@ -175,7 +175,8 @@ final List<String> validCommands = [
   // SET commands
   maker.setNum('metrics:cpu:load', 0.75),
   maker.setEnum('settings:display:mode', 'dark'),
-  maker.setUUID('session:users:1234:token', uuid()),
+  maker.setUUID(
+      'session:users:1234:token', 'b81cdae6-86d1-447f-811f-d23ab70e6d98'),
   maker.setUUID(
       'session:users:a__b:token', '12345678-1234-4234-8234-123456789012'),
 
@@ -189,17 +190,22 @@ final List<String> validCommands = [
   maker.del(['temp:keys:1', 'temp:keys:2', 'temp:keys:3:version:2']),
 
   // List commands
-  maker.lpush('queue:jobs:pending', [123, uuid(), 42.5]),
+  maker.lpush('queue:jobs:pending',
+      [123, '75df7c47-4599-4cfb-8443-5f4546c743db', 42.5]),
   maker.rpush('queue:jobs:complete', [1, 2]),
-  maker.lrem('queue:jobs:failed', 2, uuid()),
+  maker.lrem('queue:jobs:failed', 2, 'fead3654-abe1-4719-b89c-b837440ec16d'),
   maker.ltrim('queue:jobs:batch', 0, 9),
   maker.rpoplpush('queue:jobs:active', 'queue:jobs:retry'),
   maker.lmove('queue:one', 'queue:two', 'LEFT', 'RIGHT'),
 
   // Set commands
-  maker.sadd('users:roles:admin', [uuid(), uuid()]),
+  maker.sadd('users:roles:admin', [
+    '660cba17-a6f4-43d3-bf5f-ebc359c69e9c',
+    '9a7256a7-5268-4fe3-b5fc-bf27a105a8ba'
+  ]),
   maker.srem('users:roles:guest', [12345]),
-  maker.smove('users:roles:temp', 'users:roles:active', uuid()),
+  maker.smove('users:roles:temp', 'users:roles:active',
+      'a15838ce-e8d8-4374-b862-b8fdf611fa5a'),
 
   // Key commands
   maker.rename('cache:a', 'cache:b'),
