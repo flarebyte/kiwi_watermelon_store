@@ -218,6 +218,11 @@ final List<String> validCommands = [
 ];
 
 final storeOptions = KiwiWatermelonOptions(
-    mapping: {'true': 'T', 'false': 'F'},
-    prefixes: ['env'],
-    userPrefixes: ['env']);
+  mapping: {'true': 'T', 'false': 'F'},
+  prefixes: ['env'],
+  userPrefixes: ['env'],
+  variableValidator: (String variableName) {
+    // A valid variable name must start with a letter and may contain letters and digits.
+    return RegExp(r'^[a-zA-Z][a-zA-Z0-9_:]*$').hasMatch(variableName);
+  },
+);

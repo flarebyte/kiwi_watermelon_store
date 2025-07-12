@@ -4,6 +4,8 @@ import 'package:kiwi_watermelon_store/src/language/token_stream_flyweight.dart';
 import 'package:kiwi_watermelon_store/src/language/tokeniser.dart';
 import 'package:test/test.dart';
 
+import '../code_fixtures.dart';
+
 void main() {
   final tokeniser = KiwiWatermelonTokeniser();
   KiwiWatermelonTokenStream toStream(String code) {
@@ -130,5 +132,16 @@ void main() {
               toStream('next DDD'), ['INCR', 'DECR']),
           isFalse);
     });
+  });
+  group('Composite variable', () {
+    for (final expected in ['env:flag', 'env:on_off:yes:color:blue']) {
+      test('consumes composite variable $expected', () {
+        final actual = KiwiTokenStreamFlyweight.consumeCompositeVariable(
+            toStream(expected),
+            options: storeOptions);
+
+        expect(actual, equals(expected));
+      });
+    }
   });
 }

@@ -1,3 +1,5 @@
+import '../store/manager_options.dart';
+import 'semantic_exception.dart';
 import 'token.dart';
 import 'token_stream.dart';
 import 'tokeniser.dart';
@@ -12,7 +14,7 @@ import 'tokeniser.dart';
 class KiwiTokenStreamFlyweight {
   /// Consumes and returns the current token if it is an `identifier`.
   ///
-  /// Throws a [SemanticException] if the current token is not an identifier.
+  /// Throws a [KiwiWatermelonSemanticException] if the current token is not an identifier.
   static KiwiWatermelonToken consumeIdentifier(KiwiWatermelonTokenStream tokens,
       {String? contextual}) {
     return tokens.consumeAndValidate(TokenTypes.identifier,
@@ -28,7 +30,7 @@ class KiwiTokenStreamFlyweight {
 
   /// Consumes the next token if it is a comma (`comma`).
   ///
-  /// Throws a [SemanticException] if the next token is not a comma.
+  /// Throws a [KiwiWatermelonSemanticException] if the next token is not a comma.
   static void consumeComma(KiwiWatermelonTokenStream tokens,
       {String? contextual}) {
     tokens.consumeAndValidate(TokenTypes.comma, contextual: contextual);
@@ -43,7 +45,7 @@ class KiwiTokenStreamFlyweight {
 
   /// Consumes the next token if it is a semicolon (`semicolon`).
   ///
-  /// Throws a [SemanticException] if the next token is not a semicolon.
+  /// Throws a [KiwiWatermelonSemanticException] if the next token is not a semicolon.
   static void consumeSemicolon(KiwiWatermelonTokenStream tokens,
       {String? contextual}) {
     tokens.consumeAndValidate(TokenTypes.semicolon, contextual: contextual);
@@ -58,7 +60,7 @@ class KiwiTokenStreamFlyweight {
 
   /// Consumes the next token if it is a colon (`colon`).
   ///
-  /// Throws a [SemanticException] if the next token is not a colon.
+  /// Throws a [KiwiWatermelonSemanticException] if the next token is not a colon.
   static void consumeColon(KiwiWatermelonTokenStream tokens,
       {String? contextual}) {
     tokens.consumeAndValidate(TokenTypes.colon, contextual: contextual);
@@ -102,5 +104,39 @@ class KiwiTokenStreamFlyweight {
     final hasKeyword = keywords.any(
         (keyword) => tokens.peekMatchesText(keyword, lookahead: lookahead));
     return isIdentifier && hasKeyword;
+  }
+
+  static String consumeCompositeVariable(KiwiWatermelonTokenStream tokens,
+      {required KiwiWatermelonOptions options}) {
+    final prefixToken =
+        consumeIdentifier(tokens, contextual: "scope of variable");
+    consumeColon(tokens, contextual: "variable");
+    final varToken = consumeIdentifier(tokens, contextual: "variable name");
+
+    var maxSegments = 16;
+    var compositeName = "";
+    while (maxSegments > 0 && isColon(tokens)) {
+      maxSegments = maxSegments - 1;
+      consumeColon(tokens, contextual: "composite variable");
+      final partOfName =
+          consumeIdentifier(tokens, contextual: "composite variable name").text;
+      compositeName = "$compositeName:$partOfName";
+    }
+    final varName = "${prefixToken.text}:${varToken.text}$compositeName";
+
+    if (maxSegments <= 0) {
+      throw KiwiWatermelonSemanticException(
+          "Expecting a valid composite variable format with just a few colons but got $varName",
+          prefixToken);
+    }
+
+    final isSupportedVar = options.isVariable(varName);
+    if (!isSupportedVar) {
+      throw KiwiWatermelonSemanticException(
+          "Expecting a valid variable format with a scope but got $varName",
+          prefixToken);
+    }
+
+    return varName;
   }
 }
