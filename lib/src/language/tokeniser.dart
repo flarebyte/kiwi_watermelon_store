@@ -88,20 +88,30 @@ class KiwiWatermelonTokeniser {
 
       // Identify identifiers or UUIDs.
       if (isLetter(currentChar)) {
-        while (index < code.length &&
-            (isLetterOrDigitOr_(code[index]) || isHexOrDash(code[index]))) {
+        final maybeUuid = extractUuidAt(code, index);
+        if (maybeUuid != null) {
+          index = index + 36;
+          tokens.add(KiwiWatermelonToken(
+            type: TokenTypes.uuid,
+            text: maybeUuid,
+            startIndex: tokenStartIndex,
+            endIndex: index,
+            startPosition: startPosition,
+            endPosition: KiwiWatermelonPosition(row: line, column: column),
+          ));
+          continue;
+        }
+        while (index < code.length && (isLetterOrDigitOr_(code[index]))) {
           index++;
           column++;
         }
         final String tokenText = code.substring(tokenStartIndex, index);
-        final String tokenType =
-            isUuid(tokenText) ? TokenTypes.uuid : TokenTypes.identifier;
 
         final KiwiWatermelonPosition endPosition =
             KiwiWatermelonPosition(row: line, column: column);
 
         tokens.add(KiwiWatermelonToken(
-          type: tokenType,
+          type: TokenTypes.identifier,
           text: tokenText,
           startIndex: tokenStartIndex,
           endIndex: index,
