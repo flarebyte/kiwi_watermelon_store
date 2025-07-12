@@ -16,4 +16,3 @@ class KiwiSetStringAction extends KiwiWatermelonAction {
         patch: KiwiWatermelonPatch(updates: {key: value}, deletions: []));
   }
 }
-
