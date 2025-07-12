@@ -4,6 +4,8 @@ import '../action/action_factory.dart';
 import '../action/base_action.dart';
 import '../store/manager_options.dart';
 import 'analysis_failure.dart';
+import 'token_stream.dart';
+import 'token_stream_flyweight.dart';
 import 'tokeniser.dart';
 
 class KiwiWatermelonSyntaxAnalysis {
@@ -31,121 +33,120 @@ class KiwiWatermelonSyntaxAnalyzer {
     return KiwiWatermelonSyntaxAnalysis(actions: [], failure: failure);
   }
 
-  KiwiWatermelonSyntaxAnalysis analyse(List<KiwiWatermelonToken> tokens) {
-    final actions = <KiwiWatermelonAction>[];
-    final currentStatement = <KiwiWatermelonToken>[];
+//   KiwiWatermelonSyntaxAnalysis analyse(List<KiwiWatermelonToken> tokens) {
+//   final stream = KiwiWatermelonTokenStream(tokens);
+//   final actions = <KiwiWatermelonAction>[];
 
-    for (final token in tokens) {
-      if (_shouldSkip(token)) continue;
+//   try {
+//     while (!stream.isAtEnd) {
+//       final action = _parseSingleCommand(stream);
+//       actions.add(action);
+//       KiwiWatermelonTokenStreamFlyweight.consumeSemicolon(stream);
+//     }
+//     return _success(actions);
+//   } catch (e) {
+//     if (e is KiwiWatermelonSemanticException) {
+//       return _failure(KiwiWatermelonAnalysisFailure(
+//         message: e.message,
+//         position: e.position,
+//         index: e.index,
+//         errorType: 'Syntax Analysis Error',
+//         contextCode: stream.current.text,
+//         expected: '',
+//         suggestion: 'Check syntax near this token.',
+//       ));
+//     }
+//     rethrow;
+//   }
+// }
 
-      if (token.type == TokenTypes.semicolon) {
-        if (currentStatement.isNotEmpty) {
-          final result = _tryParseAndAppendAction(currentStatement);
-          if (result.failure != null) return result;
-          actions.add(result.actions.first);
-          currentStatement.clear();
-        }
-        continue;
-      }
+// KiwiWatermelonAction _parseSingleCommand(KiwiWatermelonTokenStream stream) {
+//   final token = stream.peek();
+//   if (token == null || token.type != TokenTypes.identifier) {
+//     throw KiwiWatermelonSemanticException(
+//       'Expected command keyword (e.g., INCR)',
+//       token?.startPosition,
+//       token?.startIndex ?? -1,
+//     );
+//   }
 
-      currentStatement.add(token);
-    }
+//   final command = token.text.toUpperCase();
+//   stream.consume(); // consume the command keyword
 
-    // Final command without semicolon
-    if (currentStatement.isNotEmpty) {
-      final result = _tryParseAndAppendAction(currentStatement);
-      if (result.failure != null) return result;
-      actions.add(result.actions.first);
-    }
+//   switch (command) {
+//     case 'INCR':
+//       final keyToken =
+//           KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
+//       return KiwiWatermelonActionFactory.incr(keyToken.text);
 
-    return _success(actions);
-  }
+//     case 'DECR':
+//       final keyToken =
+//           KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
+//       return KiwiWatermelonActionFactory.decr(keyToken.text);
 
-  bool _shouldSkip(KiwiWatermelonToken token) {
-    return token.type == TokenTypes.comment || token.type == TokenTypes.unknown;
-  }
+//     case 'INCRBY':
+//       final keyToken =
+//           KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
+//       final valueToken = stream.consume();
+//       final value = int.tryParse(valueToken?.text ?? '');
+//       if (value == null) {
+//         throw SemanticException(
+//           'Expected integer after key for INCRBY',
+//           valueToken?.startPosition,
+//           valueToken?.startIndex ?? -1,
+//         );
+//       }
+//       return KiwiWatermelonActionFactory.incrBy(keyToken.text, value);
 
-  KiwiWatermelonSyntaxAnalysis _tryParseAndAppendAction(
-    List<KiwiWatermelonToken> tokens,
-  ) {
-    final action = _parseCommand(tokens);
-    if (action == null) {
-      final anchor = tokens.first;
-      return _failure(KiwiWatermelonAnalysisFailure(
-        message: 'Invalid command: ${tokens.map((t) => t.text).join(" ")}',
-        position: anchor.startPosition,
-        index: anchor.startIndex,
-        errorType: "Syntax Analysis Error",
-        contextCode: anchor.text,
-        expected: "",
-        suggestion: "Check command syntax near '${anchor.text}'.",
-      ));
-    }
+//     case 'DECRBY':
+//       final keyToken =
+//           KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
+//       final valueToken = stream.consume();
+//       final value = int.tryParse(valueToken?.text ?? '');
+//       if (value == null) {
+//         throw SemanticException(
+//           'Expected integer after key for DECRBY',
+//           valueToken?.startPosition,
+//           valueToken?.startIndex ?? -1,
+//         );
+//       }
+//       return KiwiWatermelonActionFactory.decrBy(keyToken.text, value);
 
-    return _success([action]);
-  }
+//     case 'INCRBYFLOAT':
+//       final keyToken =
+//           KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
+//       final valueToken = stream.consume();
+//       final value = double.tryParse(valueToken?.text ?? '');
+//       if (value == null) {
+//         throw SemanticException(
+//           'Expected float after key for INCRBYFLOAT',
+//           valueToken?.startPosition,
+//           valueToken?.startIndex ?? -1,
+//         );
+//       }
+//       return KiwiWatermelonActionFactory.incrByFloat(keyToken.text, value);
 
-  KiwiWatermelonAction? _parseCommand(List<KiwiWatermelonToken> tokens) {
-    if (tokens.isEmpty) return null;
-    final cmd = tokens[0].text.toUpperCase();
+//     case 'DECRBYFLOAT':
+//       final keyToken =
+//           KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
+//       final valueToken = stream.consume();
+//       final value = double.tryParse(valueToken?.text ?? '');
+//       if (value == null) {
+//         throw SemanticException(
+//           'Expected float after key for DECRBYFLOAT',
+//           valueToken?.startPosition,
+//           valueToken?.startIndex ?? -1,
+//         );
+//       }
+//       return KiwiWatermelonActionFactory.decrByFloat(keyToken.text, value);
 
-    switch (cmd) {
-      case 'INCR':
-        if (tokens.length == 2 && tokens[1].type == TokenTypes.identifier) {
-          return KiwiWatermelonActionFactory.incr(tokens[1].text);
-        }
-        break;
-      case 'DECR':
-        if (tokens.length == 2 && tokens[1].type == TokenTypes.identifier) {
-          return KiwiWatermelonActionFactory.decr(tokens[1].text);
-        }
-        break;
-      case 'INCRBY':
-        if (tokens.length == 3 &&
-            tokens[1].type == TokenTypes.identifier &&
-            tokens[2].type == TokenTypes.number) {
-          final value = int.tryParse(tokens[2].text);
-          if (value != null) {
-            return KiwiWatermelonActionFactory.incrBy(tokens[1].text, value);
-          }
-        }
-        break;
-      case 'DECRBY':
-        if (tokens.length == 3 &&
-            tokens[1].type == TokenTypes.identifier &&
-            tokens[2].type == TokenTypes.number) {
-          final value = int.tryParse(tokens[2].text);
-          if (value != null) {
-            return KiwiWatermelonActionFactory.decrBy(tokens[1].text, value);
-          }
-        }
-        break;
-      case 'INCRBYFLOAT':
-        if (tokens.length == 3 &&
-            tokens[1].type == TokenTypes.identifier &&
-            (tokens[2].type == TokenTypes.float ||
-                tokens[2].type == TokenTypes.number)) {
-          final value = double.tryParse(tokens[2].text);
-          if (value != null) {
-            return KiwiWatermelonActionFactory.incrByFloat(
-                tokens[1].text, value);
-          }
-        }
-        break;
-      case 'DECRBYFLOAT':
-        if (tokens.length == 3 &&
-            tokens[1].type == TokenTypes.identifier &&
-            (tokens[2].type == TokenTypes.float ||
-                tokens[2].type == TokenTypes.number)) {
-          final value = double.tryParse(tokens[2].text);
-          if (value != null) {
-            return KiwiWatermelonActionFactory.decrByFloat(
-                tokens[1].text, value);
-          }
-        }
-        break;
-    }
+//     default:
+//       throw SemanticException(
+//         'Unknown command "$command"',
+//         token.startPosition,
+//         token.startIndex,
+//       );
+//   }
+// }
 
-    return null;
-  }
 }

@@ -83,4 +83,17 @@ class KiwiWatermelonTokenStreamFlyweight {
     return tokens.matchType(TokenTypes.colon);
   }
 
+/// Checks if the current token is an identifier with specific [text], case-insensitive.
+static bool matchKeyword(KiwiWatermelonTokenStream tokens, String keyword) {
+  final hasKeyword = tokens.peekMatchesText(keyword.toUpperCase());
+  final isIdentifier = tokens.peekMatchesType(TokenTypes.identifier);
+  return isIdentifier && hasKeyword;
+      
+}
+
+/// Consumes an identifier if it matches the expected keyword.
+static void consumeKeyword(KiwiWatermelonTokenStream tokens, String keyword) {
+  tokens.consumeAndValidate(TokenTypes.identifier); //not really keyword
+}
+
 }
