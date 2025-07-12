@@ -35,13 +35,13 @@ bool isHexChar(String char) => RegExp(r'[0-9a-fA-F]').hasMatch(char);
 /// Returns `true` if [char] is a hexadecimal character part.
 bool isHexOrDash(String char) => isHexChar(char) || isDash(char);
 
-/// Returns `true` if [token] is a valid UUID (RFC 4122 version 1–5).
+/// Returns `true` if [token] is a valid lowercase UUID (RFC 4122 version 1–5).
 bool isUuid(String token) {
-  final regex = RegExp(r'^[0-9a-fA-F]{8}-' // 8 hex chars
-      r'[0-9a-fA-F]{4}-' // 4 hex chars
-      r'[1-5][0-9a-fA-F]{3}-' // version: starts with 1–5
-      r'[89abAB][0-9a-fA-F]{3}-' // variant: starts with 8–b
-      r'[0-9a-fA-F]{12}$' // 12 hex chars
+  final regex = RegExp(r'^[0-9a-f]{8}-' // 8 lowercase hex chars
+      r'[0-9a-f]{4}-' // 4 lowercase hex chars
+      r'[1-5][0-9a-f]{3}-' // version 1–5
+      r'[89ab][0-9a-f]{3}-' // variant 1 (8–b)
+      r'[0-9a-f]{12}$' // 12 lowercase hex chars
       );
   return regex.hasMatch(token);
 }

@@ -162,6 +162,7 @@ void main() {
           reason: 'Missing hyphens: not in UUID format');
       expect(isUuid('21f7f8de-8051-5b89-bb08-2d3a7b5a0b4'), isFalse,
           reason: 'Too short: last segment is 11 digits instead of 12');
+      expect(isUuid('9DF93B15-646F-4F52-AA3D-CBADB57173F7'), isFalse);
 
       expect(isUuid('invalid-uuid'), isFalse);
       expect(isUuid('invalid-uuid'), isFalse);
