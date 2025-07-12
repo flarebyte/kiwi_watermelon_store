@@ -1,12 +1,7 @@
-import 'package:kiwi_watermelon_store/src/language/token.dart';
 
-import '../action/action_factory.dart';
 import '../action/base_action.dart';
 import '../store/manager_options.dart';
 import 'analysis_failure.dart';
-import 'token_stream.dart';
-import 'token_stream_flyweight.dart';
-import 'tokeniser.dart';
 
 class KiwiWatermelonSyntaxAnalysis {
   final KiwiWatermelonAnalysisFailure? failure;
