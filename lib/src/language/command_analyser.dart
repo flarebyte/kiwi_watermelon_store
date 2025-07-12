@@ -24,10 +24,10 @@ const List<String> userCommands = [
   'DECRBYFLOAT'
 ];
 
-class KiwiCommandAnalyzer {
+class KiwiCommandAnalyser {
   final KiwiWatermelonOptions options;
 
-  KiwiCommandAnalyzer({required this.options});
+  KiwiCommandAnalyser({required this.options});
 
   KiwiWatermelonAction parseSingleCommand(KiwiWatermelonTokenStream stream) {
     if (!KiwiTokenStreamFlyweight.isAnyKeyword(stream, userCommands)) {

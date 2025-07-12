@@ -14,8 +14,8 @@ void main() {
 
   group('KiwiWatermelonTokenStreamFlyweight.consumeIdentifier', () {
     test('consumes identifier when token matches', () {
-      final result = KiwiTokenStreamFlyweight.consumeIdentifier(
-          toStream('INCR env:flag'));
+      final result =
+          KiwiTokenStreamFlyweight.consumeIdentifier(toStream('INCR env:flag'));
 
       expect(result.text, equals("INCR"));
       expect(result.type, equals(TokenTypes.identifier));
@@ -31,15 +31,11 @@ void main() {
   group('Semicolon Methods', () {
     test('peekIsSemicolon returns true for semicolon', () {
       expect(
-          KiwiTokenStreamFlyweight.peekIsSemicolon(
-              toStream('INCR ;')),
-          isTrue);
+          KiwiTokenStreamFlyweight.peekIsSemicolon(toStream('INCR ;')), isTrue);
     });
 
     test('peekIsSemicolon returns false for non-semicolon', () {
-      expect(
-          KiwiTokenStreamFlyweight.peekIsSemicolon(
-              toStream('INCR ,')),
+      expect(KiwiTokenStreamFlyweight.peekIsSemicolon(toStream('INCR ,')),
           isFalse);
     });
 
@@ -60,14 +56,11 @@ void main() {
   group('Colon Methods', () {
     test('peekIsColon returns true for colon', () {
       expect(
-          KiwiTokenStreamFlyweight.peekIsColon(toStream('env:other')),
-          isTrue);
+          KiwiTokenStreamFlyweight.peekIsColon(toStream('env:other')), isTrue);
     });
 
     test('peekIsColon returns false for non-colon', () {
-      expect(
-          KiwiTokenStreamFlyweight.peekIsColon(
-              toStream('12 INCR env:flag')),
+      expect(KiwiTokenStreamFlyweight.peekIsColon(toStream('12 INCR env:flag')),
           isFalse);
     });
 
@@ -87,14 +80,12 @@ void main() {
 
   group('KiwiWatermelonTokenStreamFlyweight.isSemicolon', () {
     test('returns true when current token is semicolon', () {
-      final result =
-          KiwiTokenStreamFlyweight.isSemicolon(toStream(';'));
+      final result = KiwiTokenStreamFlyweight.isSemicolon(toStream(';'));
       expect(result, isTrue);
     });
 
     test('returns false when current token is not semicolon', () {
-      final result =
-          KiwiTokenStreamFlyweight.isSemicolon(toStream('other'));
+      final result = KiwiTokenStreamFlyweight.isSemicolon(toStream('other'));
       expect(result, isFalse);
     });
   });
@@ -106,8 +97,7 @@ void main() {
     });
 
     test('returns false when current token is not colon', () {
-      final result =
-          KiwiTokenStreamFlyweight.isColon(toStream('other'));
+      final result = KiwiTokenStreamFlyweight.isColon(toStream('other'));
       expect(result, isFalse);
     });
   });
