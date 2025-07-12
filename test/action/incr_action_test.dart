@@ -61,6 +61,12 @@ void main() {
       final result = KiwiWatermelonActionFactory.incr('env:x').execute(store);
       expect(result.error, isNotNull);
     });
+    test('integer negative overflow fails', () {
+      store.set('env:x', IntegerMutationAction.minInt.toString());
+      final result = KiwiWatermelonActionFactory.decr('env:x').execute(store);
+      expect(result.error, isNotNull);
+      expect(result.error!.message, contains('overflow'));
+    });
   });
 
   group('KiwiWatermelonActionFactory float operations', () {
