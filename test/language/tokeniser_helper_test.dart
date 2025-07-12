@@ -137,6 +137,33 @@ void main() {
   group('Pattern helpers', () {
     test('isUuid', () {
       expect(isUuid('9df93b15-646f-4f52-aa3d-cbadb57173f7'), isTrue);
+      expect(isUuid('12345678-1234-4234-8234-123456789012'), isTrue);
+      expect(isUuid('6ba7b810-9dad-11d1-80b4-00c04fd430c8'), isTrue,
+          reason: 'Version 1, variant 1 (RFC 4122)');
+      expect(isUuid('f47ac10b-58cc-3372-a567-0e02b2c3d479'), isTrue,
+          reason: 'Version 3, variant 1 (RFC 4122)');
+      expect(isUuid('12345678-1234-4234-8234-123456789012'), isTrue,
+          reason: 'Version 4, variant 1 (RFC 4122), digit-only');
+      expect(isUuid('21f7f8de-8051-5b89-bb08-2d3a7b5a0b45'), isTrue,
+          reason: 'Version 5, variant 1 (RFC 4122)');
+      expect(isUuid('00000000-0000-4000-8000-000000000000'), isTrue,
+          reason: 'Version 4, variant 1, minimal hex characters');
+      expect(isUuid('12345678-1234-1234-1234-123456789012'), isFalse,
+          reason: 'Invalid version and variant: 13th != 1–5, 17th != 8–b');
+      expect(isUuid('6ba7b810-9dad-11d1-70b4-00c04fd430c8'), isFalse,
+          reason: 'Invalid variant: 17th character is 7 (should be 8–b)');
+      expect(isUuid('f47ac10b-58cc-6372-a567-0e02b2c3d479'), isFalse,
+          reason: 'Invalid version: 13th character is 6 (should be 1–5)');
+      expect(isUuid('00000000-0000-0000-0000-000000000000'), isFalse,
+          reason: 'Invalid version and variant: no version/variant bits set');
+      expect(isUuid('g47ac10b-58cc-4372-a567-0e02b2c3d479'), isFalse,
+          reason: 'Invalid character: contains non-hex letter (g)');
+      expect(isUuid('21f7f8de80515b89bb082d3a7b5a0b45'), isFalse,
+          reason: 'Missing hyphens: not in UUID format');
+      expect(isUuid('21f7f8de-8051-5b89-bb08-2d3a7b5a0b4'), isFalse,
+          reason: 'Too short: last segment is 11 digits instead of 12');
+
+      expect(isUuid('invalid-uuid'), isFalse);
       expect(isUuid('invalid-uuid'), isFalse);
     });
 

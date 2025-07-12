@@ -176,6 +176,8 @@ final List<String> validCommands = [
   maker.setNum('metrics:cpu:load', 0.75),
   maker.setEnum('settings:display:mode', 'dark'),
   maker.setUUID('session:users:1234:token', uuid()),
+  maker.setUUID(
+      'session:users:a__b:token', '12345678-1234-4234-8234-123456789012'),
 
   // INCR/DECR
   maker.incrBy('metrics:api:calls:version:2', 10),

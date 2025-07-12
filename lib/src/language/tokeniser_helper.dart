@@ -47,9 +47,7 @@ bool isFloat(String token) => RegExp(r'^\d+\.\d+$').hasMatch(token);
 bool isInteger(String token) => RegExp(r'^\d+$').hasMatch(token);
 
 /// Returns `true` if [char] can appear in a Redis-like key.
-bool isKeyChar(String char) =>
-    isLetterOrDigitOr_(char) ||
-    isColon(char);
+bool isKeyChar(String char) => isLetterOrDigitOr_(char) || isColon(char);
 
 /// Determines whether a space should be inserted between two tokens.
 ///
