@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:kiwi_watermelon_store/src/store/manager_options.dart';
+
 typedef RedisValue = Object; // convention: int, double, or Uuid
 
 class QuickQueryMaker {
@@ -214,3 +216,8 @@ final List<String> validCommands = [
   // Custom deletion (non-Redis)
   maker.delKeys('cache:views', ['cache:views:*', 'cache:users:*']),
 ];
+
+final storeOptions = KiwiWatermelonOptions(
+    mapping: {'true': 'T', 'false': 'F'},
+    prefixes: ['env'],
+    userPrefixes: ['env']);
