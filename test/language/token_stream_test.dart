@@ -4,7 +4,7 @@ import 'package:kiwi_watermelon_store/src/language/token_stream.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('RhapsodyTokenStream', () {
+  group('KiwiWatermelonTokenStream', () {
     late List<KiwiWatermelonToken> tokens;
     late KiwiWatermelonTokenStream stream;
 
