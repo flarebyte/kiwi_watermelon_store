@@ -123,28 +123,16 @@ class KiwiWatermelonTokeniser {
 
       // Identify number, float, or UUID (starting with digit).
       if (isDigit(currentChar)) {
-        int tempIndex = index;
-        int tempColumn = column;
-
-        while (tempIndex < code.length && (isHexOrDash(code[tempIndex]))) {
-          tempIndex++;
-          tempColumn++;
-        }
-
-        final String candidate = code.substring(index, tempIndex);
-
-        if (isUuid(candidate)) {
-          index = tempIndex;
-          column = tempColumn;
-          final KiwiWatermelonPosition endPosition =
-              KiwiWatermelonPosition(row: line, column: column);
+        final maybeUuid = extractUuidAt(code, index);
+        if (maybeUuid != null) {
+          index = index + 36;
           tokens.add(KiwiWatermelonToken(
             type: TokenTypes.uuid,
-            text: candidate,
+            text: maybeUuid,
             startIndex: tokenStartIndex,
             endIndex: index,
             startPosition: startPosition,
-            endPosition: endPosition,
+            endPosition: KiwiWatermelonPosition(row: line, column: column),
           ));
           continue;
         }
