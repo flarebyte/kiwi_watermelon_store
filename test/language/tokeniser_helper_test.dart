@@ -168,6 +168,41 @@ void main() {
       expect(isUuid('invalid-uuid'), isFalse);
     });
 
+    group('extractUuidAt', () {
+      const validUuid = '123e4567-e89b-12d3-a456-426614174000';
+
+      test('returns UUID when found at exact start', () {
+        final result = extractUuidAt(validUuid, 0);
+        expect(result, equals(validUuid));
+      });
+
+      test('returns UUID when found at offset', () {
+        final input = 'abc $validUuid xyz';
+        final result = extractUuidAt(input, 4);
+        expect(result, equals(validUuid));
+      });
+
+      test('returns null if not enough characters', () {
+        final result = extractUuidAt('abc', 1);
+        expect(result, isNull);
+      });
+
+      test('returns null for invalid format', () {
+        final invalidUuid = '123e4567-e89b-12d3-a456-zzzzzzzzzzzz';
+        final result = extractUuidAt(invalidUuid, 0);
+        expect(result, isNull);
+      });
+
+      test('returns null if start index is negative', () {
+        final result = extractUuidAt(validUuid, -1);
+        expect(result, isNull);
+      });
+
+      test('returns null if start + 36 exceeds input length', () {
+        final result = extractUuidAt(validUuid, 1); // validUuid.length == 36
+        expect(result, isNull);
+      });
+    });
     test('isFloat', () {
       expect(isFloat('0.75'), isTrue);
       expect(isFloat('12.0'), isTrue);

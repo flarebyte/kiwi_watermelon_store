@@ -46,6 +46,22 @@ bool isUuid(String token) {
   return regex.hasMatch(token);
 }
 
+/// Returns the UUID string at the given [start] index in [code]
+/// if it matches a valid lowercase UUID (RFC 4122 version 1–5).
+///
+/// Returns `null` if there are not enough characters or the substring
+/// does not conform to the UUID format.
+String? extractUuidAt(String code, int start) {
+  const uuidLength = 36;
+
+  if (start < 0 || start + uuidLength > code.length) {
+    return null;
+  }
+
+  final candidate = code.substring(start, start + uuidLength);
+  return isUuid(candidate) ? candidate : null;
+}
+
 /// Returns `true` if [token] is a float (e.g., `12.4`, `0.75`).
 bool isFloat(String token) => RegExp(r'^\d+\.\d+$').hasMatch(token);
 
