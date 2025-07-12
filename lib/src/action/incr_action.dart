@@ -36,11 +36,13 @@ abstract class IntegerMutationAction extends NumericMutationAction {
       return error('Value at "$key" is not a valid integer.');
     }
 
-    final result = current + by;
-
-    if (result > maxInt || result < minInt) {
+    // Pre-check overflow bounds manually before addition
+    if ((by > 0 && current > maxInt - by) ||
+        (by < 0 && current < minInt - by)) {
       return error('Integer overflow at "$key".');
     }
+
+    final result = current + by;
 
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
