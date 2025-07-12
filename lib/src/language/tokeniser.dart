@@ -7,8 +7,6 @@ class TokenTypes {
   static const String number = 'number';
   static const String float = 'float';
   static const String uuid = 'uuid';
-  static const String lparen = 'lparen'; //we may not need this
-  static const String rparen = 'rparen'; //we may not need this
   static const String comma = 'comma';
   static const String semicolon = 'semicolon';
   static const String colon = 'colon';
@@ -172,12 +170,6 @@ class KiwiWatermelonTokeniser {
       // Process single-character tokens.
       String tokenType;
       switch (currentChar) {
-        case '(':
-          tokenType = TokenTypes.lparen;
-          break;
-        case ')':
-          tokenType = TokenTypes.rparen;
-          break;
         case ',':
           tokenType = TokenTypes.comma;
           break;

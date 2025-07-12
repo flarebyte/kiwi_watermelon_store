@@ -97,10 +97,6 @@ class KiwiWatermelonTokenStream {
 
   String friendlyToken(String token) {
     switch (token) {
-      case TokenTypes.lparen:
-        return 'left parenthesis "("';
-      case TokenTypes.rparen:
-        return 'right parenthesis ")"';
       case TokenTypes.identifier:
         return 'identifier';
       case TokenTypes.number:
