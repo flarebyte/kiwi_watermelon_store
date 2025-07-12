@@ -103,4 +103,16 @@ void main() {
     });
   });
 
+  group('Any keyword Methods', () {
+
+    test('peekIsAnyKeyword returns true for known keyword', () {
+      expect(KiwiWatermelonTokenStreamFlyweight.peekIsAnyKeyword(toStream('next INCR'), ['INCR', 'DECR']), isTrue);
+    });
+
+    test('peekIsAnyKeyword returns false for unknown keyword', () {
+      expect(KiwiWatermelonTokenStreamFlyweight.peekIsAnyKeyword(toStream('DDD'), ['INCR', 'DECR']), isFalse);
+    });
+
+  });
+
 }

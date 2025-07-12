@@ -29,7 +29,8 @@ class KiwiWatermelonTokenStreamFlyweight {
   /// Consumes the next token if it is a comma (`comma`).
   ///
   /// Throws a [SemanticException] if the next token is not a comma.
-  static void consumeComma(KiwiWatermelonTokenStream tokens, {String? contextual}) {
+  static void consumeComma(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
     tokens.consumeAndValidate(TokenTypes.comma, contextual: contextual);
   }
 
@@ -58,7 +59,8 @@ class KiwiWatermelonTokenStreamFlyweight {
   /// Consumes the next token if it is a colon (`colon`).
   ///
   /// Throws a [SemanticException] if the next token is not a colon.
-  static void consumeColon(KiwiWatermelonTokenStream tokens, {String? contextual}) {
+  static void consumeColon(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
     tokens.consumeAndValidate(TokenTypes.colon, contextual: contextual);
   }
 
@@ -83,17 +85,13 @@ class KiwiWatermelonTokenStreamFlyweight {
     return tokens.matchType(TokenTypes.colon);
   }
 
-/// Checks if the current token is an identifier with specific [text], case-insensitive.
-static bool matchKeyword(KiwiWatermelonTokenStream tokens, String keyword) {
-  final hasKeyword = tokens.peekMatchesText(keyword.toUpperCase());
-  final isIdentifier = tokens.peekMatchesType(TokenTypes.identifier);
-  return isIdentifier && hasKeyword;
-      
-}
-
-/// Consumes an identifier if it matches the expected keyword.
-static void consumeKeyword(KiwiWatermelonTokenStream tokens, String keyword) {
-  tokens.consumeAndValidate(TokenTypes.identifier); //not really keyword
-}
+  /// Checks if the current token is an identifier with specific [text]
+  static bool peekIsAnyKeyword(
+      KiwiWatermelonTokenStream tokens, List<String> keywords) {
+    final isIdentifier = tokens.peekMatchesType(TokenTypes.identifier);
+    final hasKeyword =
+        keywords.any((keyword) => tokens.peekMatchesText(keyword));
+    return isIdentifier && hasKeyword;
+  }
 
 }
