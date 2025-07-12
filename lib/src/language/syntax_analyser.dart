@@ -1,4 +1,3 @@
-
 import '../action/base_action.dart';
 import '../store/manager_options.dart';
 import 'analysis_failure.dart';
@@ -143,5 +142,4 @@ class KiwiWatermelonSyntaxAnalyzer {
 //       );
 //   }
 // }
-
 }

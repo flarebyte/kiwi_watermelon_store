@@ -86,12 +86,21 @@ class KiwiWatermelonTokenStreamFlyweight {
   }
 
   /// Checks if the current token is an identifier with specific [text]
-  static bool peekIsAnyKeyword(
+  static bool isAnyKeyword(
       KiwiWatermelonTokenStream tokens, List<String> keywords) {
-    final isIdentifier = tokens.peekMatchesType(TokenTypes.identifier);
-    final hasKeyword =
-        keywords.any((keyword) => tokens.peekMatchesText(keyword));
+    final isIdentifier = tokens.matchType(TokenTypes.identifier);
+    final hasKeyword = keywords.any((keyword) => tokens.matchText(keyword));
     return isIdentifier && hasKeyword;
   }
 
+  /// Checks if the next token is an identifier with specific [text]
+  static bool peekIsAnyKeyword(
+      KiwiWatermelonTokenStream tokens, List<String> keywords,
+      {int lookahead = 1}) {
+    final isIdentifier =
+        tokens.peekMatchesType(TokenTypes.identifier, lookahead: lookahead);
+    final hasKeyword = keywords.any(
+        (keyword) => tokens.peekMatchesText(keyword, lookahead: lookahead));
+    return isIdentifier && hasKeyword;
+  }
 }
