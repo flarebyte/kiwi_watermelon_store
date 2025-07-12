@@ -33,24 +33,27 @@ class KiwiWatermelonSyntaxAnalyzer {
 
   KiwiWatermelonSyntaxAnalysis analyse(List<KiwiWatermelonToken> tokens) {
     final actions = <KiwiWatermelonAction>[];
-    final current = <KiwiWatermelonToken>[];
+    final currentStatement = <KiwiWatermelonToken>[];
 
     for (final token in tokens) {
       if (_shouldSkip(token)) continue;
 
       if (token.type == TokenTypes.semicolon) {
-        final result = _tryBuildAction(current, token);
-        if (result.failure != null) return result;
-        actions.add(result.actions.first);
-        current.clear();
-      } else {
-        current.add(token);
+        if (currentStatement.isNotEmpty) {
+          final result = _tryParseAndAppendAction(currentStatement);
+          if (result.failure != null) return result;
+          actions.add(result.actions.first);
+          currentStatement.clear();
+        }
+        continue;
       }
+
+      currentStatement.add(token);
     }
 
-    // Final statement with no trailing semicolon
-    if (current.isNotEmpty) {
-      final result = _tryBuildAction(current, current.first);
+    // Final command without semicolon
+    if (currentStatement.isNotEmpty) {
+      final result = _tryParseAndAppendAction(currentStatement);
       if (result.failure != null) return result;
       actions.add(result.actions.first);
     }
@@ -62,20 +65,20 @@ class KiwiWatermelonSyntaxAnalyzer {
     return token.type == TokenTypes.comment || token.type == TokenTypes.unknown;
   }
 
-  KiwiWatermelonSyntaxAnalysis _tryBuildAction(
+  KiwiWatermelonSyntaxAnalysis _tryParseAndAppendAction(
     List<KiwiWatermelonToken> tokens,
-    KiwiWatermelonToken errorContext,
   ) {
     final action = _parseCommand(tokens);
     if (action == null) {
+      final anchor = tokens.first;
       return _failure(KiwiWatermelonAnalysisFailure(
         message: 'Invalid command: ${tokens.map((t) => t.text).join(" ")}',
-        position: errorContext.startPosition,
-        index: errorContext.startIndex,
+        position: anchor.startPosition,
+        index: anchor.startIndex,
         errorType: "Syntax Analysis Error",
-        contextCode: errorContext.text,
+        contextCode: anchor.text,
         expected: "",
-        suggestion: "Check command syntax near '${errorContext.text}'.",
+        suggestion: "Check command syntax near '${anchor.text}'.",
       ));
     }
 
