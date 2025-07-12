@@ -143,5 +143,18 @@ void main() {
         expect(actual, equals(expected));
       });
     }
+    var longVar = "";
+    for (var i = 0; i < 16; i++) {
+      longVar = longVar + 'a$i:b$i';
+    }
+    for (final unsupported in ['env:flag:', 'env:long:$longVar']) {
+      test('consumeCompositeVariable throws if not a valid one', () {
+        expect(
+            () => KiwiTokenStreamFlyweight.consumeCompositeVariable(
+                toStream(unsupported),
+                options: storeOptions),
+            throwsA(isA<KiwiWatermelonSemanticException>()));
+      });
+    }
   });
 }
