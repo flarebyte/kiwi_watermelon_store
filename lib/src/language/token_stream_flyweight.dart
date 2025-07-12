@@ -9,7 +9,7 @@ import 'tokeniser.dart';
 /// to ensure consistency and reduce duplication across the codebase.
 ///
 /// All methods are static and stateless, making them suitable for reuse.
-class KiwiWatermelonTokenStreamFlyweight {
+class KiwiTokenStreamFlyweight {
   /// Consumes and returns the current token if it is an `identifier`.
   ///
   /// Throws a [SemanticException] if the current token is not an identifier.
