@@ -36,53 +36,50 @@ class KiwiWatermelonSyntaxAnalyzer {
     final current = <KiwiWatermelonToken>[];
 
     for (final token in tokens) {
-      if (token.type == TokenTypes.comment ||
-          token.type == TokenTypes.unknown) {
-        continue;
-      }
+      if (_shouldSkip(token)) continue;
 
       if (token.type == TokenTypes.semicolon) {
-        if (current.isNotEmpty) {
-          final action = _parseCommand(current);
-          if (action == null) {
-            return _failure(KiwiWatermelonAnalysisFailure(
-              message:
-                  'Invalid command: ${current.map((t) => t.text).join(" ")}',
-              position: token.startPosition,
-              index: token.startIndex,
-              errorType: "Syntax Analysis Error",
-              contextCode: token.text,
-              expected: "",
-              suggestion: "Check command syntax near '${token.text}'.",
-            ));
-          }
-          actions.add(action);
-          current.clear();
-        }
-        continue;
+        final result = _tryBuildAction(current, token);
+        if (result.failure != null) return result;
+        actions.add(result.actions.first);
+        current.clear();
+      } else {
+        current.add(token);
       }
-
-      current.add(token);
     }
 
-    // handle last command (if no trailing semicolon)
+    // Final statement with no trailing semicolon
     if (current.isNotEmpty) {
-      final action = _parseCommand(current);
-      if (action == null) {
-        return _failure(KiwiWatermelonAnalysisFailure(
-          message: 'Invalid command: ${current.map((t) => t.text).join(" ")}',
-          position: current[0].startPosition,
-          index: current[0].startIndex,
-          errorType: "Syntax Analysis Error",
-          contextCode: current[0].text,
-          expected: "",
-          suggestion: "Check command syntax near '${current[0].text}'.",
-        ));
-      }
-      actions.add(action);
+      final result = _tryBuildAction(current, current.first);
+      if (result.failure != null) return result;
+      actions.add(result.actions.first);
     }
 
     return _success(actions);
+  }
+
+  bool _shouldSkip(KiwiWatermelonToken token) {
+    return token.type == TokenTypes.comment || token.type == TokenTypes.unknown;
+  }
+
+  KiwiWatermelonSyntaxAnalysis _tryBuildAction(
+    List<KiwiWatermelonToken> tokens,
+    KiwiWatermelonToken errorContext,
+  ) {
+    final action = _parseCommand(tokens);
+    if (action == null) {
+      return _failure(KiwiWatermelonAnalysisFailure(
+        message: 'Invalid command: ${tokens.map((t) => t.text).join(" ")}',
+        position: errorContext.startPosition,
+        index: errorContext.startIndex,
+        errorType: "Syntax Analysis Error",
+        contextCode: errorContext.text,
+        expected: "",
+        suggestion: "Check command syntax near '${errorContext.text}'.",
+      ));
+    }
+
+    return _success([action]);
   }
 
   KiwiWatermelonAction? _parseCommand(List<KiwiWatermelonToken> tokens) {
