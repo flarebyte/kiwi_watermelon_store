@@ -3,17 +3,17 @@ import 'action_patch.dart';
 import 'action_result.dart';
 import 'base_action.dart';
 
-class KiwiSetAction extends KiwiWatermelonAction {
+class KiwiSetStringAction extends KiwiWatermelonAction {
   final String key;
 
-  final num value;
+  final String value;
 
-  KiwiSetAction({required this.key, required this.value});
+  KiwiSetStringAction({required this.key, required this.value});
 
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     return new KiwiWatermelonActionResult(
-        patch: KiwiWatermelonPatch(
-            updates: {key: value.toString()}, deletions: []));
+        patch: KiwiWatermelonPatch(updates: {key: value}, deletions: []));
   }
 }
+
