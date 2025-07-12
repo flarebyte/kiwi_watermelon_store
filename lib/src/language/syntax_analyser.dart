@@ -20,8 +20,17 @@ class KiwiWatermelonSyntaxAnalyzer {
   final KiwiWatermelonOptions options;
 
   KiwiWatermelonSyntaxAnalyzer({required this.options});
+
+  KiwiWatermelonSyntaxAnalysis _success(List<KiwiWatermelonAction> actions) {
+    return KiwiWatermelonSyntaxAnalysis(actions: actions);
+  }
+
+  KiwiWatermelonSyntaxAnalysis _failure(KiwiWatermelonAnalysisFailure failure) {
+    return KiwiWatermelonSyntaxAnalysis(actions: [], failure: failure);
+  }
+
   KiwiWatermelonSyntaxAnalysis analyse(List<KiwiWatermelonToken> tokens) {
     //TODO
-    return KiwiWatermelonSyntaxAnalysis(actions: []);
+    return _success([]);
   }
 }
