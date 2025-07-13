@@ -178,4 +178,16 @@ void main() {
           throwsA(isA<KiwiWatermelonSemanticException>()));
     });
   });
+
+  group('consumeDouble', () {
+    test('consumes float or double', () {
+      final actual = KiwiTokenStreamFlyweight.consumeDouble(toStream('12.761'));
+
+      expect(actual, equals(12.761));
+    });
+    test('consumeInteger throws if not a valid one', () {
+      expect(() => KiwiTokenStreamFlyweight.consumeDouble(toStream('three')),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
 }

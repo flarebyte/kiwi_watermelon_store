@@ -154,4 +154,18 @@ class KiwiTokenStreamFlyweight {
       return value;
     }
   }
+
+  /// Consume and return a float or double
+  static double consumeDouble(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
+    final floatToken =
+        tokens.consumeAndValidate(TokenTypes.float, contextual: contextual);
+    final value = double.tryParse(floatToken.text);
+    if (value == null) {
+      throw KiwiWatermelonSemanticException(
+          "The sequence of digits is not a valid float or double", floatToken);
+    } else {
+      return value;
+    }
+  }
 }
