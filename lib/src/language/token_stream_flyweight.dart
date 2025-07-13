@@ -106,6 +106,7 @@ class KiwiTokenStreamFlyweight {
     return isIdentifier && hasKeyword;
   }
 
+  /// Composite a composite variable (ex: env:flag:red)
   static String consumeCompositeVariable(KiwiWatermelonTokenStream tokens,
       {required KiwiWatermelonOptions options}) {
     final prefixToken =
@@ -138,5 +139,19 @@ class KiwiTokenStreamFlyweight {
     }
 
     return varName;
+  }
+
+  /// Consume and return an integer
+  static int consumeInteger(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
+    final intToken =
+        tokens.consumeAndValidate(TokenTypes.number, contextual: contextual);
+    final value = int.tryParse(intToken.text);
+    if (value == null) {
+      throw KiwiWatermelonSemanticException(
+          "The sequence of digits is not a valid integer", intToken);
+    } else {
+      return value;
+    }
   }
 }

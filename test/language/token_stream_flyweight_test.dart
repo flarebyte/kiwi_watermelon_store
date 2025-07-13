@@ -14,7 +14,7 @@ void main() {
     return tokenStream;
   }
 
-  group('KiwiWatermelonTokenStreamFlyweight.consumeIdentifier', () {
+  group('consumeIdentifier', () {
     test('consumes identifier when token matches', () {
       final result =
           KiwiTokenStreamFlyweight.consumeIdentifier(toStream('INCR env:flag'));
@@ -80,7 +80,7 @@ void main() {
     });
   });
 
-  group('KiwiWatermelonTokenStreamFlyweight.isSemicolon', () {
+  group('isSemicolon', () {
     test('returns true when current token is semicolon', () {
       final result = KiwiTokenStreamFlyweight.isSemicolon(toStream(';'));
       expect(result, isTrue);
@@ -92,7 +92,7 @@ void main() {
     });
   });
 
-  group('KiwiWatermelonTokenStreamFlyweight.isColon', () {
+  group('isColon', () {
     test('returns true when current token is colon', () {
       final result = KiwiTokenStreamFlyweight.isColon(toStream(':'));
       expect(result, isTrue);
@@ -165,5 +165,17 @@ void main() {
             throwsA(isA<KiwiWatermelonSemanticException>()));
       });
     }
+  });
+
+  group('consumeInteger', () {
+    test('consumes integer', () {
+      final actual = KiwiTokenStreamFlyweight.consumeInteger(toStream('12'));
+
+      expect(actual, equals(12));
+    });
+    test('consumeInteger throws if not a valid one', () {
+      expect(() => KiwiTokenStreamFlyweight.consumeInteger(toStream('three')),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
   });
 }

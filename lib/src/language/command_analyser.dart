@@ -49,33 +49,18 @@ class KiwiCommandAnalyser {
             options: options);
         return KiwiWatermelonActionFactory.decr(key);
 
-      // case 'INCRBY':
-      //   final keyToken =
-      //       KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
-      //   final valueToken = stream.consume();
-      //   final value = int.tryParse(valueToken?.text ?? '');
-      //   if (value == null) {
-      //     throw SemanticException(
-      //       'Expected integer after key for INCRBY',
-      //       valueToken?.startPosition,
-      //       valueToken?.startIndex ?? -1,
-      //     );
-      //   }
-      //   return KiwiWatermelonActionFactory.incrBy(keyToken.text, value);
+      case CommandTypes.INCRBY:
+        final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
+            options: options);
 
-      // case 'DECRBY':
-      //   final keyToken =
-      //       KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
-      //   final valueToken = stream.consume();
-      //   final value = int.tryParse(valueToken?.text ?? '');
-      //   if (value == null) {
-      //     throw SemanticException(
-      //       'Expected integer after key for DECRBY',
-      //       valueToken?.startPosition,
-      //       valueToken?.startIndex ?? -1,
-      //     );
-      //   }
-      //   return KiwiWatermelonActionFactory.decrBy(keyToken.text, value);
+        final value = KiwiTokenStreamFlyweight.consumeInteger(stream);
+        return KiwiWatermelonActionFactory.incrBy(key, value);
+
+      case CommandTypes.DECRBY:
+        final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
+            options: options);
+        final value = KiwiTokenStreamFlyweight.consumeInteger(stream);
+        return KiwiWatermelonActionFactory.decrBy(key, value);
 
       // case 'INCRBYFLOAT':
       //   final keyToken =
