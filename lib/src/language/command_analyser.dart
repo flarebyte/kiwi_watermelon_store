@@ -16,12 +16,12 @@ class CommandTypes {
 }
 
 const List<String> userCommands = [
-  'INCR',
-  'DECR',
-  'INCRBY',
-  'DECRBY',
-  'INCRBYFLOAT',
-  'DECRBYFLOAT'
+  CommandTypes.INCR,
+  CommandTypes.DECR,
+  CommandTypes.INCRBY,
+  CommandTypes.DECRBY,
+  CommandTypes.INCRBYFLOAT,
+  CommandTypes.INCRBYFLOAT
 ];
 
 class KiwiCommandAnalyser {
@@ -40,13 +40,14 @@ class KiwiCommandAnalyser {
 
     switch (command.text) {
       case CommandTypes.INCR:
-        final keyToken = KiwiTokenStreamFlyweight.consumeIdentifier(stream);
-        return KiwiWatermelonActionFactory.incr(keyToken.text);
+        final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
+            options: options);
+        return KiwiWatermelonActionFactory.incr(key);
 
-      // case 'DECR':
-      //   final keyToken =
-      //       KiwiWatermelonTokenStreamFlyweight.consumeIdentifier(stream);
-      //   return KiwiWatermelonActionFactory.decr(keyToken.text);
+      case CommandTypes.DECR:
+        final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
+            options: options);
+        return KiwiWatermelonActionFactory.decr(key);
 
       // case 'INCRBY':
       //   final keyToken =

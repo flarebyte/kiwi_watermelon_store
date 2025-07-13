@@ -19,7 +19,7 @@ void main() {
   }
 
   group('INCR analyser', () {
-    test('should parse command', () {
+    test('parse INCR', () {
       final action = parseSingleCommand(
           'INCR env:metrics:api:total:color:blue:status:ready');
       expect(action, isA<KiwiIncrAction>());
@@ -32,7 +32,7 @@ void main() {
   });
 
   group('DECR analyser', () {
-    test('should parse command', () {
+    test('parse DECR', () {
       final action = parseSingleCommand('DECR env:retries');
       expect(action, isA<KiwiDecrAction>());
     });
@@ -44,7 +44,7 @@ void main() {
   });
 
   group('INCRBY analyser', () {
-    test('should parse command', () {
+    test('parse INCRBY', () {
       final action = parseSingleCommand('INCRBY env:views 10');
       expect(action, isA<KiwiIncrByAction>());
     });
@@ -56,7 +56,7 @@ void main() {
   });
 
   group('DECRBY analyser', () {
-    test('should parse command', () {
+    test('parse DECRBY', () {
       final action = parseSingleCommand('DECRBY env:count 5');
       expect(action, isA<KiwiDecrByAction>());
     });
@@ -68,7 +68,7 @@ void main() {
   });
 
   group('INCRBYFLOAT analyser', () {
-    test('should parse command', () {
+    test('parse INCRBYFLOAT', () {
       final action = parseSingleCommand('INCRBYFLOAT env:price 3.14');
       expect(action, isA<KiwiIncrByFloatAction>());
     });
@@ -80,7 +80,7 @@ void main() {
   });
 
   group('DECRBYFLOAT analyser', () {
-    test('should parse command', () {
+    test('parse DECRBYFLOAT', () {
       final action = parseSingleCommand('DECRBYFLOAT env:budget 1.25');
       expect(action, isA<KiwiDecrByFloatAction>());
     });
