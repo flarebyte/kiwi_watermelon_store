@@ -21,7 +21,7 @@ const List<String> userCommands = [
   CommandTypes.INCRBY,
   CommandTypes.DECRBY,
   CommandTypes.INCRBYFLOAT,
-  CommandTypes.INCRBYFLOAT
+  CommandTypes.DECRBYFLOAT
 ];
 
 class KiwiCommandAnalyser {
