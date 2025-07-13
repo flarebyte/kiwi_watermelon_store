@@ -43,7 +43,9 @@ class KiwiWatermelonSyntaxAnalyzer {
       while (!stream.isAtEnd) {
         final action = commandAnalyser.parseSingleCommand(stream);
         actions.add(action);
-        KiwiTokenStreamFlyweight.consumeSemicolon(stream);
+        if (!stream.isAtEnd) {
+          KiwiTokenStreamFlyweight.consumeSemicolon(stream);
+        }
       }
       return _success(actions);
     } catch (e) {
