@@ -134,20 +134,29 @@ void main() {
     });
   });
   group('Composite variable', () {
-    for (final expected in ['env:flag', 'env:on_off:yes:color:blue']) {
+    for (final expected in [
+      'env:flag',
+      'env:on_off:yes:color:blue',
+      'env:on_off:yes :color:blue',
+      'env : on_off : yes : color : blue'
+    ]) {
       test('consumes composite variable $expected', () {
         final actual = KiwiTokenStreamFlyweight.consumeCompositeVariable(
             toStream(expected),
             options: storeOptions);
 
-        expect(actual, equals(expected));
+        expect(actual, equals(expected.replaceAll(' ', '')));
       });
     }
     var longVar = "";
     for (var i = 0; i < 16; i++) {
       longVar = longVar + 'a$i:b$i';
     }
-    for (final unsupported in ['env:flag:', 'env:long:$longVar']) {
+    for (final unsupported in [
+      'env:flag:',
+      'env:flag::red',
+      'env:long:$longVar'
+    ]) {
       test('consumeCompositeVariable throws if not a valid one', () {
         expect(
             () => KiwiTokenStreamFlyweight.consumeCompositeVariable(
