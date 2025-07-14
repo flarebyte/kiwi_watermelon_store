@@ -141,6 +141,13 @@ class KiwiTokenStreamFlyweight {
     return varName;
   }
 
+  /// Checks if the current token is number).
+  ///
+  /// Returns `true` if the current token is a number; otherwise, `false`.
+  static bool isNumber(KiwiWatermelonTokenStream tokens) {
+    return tokens.matchType(TokenTypes.number);
+  }
+
   /// Consume and return an integer
   static int consumeInteger(KiwiWatermelonTokenStream tokens,
       {String? contextual}) {
@@ -153,6 +160,13 @@ class KiwiTokenStreamFlyweight {
     } else {
       return value;
     }
+  }
+
+  /// Checks if the current token is float).
+  ///
+  /// Returns `true` if the current token is a float; otherwise, `false`.
+  static bool isFloat(KiwiWatermelonTokenStream tokens) {
+    return tokens.matchType(TokenTypes.float);
   }
 
   /// Consume and return a float or double

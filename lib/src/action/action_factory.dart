@@ -1,4 +1,5 @@
 import 'incr_action.dart';
+import 'set_action.dart';
 
 /// Factory for constructing Redis-style numeric mutation actions.
 ///
@@ -39,5 +40,15 @@ class KiwiWatermelonActionFactory {
   /// Returns an action to decrement the float value at [key] by [value].
   static KiwiDecrByFloatAction decrByFloat(String key, double value) {
     return KiwiDecrByFloatAction(key, value);
+  }
+
+  /// Returns an action to set the int value at [key] to [value].
+  static KiwiSetIntegerAction setInteger(String key, int value) {
+    return KiwiSetIntegerAction(key, value);
+  }
+
+  /// Returns an action to set the double value at [key] to [value].
+  static KiwiSetFloatAction setDouble(String key, double value) {
+    return KiwiSetFloatAction(key, value);
   }
 }

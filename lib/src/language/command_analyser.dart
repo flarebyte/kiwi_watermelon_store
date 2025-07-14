@@ -13,6 +13,7 @@ class CommandTypes {
   static const String DECRBY = 'DECRBY';
   static const String INCRBYFLOAT = 'INCRBYFLOAT';
   static const String DECRBYFLOAT = 'DECRBYFLOAT';
+  static const String SET = 'SET';
 }
 
 const List<String> userCommands = [
@@ -21,7 +22,8 @@ const List<String> userCommands = [
   CommandTypes.INCRBY,
   CommandTypes.DECRBY,
   CommandTypes.INCRBYFLOAT,
-  CommandTypes.DECRBYFLOAT
+  CommandTypes.DECRBYFLOAT,
+  CommandTypes.SET,
 ];
 
 class KiwiCommandAnalyser {
@@ -73,6 +75,22 @@ class KiwiCommandAnalyser {
             options: options);
         final value = KiwiTokenStreamFlyweight.consumeDouble(stream);
         return KiwiWatermelonActionFactory.decrByFloat(key, value);
+
+      case CommandTypes.SET:
+        final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
+            options: options);
+        if (KiwiTokenStreamFlyweight.isNumber(stream)) {
+          final value = KiwiTokenStreamFlyweight.consumeInteger(stream);
+          return KiwiWatermelonActionFactory.setInteger(key, value);
+        }
+
+        if (KiwiTokenStreamFlyweight.isFloat(stream)) {
+          final value = KiwiTokenStreamFlyweight.consumeDouble(stream);
+          return KiwiWatermelonActionFactory.setDouble(key, value);
+        }
+        throw KiwiWatermelonSemanticException(
+            "Unexpected int, float, UUID or enum as value fr SET",
+            stream.current);
 
       default:
         throw KiwiWatermelonSemanticException(
