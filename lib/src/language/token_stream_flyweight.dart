@@ -182,4 +182,19 @@ class KiwiTokenStreamFlyweight {
       return value;
     }
   }
+
+  /// Checks if the current token is a UUID
+  ///
+  /// Returns `true` if the current token is a UUID; otherwise, `false`.
+  static bool isUuid(KiwiWatermelonTokenStream tokens) {
+    return tokens.matchType(TokenTypes.uuid);
+  }
+
+  /// Consume and return a UUID
+  static String consumeUuid(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
+    final uuidToken =
+        tokens.consumeAndValidate(TokenTypes.uuid, contextual: contextual);
+    return uuidToken.text;
+  }
 }

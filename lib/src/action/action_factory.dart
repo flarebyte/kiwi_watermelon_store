@@ -51,4 +51,10 @@ class KiwiWatermelonActionFactory {
   static KiwiSetFloatAction setDouble(String key, double value) {
     return KiwiSetFloatAction(key, value);
   }
+
+  /// Returns an action to set the UUID value at [key] to [value].
+  static KiwiSetUuidAction setUuid(String key, String value,
+      {bool validate = true}) {
+    return KiwiSetUuidAction(key, value, validate: validate);
+  }
 }
