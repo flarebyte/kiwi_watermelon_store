@@ -61,7 +61,7 @@ class KiwiWatermelonActionFactory {
 
   /// Returns an action to set the UUID value at [key] to [value].
   static KiwiSetEnumAction setEnum(String key, String value,
-      {required KiwiWatermelonOptions options, bool validate = true }) {
+      {required KiwiWatermelonOptions options, bool validate = true}) {
     return KiwiSetEnumAction(key, value, options: options, validate: validate);
   }
 }

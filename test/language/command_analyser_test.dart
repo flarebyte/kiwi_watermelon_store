@@ -1,5 +1,6 @@
 import 'package:kiwi_watermelon_store/src/action/base_action.dart';
 import 'package:kiwi_watermelon_store/src/action/incr_action.dart';
+import 'package:kiwi_watermelon_store/src/action/set_action.dart';
 import 'package:kiwi_watermelon_store/src/language/command_analyser.dart';
 import 'package:kiwi_watermelon_store/src/language/semantic_exception.dart';
 import 'package:kiwi_watermelon_store/src/language/token_stream.dart';
@@ -87,6 +88,34 @@ void main() {
 
     test('throws SemanticException on malformed number', () {
       expect(() => parseSingleCommand('DECRBYFLOAT env:budget --1.0'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('SET analyser', () {
+    test('parse SET integer', () {
+      final action = parseSingleCommand('SET env:budget 10');
+      expect(action, isA<KiwiSetIntegerAction>());
+    });
+
+    test('parse SET float', () {
+      final action = parseSingleCommand('SET env:budget 10.7');
+      expect(action, isA<KiwiSetFloatAction>());
+    });
+
+    test('parse SET UUID', () {
+      final action = parseSingleCommand(
+          'SET env:event:london e3ff1563-6977-4824-800a-be7118b22deb');
+      expect(action, isA<KiwiSetUuidAction>());
+    });
+
+    test('parse SET enum', () {
+      final action = parseSingleCommand('SET env:report true');
+      expect(action, isA<KiwiSetEnumAction>());
+    });
+
+    test('throws SemanticException on malformed parameter', () {
+      expect(() => parseSingleCommand('SET env:budget unknown'),
           throwsA(isA<KiwiWatermelonSemanticException>()));
     });
   });

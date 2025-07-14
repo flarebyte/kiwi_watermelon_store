@@ -197,5 +197,4 @@ class KiwiTokenStreamFlyweight {
         tokens.consumeAndValidate(TokenTypes.uuid, contextual: contextual);
     return uuidToken.text;
   }
-
 }

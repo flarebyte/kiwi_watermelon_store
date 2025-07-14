@@ -62,12 +62,12 @@ class KiwiWatermelonOptions {
   }
 
   /// Return true if the value is an official enum
-  bool isEnum(String value){
+  bool isEnum(String value) {
     return mapping.keys.contains(value);
   }
 
   /// Returns the list of enums
-  List<String> getEnums(){
+  List<String> getEnums() {
     return mapping.keys.toList();
   }
 }

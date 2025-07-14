@@ -40,7 +40,8 @@ class KiwiSetUuidAction extends KiwiSetStringAction {
 }
 
 class KiwiSetEnumAction extends KiwiSetStringAction {
-  KiwiSetEnumAction(String key, String value, {required KiwiWatermelonOptions options, bool validate = true })
+  KiwiSetEnumAction(String key, String value,
+      {required KiwiWatermelonOptions options, bool validate = true})
       : super(key, value) {
     if (!validate) {
       return;
