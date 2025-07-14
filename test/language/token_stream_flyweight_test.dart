@@ -167,7 +167,16 @@ void main() {
     }
   });
 
-  group('consumeInteger', () {
+  group('Integer or Number', () {
+    test('returns true when current token is a number', () {
+      final result = KiwiTokenStreamFlyweight.isNumber(toStream('12'));
+      expect(result, isTrue);
+    });
+
+    test('returns false when current token is not a number', () {
+      final result = KiwiTokenStreamFlyweight.isNumber(toStream('other'));
+      expect(result, isFalse);
+    });
     test('consumes integer', () {
       final actual = KiwiTokenStreamFlyweight.consumeInteger(toStream('12'));
 
@@ -188,6 +197,19 @@ void main() {
     test('consumeInteger throws if not a valid one', () {
       expect(() => KiwiTokenStreamFlyweight.consumeDouble(toStream('three')),
           throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('UUID', () {
+    test('returns true when current token is a UUID', () {
+      final result = KiwiTokenStreamFlyweight.isUuid(
+          toStream('e3ff1563-6977-4824-800a-be7118b22deb'));
+      expect(result, isTrue);
+    });
+
+    test('returns false when current token is not a UUID', () {
+      final result = KiwiTokenStreamFlyweight.isUuid(toStream('other'));
+      expect(result, isFalse);
     });
   });
 }
