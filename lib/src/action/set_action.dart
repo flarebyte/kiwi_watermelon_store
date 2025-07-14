@@ -1,5 +1,6 @@
 import '../../kiwi_watermelon_store.dart';
 import '../language/tokeniser_helper.dart';
+import '../store/manager_options.dart';
 import 'action_patch.dart';
 import 'action_result.dart';
 import 'base_action.dart';
@@ -34,6 +35,18 @@ class KiwiSetUuidAction extends KiwiSetStringAction {
     }
     if (!isUuid(value)) {
       throw Exception("The value should be an UUID but is $value");
+    }
+  }
+}
+
+class KiwiSetEnumAction extends KiwiSetStringAction {
+  KiwiSetEnumAction(String key, String value, {required KiwiWatermelonOptions options, bool validate = true })
+      : super(key, value) {
+    if (!validate) {
+      return;
+    }
+    if (!options.isEnum(value)) {
+      throw Exception("The value should be an enumeration but is $value");
     }
   }
 }

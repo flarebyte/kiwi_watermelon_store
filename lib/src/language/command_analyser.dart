@@ -94,6 +94,12 @@ class KiwiCommandAnalyser {
           return KiwiWatermelonActionFactory.setUuid(key, value,
               validate: false);
         }
+
+        if (KiwiTokenStreamFlyweight.isAnyKeyword(stream, options.getEnums())) {
+          final value = KiwiTokenStreamFlyweight.consumeIdentifier(stream);
+          return KiwiWatermelonActionFactory.setEnum(key, value.text,
+              options: options, validate: false);
+        }
         throw KiwiWatermelonSemanticException(
             "Unexpected int, float, UUID or enum as value fr SET",
             stream.current);

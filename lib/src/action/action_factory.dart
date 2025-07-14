@@ -1,3 +1,4 @@
+import '../store/manager_options.dart';
 import 'incr_action.dart';
 import 'set_action.dart';
 
@@ -56,5 +57,11 @@ class KiwiWatermelonActionFactory {
   static KiwiSetUuidAction setUuid(String key, String value,
       {bool validate = true}) {
     return KiwiSetUuidAction(key, value, validate: validate);
+  }
+
+  /// Returns an action to set the UUID value at [key] to [value].
+  static KiwiSetEnumAction setEnum(String key, String value,
+      {required KiwiWatermelonOptions options, bool validate = true }) {
+    return KiwiSetEnumAction(key, value, options: options, validate: validate);
   }
 }

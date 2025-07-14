@@ -60,4 +60,14 @@ class KiwiWatermelonOptions {
     if (variablePart.isEmpty) return false;
     return variableValidator(variablePart);
   }
+
+  /// Return true if the value is an official enum
+  bool isEnum(String value){
+    return mapping.keys.contains(value);
+  }
+
+  /// Returns the list of enums
+  List<String> getEnums(){
+    return mapping.keys.toList();
+  }
 }
