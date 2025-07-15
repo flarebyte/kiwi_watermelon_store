@@ -14,23 +14,23 @@ void main() {
     });
 
     test('lpush should prepend values', () {
-      store.set('mylist', 'c,d');
-      final result = KiwiWatermelonActionFactory.lpush('mylist', ['a', 'b'],
+      store.set('env:mylist', 'c,d');
+      final result = KiwiWatermelonActionFactory.lpush('env:mylist', ['a', 'b'],
               separator: ',')
           .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['mylist'], equals('a,b,c,d'));
+      expect(result.patch?.updates['env:mylist'], equals('b,a,c,d'));
     });
 
     test('rpush should append values', () {
-      store.set('mylist', 'x,y');
+      store.set('env:mylist', 'x,y');
       final result =
-          KiwiWatermelonActionFactory.rpush('mylist', ['z'], separator: ',')
+          KiwiWatermelonActionFactory.rpush('env:mylist', ['z'], separator: ',')
               .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['mylist'], equals('x,y,z'));
+      expect(result.patch?.updates['env:mylist'], equals('x,y,z'));
     });
 
     test('lrem with count = 0 should remove all occurrences', () {
