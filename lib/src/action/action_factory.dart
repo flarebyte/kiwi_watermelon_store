@@ -1,5 +1,6 @@
 import '../store/manager_options.dart';
 import 'incr_action.dart';
+import 'list_action.dart';
 import 'set_action.dart';
 
 /// Factory for constructing Redis-style numeric mutation actions.
@@ -63,5 +64,60 @@ class KiwiWatermelonActionFactory {
   static KiwiSetEnumAction setEnum(String key, String value,
       {required KiwiWatermelonOptions options, bool validate = true}) {
     return KiwiSetEnumAction(key, value, options: options, validate: validate);
+  }
+
+  /// Returns an action to prepend [values] to the beginning of the list at [key].
+  static LPushAction lpush(String key, List<String> values,
+      {required String separator}) {
+    return LPushAction(key: key, values: values, separator: separator);
+  }
+
+  /// Returns an action to append [values] to the end of the list at [key].
+  static RPushAction rpush(String key, List<String> values,
+      {required String separator}) {
+    return RPushAction(key: key, values: values, separator: separator);
+  }
+
+  /// Returns an action to remove [value] from the list at [key] [count] times.
+  ///
+  /// If [count] > 0, removes from head; if < 0, from tail; if 0, removes all.
+  static LRemAction lrem(String key, int count, String value,
+      {required String separator}) {
+    return LRemAction(
+        key: key, count: count, value: value, separator: separator);
+  }
+
+  /// Returns an action to trim the list at [key] to the range [[start], [stop]] (inclusive).
+  static LTrimAction ltrim(String key, int start, int stop,
+      {required String separator}) {
+    return LTrimAction(
+        key: key, start: start, stop: stop, separator: separator);
+  }
+
+  /// Returns an action to pop the last element from [source] and push it to the front of [destination].
+  static RPopLPushAction rpoplpush(String source, String destination,
+      {required String separator}) {
+    return RPopLPushAction(
+        source: source, destination: destination, separator: separator);
+  }
+
+  /// Returns an action to move an element from [source] to [destination],
+  /// using direction [from] in source and [to] in destination.
+  ///
+  /// [from] and [to] must be either `"LEFT"` or `"RIGHT"` (case insensitive).
+  static LMoveAction lmove(
+    String source,
+    String destination,
+    String from,
+    String to, {
+    required String separator,
+  }) {
+    return LMoveAction(
+      source: source,
+      destination: destination,
+      from: from,
+      to: to,
+      separator: separator,
+    );
   }
 }
