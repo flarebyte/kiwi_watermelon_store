@@ -6,14 +6,11 @@ import 'base_action.dart';
 /// An abstract base class for Redis-style list operations,
 /// where lists are stored as plain strings separated by a custom separator.
 abstract class KiwiListAction extends KiwiWatermelonAction {
-  /// The key in the data store representing the list.
-  final String key;
-
   /// The string used to separate elements in the list (e.g., "," or "|").
   final String separator;
 
   /// Constructs a [KiwiListAction] with a list key and separator.
-  KiwiListAction({required this.key, required this.separator});
+  KiwiListAction({required this.separator});
 
   /// Splits the raw string value from the data store into a list of strings.
   ///
@@ -34,15 +31,17 @@ abstract class KiwiListAction extends KiwiWatermelonAction {
 /// Implements the Redis `LPUSH` operation.
 /// Prepends one or more values to the beginning of a string-separated list.
 class LPushAction extends KiwiListAction {
+
+  final String key;
   /// The values to insert at the beginning of the list.
   final List<String> values;
 
   /// Constructs an [LPushAction] for a given key, separator, and values.
   LPushAction({
-    required String key,
+    required String this.key,
     required String separator,
     required this.values,
-  }) : super(key: key, separator: separator);
+  }) : super(separator: separator);
 
   /// Executes the LPUSH logic, updating the list in-place.
   ///
@@ -65,15 +64,16 @@ class LPushAction extends KiwiListAction {
 /// Implements the Redis `RPUSH` operation.
 /// Appends one or more values to the end of a string-separated list.
 class RPushAction extends KiwiListAction {
+  final String key;
   /// The values to append at the end of the list.
   final List<String> values;
 
   /// Constructs an [RPushAction] for a given key, separator, and values.
   RPushAction({
-    required String key,
+    required this.key,
     required String separator,
     required this.values,
-  }) : super(key: key, separator: separator);
+  }) : super(separator: separator);
 
   /// Executes the RPUSH logic, updating the list in-place.
   ///
@@ -96,6 +96,8 @@ class RPushAction extends KiwiListAction {
 /// Implements the Redis `LREM` operation.
 /// Removes occurrences of a given value from a string-separated list.
 class LRemAction extends KiwiListAction {
+
+  final String key;
   /// Maximum number of elements to remove:
   /// - Positive = remove from head
   /// - Negative = remove from tail
@@ -107,11 +109,11 @@ class LRemAction extends KiwiListAction {
 
   /// Constructs an [LRemAction] for a given key, separator, count, and value.
   LRemAction({
-    required String key,
+    required this.key,
     required String separator,
     required this.count,
     required this.value,
-  }) : super(key: key, separator: separator);
+  }) : super(separator: separator);
 
   /// Executes the LREM logic, updating the list in-place.
   ///
@@ -158,6 +160,7 @@ class LRemAction extends KiwiListAction {
 /// Implements the Redis `LTRIM` operation.
 /// Trims a string-separated list to only include elements in the specified range.
 class LTrimAction extends KiwiListAction {
+  final String key;
   /// Start index (inclusive) of the trim range.
   final int start;
 
@@ -166,11 +169,11 @@ class LTrimAction extends KiwiListAction {
 
   /// Constructs an [LTrimAction] with a key, separator, start, and stop.
   LTrimAction({
-    required String key,
+    required this.key,
     required String separator,
     required this.start,
     required this.stop,
-  }) : super(key: key, separator: separator);
+  }) : super(separator: separator);
 
   /// Executes the LTRIM logic, reducing the list to the specified range.
   ///
@@ -209,7 +212,7 @@ class RPopLPushAction extends KiwiListAction {
     required this.source,
     required this.destination,
     required this.separator,
-  }) : super(key: '', separator: separator);
+  }) : super(separator: separator);
 
   /// Executes the RPOPLPUSH logic.
   ///
@@ -217,12 +220,12 @@ class RPopLPushAction extends KiwiListAction {
   /// Otherwise, returns a [KiwiWatermelonPatch] with updates to both keys.
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
-    final sourceList = splitList(store.get(key)); // key = source
+    final sourceList = splitList(store.get(source)); // key = source
     if (sourceList.isEmpty) {
       return KiwiWatermelonActionResult(
         error: KiwiWatermelonActionError(
           message: 'Source list is empty',
-          keys: [key],
+          keys: [source],
         ),
       );
     }
@@ -234,7 +237,7 @@ class RPopLPushAction extends KiwiListAction {
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
         updates: {
-          key: joinList(sourceList),
+          source: joinList(sourceList),
           destination: joinList(destinationList),
         },
         deletions: [],
@@ -268,19 +271,19 @@ class LMoveAction extends KiwiListAction {
     required this.from,
     required this.to,
     required this.separator,
-  }) : super(key: '', separator: separator);
+  }) : super(separator: separator);
 
   /// Executes the LMOVE logic.
   ///
   /// Returns a patch with updated values or an error if source is empty.
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
-    final sourceList = splitList(store.get(key));
+    final sourceList = splitList(store.get(source));
     if (sourceList.isEmpty) {
       return KiwiWatermelonActionResult(
         error: KiwiWatermelonActionError(
           message: 'Source list is empty',
-          keys: [key],
+          keys: [source],
         ),
       );
     }
@@ -299,7 +302,7 @@ class LMoveAction extends KiwiListAction {
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
         updates: {
-          key: joinList(sourceList),
+          source: joinList(sourceList),
           destination: joinList(destList),
         },
         deletions: [],
