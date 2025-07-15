@@ -31,8 +31,8 @@ abstract class KiwiListAction extends KiwiWatermelonAction {
 /// Implements the Redis `LPUSH` operation.
 /// Prepends one or more values to the beginning of a string-separated list.
 class LPushAction extends KiwiListAction {
-
   final String key;
+
   /// The values to insert at the beginning of the list.
   final List<String> values;
 
@@ -65,6 +65,7 @@ class LPushAction extends KiwiListAction {
 /// Appends one or more values to the end of a string-separated list.
 class RPushAction extends KiwiListAction {
   final String key;
+
   /// The values to append at the end of the list.
   final List<String> values;
 
@@ -96,8 +97,8 @@ class RPushAction extends KiwiListAction {
 /// Implements the Redis `LREM` operation.
 /// Removes occurrences of a given value from a string-separated list.
 class LRemAction extends KiwiListAction {
-
   final String key;
+
   /// Maximum number of elements to remove:
   /// - Positive = remove from head
   /// - Negative = remove from tail
@@ -161,6 +162,7 @@ class LRemAction extends KiwiListAction {
 /// Trims a string-separated list to only include elements in the specified range.
 class LTrimAction extends KiwiListAction {
   final String key;
+
   /// Start index (inclusive) of the trim range.
   final int start;
 
