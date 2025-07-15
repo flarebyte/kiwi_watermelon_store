@@ -34,61 +34,61 @@ void main() {
     });
 
     test('lrem with count = 0 should remove all occurrences', () {
-      store.set('colors', 'red,blue,red,yellow,red');
+      store.set('env:colors', 'red,blue,red,yellow,red');
       final result =
-          KiwiWatermelonActionFactory.lrem('colors', 0, 'red', separator: ',')
+          KiwiWatermelonActionFactory.lrem('env:colors', 0, 'red', separator: ',')
               .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['colors'], equals('blue,yellow'));
+      expect(result.patch?.updates['env:colors'], equals('blue,yellow'));
     });
 
     test('lrem with count > 0 should remove first occurrences', () {
-      store.set('colors', 'red,blue,red,yellow,red');
+      store.set('env:colors', 'red,blue,red,yellow,red');
       final result =
-          KiwiWatermelonActionFactory.lrem('colors', 2, 'red', separator: ',')
+          KiwiWatermelonActionFactory.lrem('env:colors', 2, 'red', separator: ',')
               .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['colors'], equals('blue,yellow,red'));
+      expect(result.patch?.updates['env:colors'], equals('blue,yellow,red'));
     });
 
     test('lrem with count < 0 should remove from end', () {
-      store.set('colors', 'red,blue,red,yellow,red');
+      store.set('env:colors', 'red,blue,red,yellow,red');
       final result =
-          KiwiWatermelonActionFactory.lrem('colors', -1, 'red', separator: ',')
+          KiwiWatermelonActionFactory.lrem('env:colors', -1, 'red', separator: ',')
               .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['colors'], equals('red,blue,red,yellow'));
+      expect(result.patch?.updates['env:colors'], equals('red,blue,red,yellow'));
     });
 
     test('ltrim should slice the list correctly', () {
-      store.set('nums', '1,2,3,4,5');
+      store.set('nenv:ums', '1,2,3,4,5');
       final result =
-          KiwiWatermelonActionFactory.ltrim('nums', 1, 3, separator: ',')
+          KiwiWatermelonActionFactory.ltrim('env:nums', 1, 3, separator: ',')
               .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['nums'], equals('2,3,4'));
+      expect(result.patch?.updates['env:nums'], equals('2,3,4'));
     });
 
     test('rpoplpush should move last of source to front of destination', () {
-      store.set('source', 'a,b,c');
-      store.set('dest', 'x,y');
-      final result = KiwiWatermelonActionFactory.rpoplpush('source', 'dest',
+      store.set('env:source', 'a,b,c');
+      store.set('env:dest', 'x,y');
+      final result = KiwiWatermelonActionFactory.rpoplpush('env:source', 'dest',
               separator: ',')
           .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['source'], equals('a,b'));
-      expect(result.patch?.updates['dest'], equals('c,x,y'));
+      expect(result.patch?.updates['env:source'], equals('a,b'));
+      expect(result.patch?.updates['env:dest'], equals('c,x,y'));
     });
 
     test('rpoplpush should error on empty source', () {
-      store.set('source', '');
-      store.set('dest', 'x');
-      final result = KiwiWatermelonActionFactory.rpoplpush('source', 'dest',
+      store.set('env:source', '');
+      store.set('env:dest', 'x');
+      final result = KiwiWatermelonActionFactory.rpoplpush('env:source', 'dest',
               separator: ',')
           .execute(store);
 
@@ -97,39 +97,39 @@ void main() {
     });
 
     test('lmove LEFT to RIGHT', () {
-      store.set('src', 'a,b,c');
-      store.set('dst', '1,2');
+      store.set('env:src', 'a,b,c');
+      store.set('env:dst', '1,2');
       final result = KiwiWatermelonActionFactory.lmove(
-              'src', 'dst', 'LEFT', 'RIGHT',
+              'env:src', 'env:dst', 'LEFT', 'RIGHT',
               separator: ',')
           .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['src'], equals('b,c'));
-      expect(result.patch?.updates['dst'], equals('1,2,a'));
+      expect(result.patch?.updates['env:src'], equals('b,c'));
+      expect(result.patch?.updates['env:dst'], equals('1,2,a'));
     });
 
     test('lmove RIGHT to LEFT', () {
-      store.set('src', 'a,b,c');
-      store.set('dst', '1,2');
+      store.set('env:src', 'a,b,c');
+      store.set('env:dst', '1,2');
       final result = KiwiWatermelonActionFactory.lmove(
-              'src', 'dst', 'RIGHT', 'LEFT',
+              'env:src', 'env:dst', 'RIGHT', 'LEFT',
               separator: ',')
           .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['src'], equals('a,b'));
-      expect(result.patch?.updates['dst'], equals('c,1,2'));
+      expect(result.patch?.updates['env:src'], equals('a,b'));
+      expect(result.patch?.updates['env:dst'], equals('c,1,2'));
     });
 
     test('lpush on non-existent key creates new list', () {
       final result = KiwiWatermelonActionFactory.lpush(
-              'newlist', ['foo', 'bar'],
+              'env:newlist', ['foo', 'bar'],
               separator: ',')
           .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['newlist'], equals('foo,bar'));
+      expect(result.patch?.updates['env:newlist'], equals('foo,bar'));
     });
   });
 }
