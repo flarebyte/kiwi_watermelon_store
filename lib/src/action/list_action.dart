@@ -1,0 +1,309 @@
+import '../../kiwi_watermelon_store.dart';
+import 'action_patch.dart';
+import 'action_result.dart';
+import 'base_action.dart';
+
+/// An abstract base class for Redis-style list operations,
+/// where lists are stored as plain strings separated by a custom separator.
+abstract class KiwiListAction extends KiwiWatermelonAction {
+  /// The key in the data store representing the list.
+  final String key;
+
+  /// The string used to separate elements in the list (e.g., "," or "|").
+  final String separator;
+
+  /// Constructs a [KiwiListAction] with a list key and separator.
+  KiwiListAction({required this.key, required this.separator});
+
+  /// Splits the raw string value from the data store into a list of strings.
+  ///
+  /// Returns an empty list if the input is null or empty.
+  List<String> splitList(String? raw) {
+    if (raw == null || raw.trim().isEmpty) return [];
+    return raw.split(separator);
+  }
+
+  /// Joins a list of strings into a single string using the configured separator.
+  ///
+  /// Returns an empty string if the list is empty.
+  String joinList(List<String> items) {
+    return items.join(separator);
+  }
+}
+
+/// Implements the Redis `LPUSH` operation.
+/// Prepends one or more values to the beginning of a string-separated list.
+class LPushAction extends KiwiListAction {
+  /// The values to insert at the beginning of the list.
+  final List<String> values;
+
+  /// Constructs an [LPushAction] for a given key, separator, and values.
+  LPushAction({
+    required String key,
+    required String separator,
+    required this.values,
+  }) : super(key: key, separator: separator);
+
+  /// Executes the LPUSH logic, updating the list in-place.
+  ///
+  /// Returns a [KiwiWatermelonPatch] containing the updated value.
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final originalList = splitList(store.get(key));
+    originalList.insertAll(0, values.reversed);
+    final updatedValue = joinList(originalList);
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {key: updatedValue},
+        deletions: [],
+      ),
+    );
+  }
+}
+
+/// Implements the Redis `RPUSH` operation.
+/// Appends one or more values to the end of a string-separated list.
+class RPushAction extends KiwiListAction {
+  /// The values to append at the end of the list.
+  final List<String> values;
+
+  /// Constructs an [RPushAction] for a given key, separator, and values.
+  RPushAction({
+    required String key,
+    required String separator,
+    required this.values,
+  }) : super(key: key, separator: separator);
+
+  /// Executes the RPUSH logic, updating the list in-place.
+  ///
+  /// Returns a [KiwiWatermelonPatch] containing the updated value.
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final list = splitList(store.get(key));
+    list.addAll(values);
+    final updatedValue = joinList(list);
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {key: updatedValue},
+        deletions: [],
+      ),
+    );
+  }
+}
+
+/// Implements the Redis `LREM` operation.
+/// Removes occurrences of a given value from a string-separated list.
+class LRemAction extends KiwiListAction {
+  /// Maximum number of elements to remove:
+  /// - Positive = remove from head
+  /// - Negative = remove from tail
+  /// - Zero = remove all occurrences
+  final int count;
+
+  /// The value to remove from the list.
+  final String value;
+
+  /// Constructs an [LRemAction] for a given key, separator, count, and value.
+  LRemAction({
+    required String key,
+    required String separator,
+    required this.count,
+    required this.value,
+  }) : super(key: key, separator: separator);
+
+  /// Executes the LREM logic, updating the list in-place.
+  ///
+  /// Returns a [KiwiWatermelonPatch] containing the updated value.
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final list = splitList(store.get(key));
+    int removed = 0;
+    List<String> result;
+
+    if (count == 0) {
+      result = list.where((e) => e != value).toList();
+    } else if (count > 0) {
+      result = [];
+      for (var e in list) {
+        if (e == value && removed < count) {
+          removed++;
+        } else {
+          result.add(e);
+        }
+      }
+    } else {
+      final reversed = list.reversed.toList();
+      final temp = <String>[];
+      for (var e in reversed) {
+        if (e == value && removed < -count) {
+          removed++;
+        } else {
+          temp.add(e);
+        }
+      }
+      result = temp.reversed.toList();
+    }
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {key: joinList(result)},
+        deletions: [],
+      ),
+    );
+  }
+}
+
+/// Implements the Redis `LTRIM` operation.
+/// Trims a string-separated list to only include elements in the specified range.
+class LTrimAction extends KiwiListAction {
+  /// Start index (inclusive) of the trim range.
+  final int start;
+
+  /// Stop index (inclusive) of the trim range.
+  final int stop;
+
+  /// Constructs an [LTrimAction] with a key, separator, start, and stop.
+  LTrimAction({
+    required String key,
+    required String separator,
+    required this.start,
+    required this.stop,
+  }) : super(key: key, separator: separator);
+
+  /// Executes the LTRIM logic, reducing the list to the specified range.
+  ///
+  /// Returns a [KiwiWatermelonPatch] containing the updated value.
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final list = splitList(store.get(key));
+
+    final safeStart = start.clamp(0, list.length);
+    final safeStop = stop.clamp(0, list.length - 1);
+    final trimmed = list.sublist(safeStart, safeStop + 1);
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {key: joinList(trimmed)},
+        deletions: [],
+      ),
+    );
+  }
+}
+
+/// Implements the Redis `RPOPLPUSH` operation.
+/// Removes the last element from the source list and prepends it to the destination list.
+class RPopLPushAction extends KiwiListAction {
+  /// Source list key to pop from.
+  final String source;
+
+  /// Destination list key to push into.
+  final String destination;
+
+  /// Separator used for both lists.
+  final String separator;
+
+  /// Constructs an [RPopLPushAction] with source, destination, and separator.
+  RPopLPushAction({
+    required this.source,
+    required this.destination,
+    required this.separator,
+  }) : super(key: '', separator: separator);
+
+  /// Executes the RPOPLPUSH logic.
+  ///
+  /// If the source is empty, returns an error result.
+  /// Otherwise, returns a [KiwiWatermelonPatch] with updates to both keys.
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final sourceList = splitList(store.get(key)); // key = source
+    if (sourceList.isEmpty) {
+      return KiwiWatermelonActionResult(
+        error: KiwiWatermelonActionError(
+          message: 'Source list is empty',
+          keys: [key],
+        ),
+      );
+    }
+
+    final value = sourceList.removeLast();
+    final destinationList = splitList(store.get(destination));
+    destinationList.insert(0, value);
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {
+          key: joinList(sourceList),
+          destination: joinList(destinationList),
+        },
+        deletions: [],
+      ),
+    );
+  }
+}
+
+/// Implements the Redis `LMOVE` operation.
+/// Moves an element from one end of the source list to one end of the destination list.
+class LMoveAction extends KiwiListAction {
+  /// Source list key to remove the element from.
+  final String source;
+
+  /// Destination list key to insert the element into.
+  final String destination;
+
+  /// Direction from which to remove in the source list: "LEFT" or "RIGHT".
+  final String from;
+
+  /// Direction to insert in the destination list: "LEFT" or "RIGHT".
+  final String to;
+
+  /// Separator used for both lists.
+  final String separator;
+
+  /// Constructs an [LMoveAction] with source, destination, directions, and separator.
+  LMoveAction({
+    required this.source,
+    required this.destination,
+    required this.from,
+    required this.to,
+    required this.separator,
+  }) : super(key: '', separator: separator);
+
+  /// Executes the LMOVE logic.
+  ///
+  /// Returns a patch with updated values or an error if source is empty.
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final sourceList = splitList(store.get(key));
+    if (sourceList.isEmpty) {
+      return KiwiWatermelonActionResult(
+        error: KiwiWatermelonActionError(
+          message: 'Source list is empty',
+          keys: [key],
+        ),
+      );
+    }
+
+    final value = (from.toUpperCase() == 'LEFT')
+        ? sourceList.removeAt(0)
+        : sourceList.removeLast();
+
+    final destList = splitList(store.get(destination));
+    if (to.toUpperCase() == 'LEFT') {
+      destList.insert(0, value);
+    } else {
+      destList.add(value);
+    }
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {
+          key: joinList(sourceList),
+          destination: joinList(destList),
+        },
+        deletions: [],
+      ),
+    );
+  }
+}
