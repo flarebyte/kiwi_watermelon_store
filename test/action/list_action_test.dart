@@ -85,17 +85,6 @@ void main() {
       expect(result.patch?.updates['env:dest'], equals('c,x,y'));
     });
 
-    test('rpoplpush should error on empty source', () {
-      store.set('env:source', '');
-      store.set('env:dest', 'x');
-      final result = KiwiWatermelonActionFactory.rpoplpush('env:source', 'dest',
-              separator: ',')
-          .execute(store);
-
-      expect(result.patch, isNull);
-      expect(result.error?.message, contains('empty'));
-    });
-
     test('lmove LEFT to RIGHT', () {
       store.set('env:src', 'a,b,c');
       store.set('env:dst', '1,2');

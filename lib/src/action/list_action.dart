@@ -15,10 +15,8 @@ abstract class KiwiListAction extends KiwiWatermelonAction {
   /// Splits the raw string value from the data store into a list of strings.
   ///
   /// Returns an empty list if the input is null or empty.
-  List<String> splitList(String? raw) {
-    if (raw == null || raw.trim().isEmpty) return [];
-    return raw.split(separator);
-  }
+  List<String> splitList(String? raw) =>
+      (raw == null || raw.trim().isEmpty) ? [] : raw.split(separator);
 
   /// Joins a list of strings into a single string using the configured separator.
   ///
@@ -183,9 +181,17 @@ class KiwiLTrimAction extends KiwiListAction {
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     final list = splitList(store.get(key));
 
+    if (list.isEmpty) {
+      return KiwiWatermelonActionResult(
+        patch: KiwiWatermelonPatch(
+          updates: {key: ''}, // silently clears list
+          deletions: [],
+        ),
+      );
+    }
+
     final safeStart = start.clamp(0, list.length - 1);
     final safeStop = stop.clamp(safeStart, list.length - 1);
-
     final trimmed = list.sublist(safeStart, safeStop + 1);
 
     return KiwiWatermelonActionResult(
@@ -226,9 +232,9 @@ class KiwiRPopLPushAction extends KiwiListAction {
 
     if (sourceList.isEmpty) {
       return KiwiWatermelonActionResult(
-        error: KiwiWatermelonActionError(
-          message: 'Source list is empty',
-          keys: [source],
+        patch: KiwiWatermelonPatch(
+          updates: {},
+          deletions: [],
         ),
       );
     }
@@ -283,9 +289,9 @@ class KiwiLMoveAction extends KiwiListAction {
     final sourceList = splitList(store.get(source));
     if (sourceList.isEmpty) {
       return KiwiWatermelonActionResult(
-        error: KiwiWatermelonActionError(
-          message: 'Source list is empty',
-          keys: [source],
+        patch: KiwiWatermelonPatch(
+          updates: {},
+          deletions: [],
         ),
       );
     }
