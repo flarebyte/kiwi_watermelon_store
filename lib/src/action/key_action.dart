@@ -57,7 +57,7 @@ class KiwiRenameNXAction extends KiwiWatermelonAction {
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     final value = store.get(oldKey);
-    if (value == null || store.get(newKey) != null) {
+    if (value == null || store.containsKey(newKey)) {
       return KiwiWatermelonActionResult(
         patch: KiwiWatermelonPatch(updates: {}, deletions: []),
       );
