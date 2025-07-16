@@ -6,7 +6,7 @@ import 'package:test/test.dart';
 import '../code_fixtures.dart';
 
 void main() {
-  group('KiwiWatermelonActionFactory integer operations', () {
+  group('KiwiWatermelonActionFactory list operations', () {
     late BaseStringDataStore store;
 
     setUp(() {

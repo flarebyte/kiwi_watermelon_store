@@ -2,6 +2,7 @@ import '../store/manager_options.dart';
 import 'incr_action.dart';
 import 'list_action.dart';
 import 'set_action.dart';
+import 'sets_action.dart';
 
 /// Factory for constructing Redis-style numeric mutation actions.
 ///
@@ -117,6 +118,55 @@ class KiwiWatermelonActionFactory {
       destination: destination,
       from: from,
       to: to,
+      separator: separator,
+    );
+  }
+
+  /// Returns an action to add one or more [members] to the set at [key].
+  /// If the key does not exist, it will be created.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.sadd('env:tags', ['a', 'b'], separator: ',');
+  /// ```
+  static KiwiSAddAction sadd(String key, List<String> members,
+      {required String separator}) {
+    return KiwiSAddAction(
+      key: key,
+      members: members,
+      separator: separator,
+    );
+  }
+
+  /// Returns an action to remove one or more [members] from the set at [key].
+  /// Members not present in the set are ignored.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.srem('env:tags', ['a'], separator: ',');
+  /// ```
+  static KiwiSRemAction srem(String key, List<String> members,
+      {required String separator}) {
+    return KiwiSRemAction(
+      key: key,
+      members: members,
+      separator: separator,
+    );
+  }
+
+  /// Returns an action to move [member] from the [source] set to the [destination] set.
+  /// If the member is not in the source set, this is a no-op.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.smove('env:src', 'env:dst', 'x', separator: ',');
+  /// ```
+  static KiwiSMoveAction smove(String source, String destination, String member,
+      {required String separator}) {
+    return KiwiSMoveAction(
+      source: source,
+      destination: destination,
+      member: member,
       separator: separator,
     );
   }
