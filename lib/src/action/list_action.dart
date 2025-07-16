@@ -48,13 +48,14 @@ class LPushAction extends KiwiListAction {
   /// Returns a [KiwiWatermelonPatch] containing the updated value.
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
-    final originalList = splitList(store.get(key));
-    originalList.insertAll(0, values.reversed);
-    final updatedValue = joinList(originalList);
+    final updatedList = [
+      ...values.reversed,
+      ...splitList(store.get(key)),
+    ];
 
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
-        updates: {key: updatedValue},
+        updates: {key: joinList(updatedList)},
         deletions: [],
       ),
     );
@@ -81,9 +82,11 @@ class KiwiRPushAction extends KiwiListAction {
   /// Returns a [KiwiWatermelonPatch] containing the updated value.
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
-    final list = splitList(store.get(key));
-    list.addAll(values);
-    final updatedValue = joinList(list);
+    final updatedList = [
+      ...splitList(store.get(key)),
+      ...values,
+    ];
+    final updatedValue = joinList(updatedList);
 
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
@@ -122,36 +125,32 @@ class KiwiLRemAction extends KiwiListAction {
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     final list = splitList(store.get(key));
-    int removed = 0;
-    List<String> result;
+
+    Iterable<String> updatedList;
 
     if (count == 0) {
-      result = list.where((e) => e != value).toList();
+      updatedList = list.where((e) => e != value);
     } else if (count > 0) {
-      result = [];
-      for (var e in list) {
-        if (e == value && removed < count) {
-          removed++;
-        } else {
-          result.add(e);
-        }
-      }
+      int removed = 0;
+      updatedList = list.where((e) {
+        final shouldRemove = e == value && removed < count;
+        if (shouldRemove) removed++;
+        return !shouldRemove;
+      });
     } else {
-      final reversed = list.reversed.toList();
-      final temp = <String>[];
-      for (var e in reversed) {
-        if (e == value && removed < -count) {
-          removed++;
-        } else {
-          temp.add(e);
-        }
-      }
-      result = temp.reversed.toList();
+      int removed = 0;
+      final reversed = list.reversed;
+      final filtered = reversed.where((e) {
+        final shouldRemove = e == value && removed < -count;
+        if (shouldRemove) removed++;
+        return !shouldRemove;
+      });
+      updatedList = filtered.toList().reversed;
     }
 
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
-        updates: {key: joinList(result)},
+        updates: {key: joinList(updatedList.toList())},
         deletions: [],
       ),
     );
@@ -184,8 +183,9 @@ class KiwiLTrimAction extends KiwiListAction {
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     final list = splitList(store.get(key));
 
-    final safeStart = start.clamp(0, list.length);
-    final safeStop = stop.clamp(0, list.length - 1);
+    final safeStart = start.clamp(0, list.length - 1);
+    final safeStop = stop.clamp(safeStart, list.length - 1);
+
     final trimmed = list.sublist(safeStart, safeStop + 1);
 
     return KiwiWatermelonActionResult(
@@ -222,7 +222,8 @@ class KiwiRPopLPushAction extends KiwiListAction {
   /// Otherwise, returns a [KiwiWatermelonPatch] with updates to both keys.
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
-    final sourceList = splitList(store.get(source)); // key = source
+    final sourceList = splitList(store.get(source));
+
     if (sourceList.isEmpty) {
       return KiwiWatermelonActionResult(
         error: KiwiWatermelonActionError(
@@ -233,14 +234,13 @@ class KiwiRPopLPushAction extends KiwiListAction {
     }
 
     final value = sourceList.removeLast();
-    final destinationList = splitList(store.get(destination));
-    destinationList.insert(0, value);
+    final updatedDest = [value, ...splitList(store.get(destination))];
 
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
         updates: {
           source: joinList(sourceList),
-          destination: joinList(destinationList),
+          destination: joinList(updatedDest),
         },
         deletions: [],
       ),
@@ -290,22 +290,20 @@ class KiwiLMoveAction extends KiwiListAction {
       );
     }
 
-    final value = (from.toUpperCase() == 'LEFT')
-        ? sourceList.removeAt(0)
-        : sourceList.removeLast();
+    final isFromLeft = from.toUpperCase() == 'LEFT';
+    final isToLeft = to.toUpperCase() == 'LEFT';
 
-    final destList = splitList(store.get(destination));
-    if (to.toUpperCase() == 'LEFT') {
-      destList.insert(0, value);
-    } else {
-      destList.add(value);
-    }
+    final value = isFromLeft ? sourceList.removeAt(0) : sourceList.removeLast();
+
+    final destinationList = splitList(store.get(destination));
+    final updatedDest =
+        isToLeft ? [value, ...destinationList] : [...destinationList, value];
 
     return KiwiWatermelonActionResult(
       patch: KiwiWatermelonPatch(
         updates: {
           source: joinList(sourceList),
-          destination: joinList(destList),
+          destination: joinList(updatedDest),
         },
         deletions: [],
       ),
