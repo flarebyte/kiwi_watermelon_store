@@ -1,5 +1,6 @@
 import '../store/manager_options.dart';
 import 'incr_action.dart';
+import 'key_action.dart';
 import 'list_action.dart';
 import 'set_action.dart';
 import 'sets_action.dart';
@@ -169,5 +170,25 @@ class KiwiWatermelonActionFactory {
       member: member,
       separator: separator,
     );
+  }
+
+  /// Returns an action to rename [oldKey] to [newKey], overwriting if it exists.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.rename('env:k1', 'env:k2');
+  /// ```
+  static KiwiRenameAction rename(String oldKey, String newKey) {
+    return KiwiRenameAction(oldKey: oldKey, newKey: newKey);
+  }
+
+  /// Returns an action to rename [oldKey] to [newKey] only if [newKey] does not exist.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.renamenx('env:k1', 'env:k2');
+  /// ```
+  static KiwiRenameNXAction renamenx(String oldKey, String newKey) {
+    return KiwiRenameNXAction(oldKey: oldKey, newKey: newKey);
   }
 }
