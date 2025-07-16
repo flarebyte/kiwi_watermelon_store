@@ -287,12 +287,10 @@ class KiwiLMoveAction extends KiwiListAction {
   @override
   KiwiWatermelonActionResult execute(BaseStringDataStore store) {
     final sourceList = splitList(store.get(source));
+
     if (sourceList.isEmpty) {
       return KiwiWatermelonActionResult(
-        patch: KiwiWatermelonPatch(
-          updates: {},
-          deletions: [],
-        ),
+        patch: KiwiWatermelonPatch(updates: {}, deletions: []),
       );
     }
 
@@ -301,18 +299,28 @@ class KiwiLMoveAction extends KiwiListAction {
 
     final value = isFromLeft ? sourceList.removeAt(0) : sourceList.removeLast();
 
-    final destinationList = splitList(store.get(destination));
-    final updatedDest =
-        isToLeft ? [value, ...destinationList] : [...destinationList, value];
+    final destinationList = (source == destination)
+        ? sourceList
+        : splitList(store.get(destination));
+
+    if (isToLeft) {
+      destinationList.insert(0, value);
+    } else {
+      destinationList.add(value);
+    }
+
+    final updates = <String, String>{
+      source: joinList(sourceList),
+    };
+
+    if (source != destination) {
+      updates[destination] = joinList(destinationList);
+    } else {
+      updates[source] = joinList(destinationList);
+    }
 
     return KiwiWatermelonActionResult(
-      patch: KiwiWatermelonPatch(
-        updates: {
-          source: joinList(sourceList),
-          destination: joinList(updatedDest),
-        },
-        deletions: [],
-      ),
+      patch: KiwiWatermelonPatch(updates: updates, deletions: []),
     );
   }
 }

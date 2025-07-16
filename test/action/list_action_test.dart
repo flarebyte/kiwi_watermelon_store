@@ -146,7 +146,7 @@ void main() {
       expect(result.error, isNull);
       expect(result.patch?.updates['env:emptylist'], equals(''));
     });
-    test('rpoplpush from empty source should return error', () {
+    test('rpoplpush from empty source should do nothing', () {
       store.set('env:source', '');
       store.set('env:dest', 'x,y');
 
@@ -156,8 +156,8 @@ void main() {
         separator: ',',
       ).execute(store);
 
-      expect(result.error, isNotNull);
-      expect(result.error?.message, contains('Source list is empty'));
+      expect(result.error, isNull);
+      expect(result.patch?.updates.isEmpty, isTrue);
     });
 
     test('lmove with source == destination should move correctly', () {
