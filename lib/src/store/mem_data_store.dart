@@ -54,42 +54,9 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
     return Map.unmodifiable(_store);
   }
 
-//      `set scope:name to value`: Sets the variable to a value.
-// -   `inc scope:name amount`: Increments numeric value by an amount.
-// -   `dec scope:name amount`: Decrements numeric value by an amount.
-// -   `clear scope:name`: Removes the variable from the store.
-// -   `list append scope:name value`: Appends a value to a list variable.
-// -   `set scope:name value`: Appends a value to a set variable.
-
-  void setNumber(String key, num value) {
-    set(key, value.toString());
-  }
-
-  // Move out
-  void setWithMapping(String key, String value) {
-    final mapped = options.mapping[value];
-    if (mapped == null) {
-      throw Exception('The value is not supprted as mapping:' + value);
-    } else {
-      set(key, mapped);
-    }
-  }
-
-  ///Move out
-  void incNumber(String key, num value) {
-    final previous = get(key);
-    if (previous == null) {
-      set(key, value.toString());
-    } else {
-      final previousNum = num.tryParse(previous);
-      if (previousNum == null) {
-        throw Exception(
-            'The value for the existing key is not a number:' + key);
-      } else {
-        final newValue = previousNum + value;
-        set(key, newValue.toString());
-      }
-    }
+  @override
+  Iterable<String> get keys {
+    return _store.keys;
   }
 }
 
@@ -144,5 +111,10 @@ class KiwiWatermelonTypedDataStore<T> implements BaseTypedDataStore<T> {
 
   Map<String, T> toUnmodifiableMap() {
     return Map.unmodifiable(_store);
+  }
+
+  @override
+  Iterable<String> get keys {
+    return _store.keys;
   }
 }

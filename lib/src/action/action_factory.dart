@@ -1,4 +1,5 @@
 import '../store/manager_options.dart';
+import 'del_action.dart';
 import 'incr_action.dart';
 import 'key_action.dart';
 import 'list_action.dart';
@@ -190,5 +191,22 @@ class KiwiWatermelonActionFactory {
   /// ```
   static KiwiRenameNXAction renamenx(String oldKey, String newKey) {
     return KiwiRenameNXAction(oldKey: oldKey, newKey: newKey);
+  }
+
+  /// Returns an action to delete all keys from the store.
+  static KiwiFlushDbAction flushDb() {
+    return KiwiFlushDbAction();
+  }
+
+  /// Returns an action to delete all keys that match any of the given [patterns].
+  ///
+  /// Only `*` is supported as a wildcard in patterns.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.delKeys(['env:color:*', 'env:shape:*']);
+  /// ```
+  static KiwiDelKeysAction delKeys(List<String> patterns) {
+    return KiwiDelKeysAction(patterns: patterns);
   }
 }
