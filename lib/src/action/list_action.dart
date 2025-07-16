@@ -63,14 +63,14 @@ class LPushAction extends KiwiListAction {
 
 /// Implements the Redis `RPUSH` operation.
 /// Appends one or more values to the end of a string-separated list.
-class RPushAction extends KiwiListAction {
+class KiwiRPushAction extends KiwiListAction {
   final String key;
 
   /// The values to append at the end of the list.
   final List<String> values;
 
-  /// Constructs an [RPushAction] for a given key, separator, and values.
-  RPushAction({
+  /// Constructs an [KiwiRPushAction] for a given key, separator, and values.
+  KiwiRPushAction({
     required this.key,
     required String separator,
     required this.values,
@@ -96,7 +96,7 @@ class RPushAction extends KiwiListAction {
 
 /// Implements the Redis `LREM` operation.
 /// Removes occurrences of a given value from a string-separated list.
-class LRemAction extends KiwiListAction {
+class KiwiLRemAction extends KiwiListAction {
   final String key;
 
   /// Maximum number of elements to remove:
@@ -108,8 +108,8 @@ class LRemAction extends KiwiListAction {
   /// The value to remove from the list.
   final String value;
 
-  /// Constructs an [LRemAction] for a given key, separator, count, and value.
-  LRemAction({
+  /// Constructs an [KiwiLRemAction] for a given key, separator, count, and value.
+  KiwiLRemAction({
     required this.key,
     required String separator,
     required this.count,
@@ -160,7 +160,7 @@ class LRemAction extends KiwiListAction {
 
 /// Implements the Redis `LTRIM` operation.
 /// Trims a string-separated list to only include elements in the specified range.
-class LTrimAction extends KiwiListAction {
+class KiwiLTrimAction extends KiwiListAction {
   final String key;
 
   /// Start index (inclusive) of the trim range.
@@ -169,8 +169,8 @@ class LTrimAction extends KiwiListAction {
   /// Stop index (inclusive) of the trim range.
   final int stop;
 
-  /// Constructs an [LTrimAction] with a key, separator, start, and stop.
-  LTrimAction({
+  /// Constructs an [KiwiLTrimAction] with a key, separator, start, and stop.
+  KiwiLTrimAction({
     required this.key,
     required String separator,
     required this.start,
@@ -199,7 +199,7 @@ class LTrimAction extends KiwiListAction {
 
 /// Implements the Redis `RPOPLPUSH` operation.
 /// Removes the last element from the source list and prepends it to the destination list.
-class RPopLPushAction extends KiwiListAction {
+class KiwiRPopLPushAction extends KiwiListAction {
   /// Source list key to pop from.
   final String source;
 
@@ -209,8 +209,8 @@ class RPopLPushAction extends KiwiListAction {
   /// Separator used for both lists.
   final String separator;
 
-  /// Constructs an [RPopLPushAction] with source, destination, and separator.
-  RPopLPushAction({
+  /// Constructs an [KiwiRPopLPushAction] with source, destination, and separator.
+  KiwiRPopLPushAction({
     required this.source,
     required this.destination,
     required this.separator,
@@ -250,7 +250,7 @@ class RPopLPushAction extends KiwiListAction {
 
 /// Implements the Redis `LMOVE` operation.
 /// Moves an element from one end of the source list to one end of the destination list.
-class LMoveAction extends KiwiListAction {
+class KiwiLMoveAction extends KiwiListAction {
   /// Source list key to remove the element from.
   final String source;
 
@@ -266,8 +266,8 @@ class LMoveAction extends KiwiListAction {
   /// Separator used for both lists.
   final String separator;
 
-  /// Constructs an [LMoveAction] with source, destination, directions, and separator.
-  LMoveAction({
+  /// Constructs an [KiwiLMoveAction] with source, destination, directions, and separator.
+  KiwiLMoveAction({
     required this.source,
     required this.destination,
     required this.from,

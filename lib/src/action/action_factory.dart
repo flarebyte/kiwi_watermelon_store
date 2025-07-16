@@ -73,31 +73,31 @@ class KiwiWatermelonActionFactory {
   }
 
   /// Returns an action to append [values] to the end of the list at [key].
-  static RPushAction rpush(String key, List<String> values,
+  static KiwiRPushAction rpush(String key, List<String> values,
       {required String separator}) {
-    return RPushAction(key: key, values: values, separator: separator);
+    return KiwiRPushAction(key: key, values: values, separator: separator);
   }
 
   /// Returns an action to remove [value] from the list at [key] [count] times.
   ///
   /// If [count] > 0, removes from head; if < 0, from tail; if 0, removes all.
-  static LRemAction lrem(String key, int count, String value,
+  static KiwiLRemAction lrem(String key, int count, String value,
       {required String separator}) {
-    return LRemAction(
+    return KiwiLRemAction(
         key: key, count: count, value: value, separator: separator);
   }
 
   /// Returns an action to trim the list at [key] to the range [[start], [stop]] (inclusive).
-  static LTrimAction ltrim(String key, int start, int stop,
+  static KiwiLTrimAction ltrim(String key, int start, int stop,
       {required String separator}) {
-    return LTrimAction(
+    return KiwiLTrimAction(
         key: key, start: start, stop: stop, separator: separator);
   }
 
   /// Returns an action to pop the last element from [source] and push it to the front of [destination].
-  static RPopLPushAction rpoplpush(String source, String destination,
+  static KiwiRPopLPushAction rpoplpush(String source, String destination,
       {required String separator}) {
-    return RPopLPushAction(
+    return KiwiRPopLPushAction(
         source: source, destination: destination, separator: separator);
   }
 
@@ -105,14 +105,14 @@ class KiwiWatermelonActionFactory {
   /// using direction [from] in source and [to] in destination.
   ///
   /// [from] and [to] must be either `"LEFT"` or `"RIGHT"` (case insensitive).
-  static LMoveAction lmove(
+  static KiwiLMoveAction lmove(
     String source,
     String destination,
     String from,
     String to, {
     required String separator,
   }) {
-    return LMoveAction(
+    return KiwiLMoveAction(
       source: source,
       destination: destination,
       from: from,
