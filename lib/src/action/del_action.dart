@@ -64,3 +64,24 @@ class KiwiDelKeysAction extends KiwiWatermelonAction {
     );
   }
 }
+
+/// Implements the Redis `DEL` operation.
+/// Deletes all keys in the provided [keys] list, if they exist.
+class KiwiDelAction extends KiwiWatermelonAction {
+  final List<String> keys;
+
+  /// Constructs a [KiwiDelAction] to delete explicit [keys].
+  KiwiDelAction({required this.keys});
+
+  @override
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    final deletions = keys.where(store.containsKey).toList();
+
+    return KiwiWatermelonActionResult(
+      patch: KiwiWatermelonPatch(
+        updates: {},
+        deletions: deletions,
+      ),
+    );
+  }
+}

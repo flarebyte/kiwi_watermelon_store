@@ -79,5 +79,29 @@ void main() {
       expect(result.patch?.deletions, isEmpty);
       expect(result.patch?.updates, isEmpty);
     });
+    //
+
+    test('del should delete specified keys', () {
+      store.set('env:k1', 'a');
+      store.set('env:k2', 'b');
+      store.set('env:k3', 'c');
+
+      final result = KiwiWatermelonActionFactory.del(
+        ['env:k1', 'env:k3'],
+      ).execute(store);
+
+      expect(result.error, isNull);
+      expect(result.patch?.deletions, containsAll(['env:k1', 'env:k3']));
+      expect(result.patch?.deletions, isNot(contains('env:k2')));
+    });
+
+    test('del should do nothing if keys do not exist', () {
+      final result = KiwiWatermelonActionFactory.del(
+        ['env:missing1', 'env:missing2'],
+      ).execute(store);
+
+      expect(result.error, isNull);
+      expect(result.patch?.deletions, isEmpty);
+    });
   });
 }

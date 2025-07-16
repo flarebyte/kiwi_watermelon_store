@@ -58,6 +58,11 @@ class KiwiWatermelonDataStore implements BaseStringDataStore {
   Iterable<String> get keys {
     return _store.keys;
   }
+
+  @override
+  bool containsKey(String key) {
+    return _store.containsKey(key);
+  }
 }
 
 /// A simple in-memory implementation of [BaseTypedDataStore] using [Map].
@@ -116,5 +121,10 @@ class KiwiWatermelonTypedDataStore<T> implements BaseTypedDataStore<T> {
   @override
   Iterable<String> get keys {
     return _store.keys;
+  }
+
+  @override
+  bool containsKey(String key) {
+    return _store.containsKey(key);
   }
 }

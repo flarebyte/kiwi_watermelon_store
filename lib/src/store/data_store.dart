@@ -23,6 +23,8 @@ abstract class BaseTypedDataStore<T> {
   Map<String, T> toUnmodifiableMap();
 
   Iterable<String> get keys;
+
+  bool containsKey(String key);
 }
 
 /// Represents a key-value data store that supports prefix validation

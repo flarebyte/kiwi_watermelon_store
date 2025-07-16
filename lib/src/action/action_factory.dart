@@ -209,4 +209,14 @@ class KiwiWatermelonActionFactory {
   static KiwiDelKeysAction delKeys(List<String> patterns) {
     return KiwiDelKeysAction(patterns: patterns);
   }
+
+  /// Returns an action to delete the specified list of [keys], if they exist.
+  ///
+  /// Example:
+  /// ```dart
+  /// KiwiWatermelonActionFactory.del(['env:k1', 'env:k2']);
+  /// ```
+  static KiwiDelAction del(List<String> keys) {
+    return KiwiDelAction(keys: keys);
+  }
 }
