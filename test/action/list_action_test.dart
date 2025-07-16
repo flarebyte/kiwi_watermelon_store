@@ -64,7 +64,7 @@ void main() {
     });
 
     test('ltrim should slice the list correctly', () {
-      store.set('nenv:ums', '1,2,3,4,5');
+      store.set('env:nums', '1,2,3,4,5');
       final result =
           KiwiWatermelonActionFactory.ltrim('env:nums', 1, 3, separator: ',')
               .execute(store);
@@ -76,7 +76,7 @@ void main() {
     test('rpoplpush should move last of source to front of destination', () {
       store.set('env:source', 'a,b,c');
       store.set('env:dest', 'x,y');
-      final result = KiwiWatermelonActionFactory.rpoplpush('env:source', 'dest',
+      final result = KiwiWatermelonActionFactory.rpoplpush('env:source', 'env:dest',
               separator: ',')
           .execute(store);
 
@@ -129,7 +129,7 @@ void main() {
           .execute(store);
 
       expect(result.error, isNull);
-      expect(result.patch?.updates['env:newlist'], equals('foo,bar'));
+      expect(result.patch?.updates['env:newlist'], equals('bar,foo'));
     });
   });
 }
