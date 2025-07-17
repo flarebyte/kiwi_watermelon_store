@@ -1,8 +1,11 @@
+import '../capability/capability.dart';
+
 class KiwiWatermelonOptions {
   final List<String> prefixes;
   final List<String> userPrefixes;
   final Map<String, String> mapping;
   final bool Function(String) variableValidator;
+  final List<KiwiWatermelonDataCapability> capabilities;
 
   static bool arePrefixesIncluded(List<String> candidates, List<String> pool) {
     return Set.from(pool).containsAll(candidates);
@@ -12,7 +15,8 @@ class KiwiWatermelonOptions {
       {required this.prefixes,
       required this.mapping,
       required this.userPrefixes,
-      required this.variableValidator}) {
+      required this.variableValidator,
+      required this.capabilities}) {
     if (!arePrefixesIncluded(userPrefixes, prefixes)) {
       throw Exception(
           "All user prefixes [$userPrefixes] should be included in all prefixes");

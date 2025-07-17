@@ -5,14 +5,14 @@ class KiwiWatermelonDataCapability {
   final String prefix;
   final KiwiWatermelonDataAccess access;
 
-  KiwiWatermelonDataCapability(this.role,
-      {required this.prefix, required this.access});
+  KiwiWatermelonDataCapability(
+      {required this.role, required this.prefix, required this.access});
 }
 
-class KiwiWatermelonAutorisation {
+class KiwiWatermelonAutorisationManager {
   final List<KiwiWatermelonDataCapability> capabilities;
 
-  KiwiWatermelonAutorisation({required this.capabilities});
+  KiwiWatermelonAutorisationManager({required this.capabilities});
 
   bool canInvoke(
       {required String role,

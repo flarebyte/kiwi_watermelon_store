@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:kiwi_watermelon_store/src/capability/capability.dart';
 import 'package:kiwi_watermelon_store/src/store/manager_options.dart';
 
 typedef RedisValue = Object; // convention: int, double, or Uuid
@@ -217,10 +218,13 @@ final List<String> validCommands = [
   maker.delKeys('cache:views', ['cache:views:*', 'cache:users:*']),
 ];
 
+final capabilities = [KiwiWatermelonDataCapability(role: 'A-team', prefix: 'env:', access: KiwiWatermelonDataAccess.read)];
+
 final storeOptions = KiwiWatermelonOptions(
   mapping: {'true': 'T', 'false': 'F'},
   prefixes: ['env'],
   userPrefixes: ['env'],
+  capabilities: capabilities,
   variableValidator: (String variableName) {
     // A valid variable name must start with a letter and may contain letters and digits.
     return RegExp(r'^[a-zA-Z][a-zA-Z0-9_:]*$').hasMatch(variableName);
