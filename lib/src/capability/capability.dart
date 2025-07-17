@@ -1,43 +1,56 @@
-enum KiwiWatermelonDataAccess {
-  read, write, delete
-}
-
+enum KiwiWatermelonDataAccess { read, write, delete }
 
 class KiwiWatermelonDataCapability {
+  final String role;
   final String prefix;
   final KiwiWatermelonDataAccess access;
 
-  KiwiWatermelonDataCapability({required this.prefix, required this.access});
-
+  KiwiWatermelonDataCapability(this.role,
+      {required this.prefix, required this.access});
 }
 
 class KiwiWatermelonAutorisation {
-final List<KiwiWatermelonDataCapability> capabilities;
+  final List<KiwiWatermelonDataCapability> capabilities;
 
   KiwiWatermelonAutorisation({required this.capabilities});
 
-  bool canInvoke({required String key, required KiwiWatermelonDataAccess access}){
-    return capabilities.any((capability)=>  key.startsWith(capability.prefix) && capability.access == access);
+  bool canInvoke(
+      {required String role,
+      required String key,
+      required KiwiWatermelonDataAccess access}) {
+    return capabilities.any((capability) =>
+        capability.role == role &&
+        key.startsWith(capability.prefix) &&
+        capability.access == access);
   }
 
-  bool canRead({required String key}){
-    return canInvoke(key: key, access: KiwiWatermelonDataAccess.read);
+  bool canAnyRoleInvoke(
+      {required String key, required KiwiWatermelonDataAccess access}) {
+    return capabilities.any((capability) =>
+        key.startsWith(capability.prefix) && capability.access == access);
   }
 
-  bool canWrite({required String key}){
-    return canInvoke(key: key, access: KiwiWatermelonDataAccess.write);
+  bool canRead({required String role, required String key}) {
+    return canInvoke(key: key, access: KiwiWatermelonDataAccess.read, role: '');
   }
 
-  bool canDelete({required String key}){
-    return canInvoke(key: key, access: KiwiWatermelonDataAccess.delete);
+  bool canWrite({required String role, required String key}) {
+    return canInvoke(
+        key: key, access: KiwiWatermelonDataAccess.write, role: '');
   }
 
-  bool canReadAndWrite({required String key}){
-    return canRead(key: key) && canWrite(key: key);
+  bool canDelete({required String role, required String key}) {
+    return canInvoke(
+        key: key, access: KiwiWatermelonDataAccess.delete, role: '');
   }
 
-  bool canReadWriteDelete({required String key}){
-    return canRead(key: key) && canWrite(key: key) && canDelete(key: key);
+  bool canReadAndWrite({required String role, required String key}) {
+    return canRead(key: key, role: '') && canWrite(key: key, role: '');
   }
 
+  bool canReadWriteDelete({required String role, required String key}) {
+    return canRead(key: key, role: '') &&
+        canWrite(key: key, role: '') &&
+        canDelete(key: key, role: '');
+  }
 }
