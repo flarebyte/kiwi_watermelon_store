@@ -50,9 +50,12 @@ class KiwiCommandAnalyser {
         final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
             options: options);
         if (!access.incr(key, role: role)) {
-          throw KiwiWatermelonSemanticException(
-              'Access denied for $role attempting to incr $key',
-              stream.current);
+          throw KiwiWatermelonAccessException(
+              role: role,
+              command: command.text,
+              key: key,
+              otherKeys: [],
+              token: stream.current);
         }
         return KiwiWatermelonActionFactory.incr(key);
 
