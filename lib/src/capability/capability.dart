@@ -1,50 +1,91 @@
 enum KiwiWatermelonDataAccess { read, write, delete }
 
+enum KiwiWatermelonPolicyEffect { allow, deny }
+
+// PolicyRule ?
 class KiwiWatermelonDataCapability {
   final String role;
   final String prefix;
   final KiwiWatermelonDataAccess access;
+  final KiwiWatermelonPolicyEffect effect;
 
   KiwiWatermelonDataCapability(
-      {required this.role, required this.prefix, required this.access});
+      {required this.role,
+      required this.prefix,
+      required this.access,
+      required this.effect});
 
   static KiwiWatermelonDataCapability read(
-      {required String role, required String prefix}) {
+      {required String role,
+      required String prefix,
+      KiwiWatermelonPolicyEffect effect = KiwiWatermelonPolicyEffect.allow}) {
     return KiwiWatermelonDataCapability(
-        role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read);
+        role: role,
+        prefix: prefix,
+        access: KiwiWatermelonDataAccess.read,
+        effect: effect);
   }
 
   static KiwiWatermelonDataCapability write(
-      {required String role, required String prefix}) {
+      {required String role,
+      required String prefix,
+      effect = KiwiWatermelonPolicyEffect.allow}) {
     return KiwiWatermelonDataCapability(
-        role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write);
+        role: role,
+        prefix: prefix,
+        access: KiwiWatermelonDataAccess.write,
+        effect: effect);
   }
 
   static KiwiWatermelonDataCapability delete(
-      {required String role, required String prefix}) {
+      {required String role,
+      required String prefix,
+      effect = KiwiWatermelonPolicyEffect.allow}) {
     return KiwiWatermelonDataCapability(
-        role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete);
+        role: role,
+        prefix: prefix,
+        access: KiwiWatermelonDataAccess.delete,
+        effect: effect);
   }
 
   static List<KiwiWatermelonDataCapability> readWrite(
-      {required String role, required String prefix}) {
+      {required String role,
+      required String prefix,
+      effect = KiwiWatermelonPolicyEffect.allow}) {
     return [
       KiwiWatermelonDataCapability(
-          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read),
+          role: role,
+          prefix: prefix,
+          access: KiwiWatermelonDataAccess.read,
+          effect: effect),
       KiwiWatermelonDataCapability(
-          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write)
+          role: role,
+          prefix: prefix,
+          access: KiwiWatermelonDataAccess.write,
+          effect: effect)
     ];
   }
 
   static List<KiwiWatermelonDataCapability> readWriteDel(
-      {required String role, required String prefix}) {
+      {required String role,
+      required String prefix,
+      effect = KiwiWatermelonPolicyEffect.allow}) {
     return [
       KiwiWatermelonDataCapability(
-          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read),
+          role: role,
+          prefix: prefix,
+          access: KiwiWatermelonDataAccess.read,
+          effect: effect),
       KiwiWatermelonDataCapability(
-          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write),
+          role: role,
+          prefix: prefix,
+          access: KiwiWatermelonDataAccess.write,
+          effect: effect),
       KiwiWatermelonDataCapability(
-          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete)
+          role: role,
+          prefix: prefix,
+          access: KiwiWatermelonDataAccess.delete,
+          effect: effect)
     ];
   }
 }
