@@ -5,7 +5,7 @@ class KiwiWatermelonOptions {
   final List<String> userPrefixes;
   final Map<String, String> mapping;
   final bool Function(String) variableValidator;
-  final List<KWDataCapability> capabilities;
+  final List<KiwiWatermelonDataCapability> capabilities;
 
   static bool arePrefixesIncluded(List<String> candidates, List<String> pool) {
     return Set.from(pool).containsAll(candidates);

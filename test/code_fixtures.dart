@@ -220,8 +220,8 @@ final List<String> validCommands = [
 
 final a_team = 'a_team';
 final capabilities = [
-  ...KWDataCapability.readWriteDel(role: a_team, prefix: 'env:'),
-  KWDataCapability.read(role: a_team, prefix: 'admin:public')
+  ...KiwiWatermelonDataCapability.readWriteDel(role: a_team, prefix: 'env:'),
+  KiwiWatermelonDataCapability.read(role: a_team, prefix: 'admin:public')
 ];
 
 final storeOptions = KiwiWatermelonOptions(

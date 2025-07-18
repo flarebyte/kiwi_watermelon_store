@@ -1,55 +1,56 @@
 enum KiwiWatermelonDataAccess { read, write, delete }
 
-class KWDataCapability {
+class KiwiWatermelonDataCapability {
   final String role;
   final String prefix;
   final KiwiWatermelonDataAccess access;
 
-  KWDataCapability(
+  KiwiWatermelonDataCapability(
       {required this.role, required this.prefix, required this.access});
 
-  static KWDataCapability read({required String role, required String prefix}) {
-    return KWDataCapability(
+  static KiwiWatermelonDataCapability read(
+      {required String role, required String prefix}) {
+    return KiwiWatermelonDataCapability(
         role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read);
   }
 
-  static KWDataCapability write(
+  static KiwiWatermelonDataCapability write(
       {required String role, required String prefix}) {
-    return KWDataCapability(
+    return KiwiWatermelonDataCapability(
         role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write);
   }
 
-  static KWDataCapability delete(
+  static KiwiWatermelonDataCapability delete(
       {required String role, required String prefix}) {
-    return KWDataCapability(
+    return KiwiWatermelonDataCapability(
         role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete);
   }
 
-  static List<KWDataCapability> readWrite(
+  static List<KiwiWatermelonDataCapability> readWrite(
       {required String role, required String prefix}) {
     return [
-      KWDataCapability(
+      KiwiWatermelonDataCapability(
           role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read),
-      KWDataCapability(
+      KiwiWatermelonDataCapability(
           role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write)
     ];
   }
 
-  static List<KWDataCapability> readWriteDel(
+  static List<KiwiWatermelonDataCapability> readWriteDel(
       {required String role, required String prefix}) {
     return [
-      KWDataCapability(
+      KiwiWatermelonDataCapability(
           role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read),
-      KWDataCapability(
+      KiwiWatermelonDataCapability(
           role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write),
-      KWDataCapability(
+      KiwiWatermelonDataCapability(
           role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete)
     ];
   }
 }
 
 class KiwiWatermelonAutorisationManager {
-  final List<KWDataCapability> capabilities;
+  final List<KiwiWatermelonDataCapability> capabilities;
 
   KiwiWatermelonAutorisationManager({required this.capabilities});
 
@@ -70,7 +71,8 @@ class KiwiWatermelonAutorisationManager {
   }
 
   bool canRead({required String role, required String key}) {
-    return canInvoke(key: key, access: KiwiWatermelonDataAccess.read, role: role);
+    return canInvoke(
+        key: key, access: KiwiWatermelonDataAccess.read, role: role);
   }
 
   bool canWrite({required String role, required String key}) {

@@ -3,7 +3,7 @@ import '../capability/capability.dart';
 class KiwiWatermelonActionAccess {
   late KiwiWatermelonAutorisationManager autorisation;
 
-  final List<KWDataCapability> capabilities;
+  final List<KiwiWatermelonDataCapability> capabilities;
 
   KiwiWatermelonActionAccess({required this.capabilities}) {
     autorisation =
