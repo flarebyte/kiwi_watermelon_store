@@ -1,12 +1,16 @@
 import '../capability/capability.dart';
 
 class KiwiWatermelonActionAccess {
-final KiwiWatermelonAutorisationManager autorisation;
+  late KiwiWatermelonAutorisationManager autorisation;
 
-  KiwiWatermelonActionAccess({required this.autorisation});
+  final List<KWDataCapability> capabilities;
 
-  bool incr(String key, {String role = 'none'}) {
-   return autorisation.canReadAndWrite(key: key, role: role);
+  KiwiWatermelonActionAccess({required this.capabilities}) {
+    autorisation =
+        KiwiWatermelonAutorisationManager(capabilities: capabilities);
   }
 
+  bool incr(String key, {String role = 'none'}) {
+    return autorisation.canReadAndWrite(key: key, role: role);
+  }
 }

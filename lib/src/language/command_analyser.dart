@@ -1,5 +1,6 @@
 import 'package:kiwi_watermelon_store/src/language/token_stream_flyweight.dart';
 
+import '../action/action_access.dart';
 import '../action/action_factory.dart';
 import '../action/base_action.dart';
 import '../store/manager_options.dart';
@@ -28,8 +29,12 @@ const List<String> userCommands = [
 
 class KiwiCommandAnalyser {
   final KiwiWatermelonOptions options;
+  final String role = 'none';
+  late KiwiWatermelonActionAccess access;
 
-  KiwiCommandAnalyser({required this.options});
+  KiwiCommandAnalyser({required this.options}){
+    access= KiwiWatermelonActionAccess(capabilities: options.capabilities);
+  }
 
   KiwiWatermelonAction parseSingleCommand(KiwiWatermelonTokenStream stream) {
     if (!KiwiTokenStreamFlyweight.isAnyKeyword(stream, userCommands)) {
@@ -44,6 +49,9 @@ class KiwiCommandAnalyser {
       case CommandTypes.INCR:
         final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
             options: options);
+        if (!access.incr(key, role: role)){
+          throw KiwiWatermelonSemanticException('Access denied for $role attempting to incr $key', stream.current);
+        }
         return KiwiWatermelonActionFactory.incr(key);
 
       case CommandTypes.DECR:
