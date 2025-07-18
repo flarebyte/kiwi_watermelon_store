@@ -15,7 +15,7 @@ void main() {
         'DECR env:tries'
       ].join(';\n'));
       final analysed = analyser.analyse(tokens);
-      expect(analysed.failure, null);
+      expect(analysed.failure, isNull);
       expect(analysed.actions.length, 2);
     });
   });

@@ -70,26 +70,26 @@ class KiwiWatermelonAutorisationManager {
   }
 
   bool canRead({required String role, required String key}) {
-    return canInvoke(key: key, access: KiwiWatermelonDataAccess.read, role: '');
+    return canInvoke(key: key, access: KiwiWatermelonDataAccess.read, role: role);
   }
 
   bool canWrite({required String role, required String key}) {
     return canInvoke(
-        key: key, access: KiwiWatermelonDataAccess.write, role: '');
+        key: key, access: KiwiWatermelonDataAccess.write, role: role);
   }
 
   bool canDelete({required String role, required String key}) {
     return canInvoke(
-        key: key, access: KiwiWatermelonDataAccess.delete, role: '');
+        key: key, access: KiwiWatermelonDataAccess.delete, role: role);
   }
 
   bool canReadAndWrite({required String role, required String key}) {
-    return canRead(key: key, role: '') && canWrite(key: key, role: '');
+    return canRead(key: key, role: role) && canWrite(key: key, role: role);
   }
 
   bool canReadWriteDelete({required String role, required String key}) {
-    return canRead(key: key, role: '') &&
-        canWrite(key: key, role: '') &&
-        canDelete(key: key, role: '');
+    return canRead(key: key, role: role) &&
+        canWrite(key: key, role: role) &&
+        canDelete(key: key, role: role);
   }
 }
