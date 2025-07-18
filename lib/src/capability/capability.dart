@@ -8,17 +8,44 @@ class KWDataCapability {
   KWDataCapability(
       {required this.role, required this.prefix, required this.access});
 
-      static KWDataCapability read({required String role, required String prefix}){
-        return KWDataCapability(role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read);
-      }
+  static KWDataCapability read({required String role, required String prefix}) {
+    return KWDataCapability(
+        role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read);
+  }
 
-      static KWDataCapability write({required String role, required String prefix}){
-        return KWDataCapability(role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write);
-      }
+  static KWDataCapability write(
+      {required String role, required String prefix}) {
+    return KWDataCapability(
+        role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write);
+  }
 
-      static KWDataCapability delete({required String role, required String prefix}){
-        return KWDataCapability(role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete);
-      }
+  static KWDataCapability delete(
+      {required String role, required String prefix}) {
+    return KWDataCapability(
+        role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete);
+  }
+
+  static List<KWDataCapability> readWrite(
+      {required String role, required String prefix}) {
+    return [
+      KWDataCapability(
+          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read),
+      KWDataCapability(
+          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write)
+    ];
+  }
+
+  static List<KWDataCapability> readWriteDel(
+      {required String role, required String prefix}) {
+    return [
+      KWDataCapability(
+          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read),
+      KWDataCapability(
+          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write),
+      KWDataCapability(
+          role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete)
+    ];
+  }
 }
 
 class KiwiWatermelonAutorisationManager {

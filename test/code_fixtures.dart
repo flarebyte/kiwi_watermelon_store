@@ -218,7 +218,10 @@ final List<String> validCommands = [
   maker.delKeys('cache:views', ['cache:views:*', 'cache:users:*']),
 ];
 
-final capabilities = [KWDataCapability.read(role: 'A-team', prefix: 'env:')];
+final capabilities = [
+  ...KWDataCapability.readWriteDel(role: 'a_team', prefix: 'env:'),
+  KWDataCapability.read(role: 'a_team', prefix: 'admin:public')
+];
 
 final storeOptions = KiwiWatermelonOptions(
   mapping: {'true': 'T', 'false': 'F'},
