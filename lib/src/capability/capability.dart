@@ -1,16 +1,28 @@
 enum KiwiWatermelonDataAccess { read, write, delete }
 
-class KiwiWatermelonDataCapability {
+class KWDataCapability {
   final String role;
   final String prefix;
   final KiwiWatermelonDataAccess access;
 
-  KiwiWatermelonDataCapability(
+  KWDataCapability(
       {required this.role, required this.prefix, required this.access});
+
+      static KWDataCapability read({required String role, required String prefix}){
+        return KWDataCapability(role: role, prefix: prefix, access: KiwiWatermelonDataAccess.read);
+      }
+
+      static KWDataCapability write({required String role, required String prefix}){
+        return KWDataCapability(role: role, prefix: prefix, access: KiwiWatermelonDataAccess.write);
+      }
+
+      static KWDataCapability delete({required String role, required String prefix}){
+        return KWDataCapability(role: role, prefix: prefix, access: KiwiWatermelonDataAccess.delete);
+      }
 }
 
 class KiwiWatermelonAutorisationManager {
-  final List<KiwiWatermelonDataCapability> capabilities;
+  final List<KWDataCapability> capabilities;
 
   KiwiWatermelonAutorisationManager({required this.capabilities});
 
