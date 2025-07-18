@@ -8,7 +8,7 @@ void main() {
   group('KiwiWatermelonSyntaxAnalyzer', () {
     final tokeniser = KiwiWatermelonTokeniser();
     final KiwiWatermelonSyntaxAnalyzer analyser =
-        KiwiWatermelonSyntaxAnalyzer(options: storeOptions);
+        KiwiWatermelonSyntaxAnalyzer(options: storeOptions, role: a_team);
     test('should analyse ', () {
       final tokens = tokeniser.parse([
         'INCR env:metrics:api:total:color:blue:status:ready',

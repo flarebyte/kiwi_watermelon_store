@@ -12,7 +12,7 @@ import '../code_fixtures.dart';
 void main() {
   final tokeniser = KiwiWatermelonTokeniser();
   final KiwiCommandAnalyser analyser =
-      KiwiCommandAnalyser(options: storeOptions);
+      KiwiCommandAnalyser(options: storeOptions, role: a_team);
   KiwiWatermelonAction parseSingleCommand(String code) {
     final tokens = tokeniser.parse(code);
     final tokenStream = KiwiWatermelonTokenStream(tokens);

@@ -29,11 +29,11 @@ const List<String> userCommands = [
 
 class KiwiCommandAnalyser {
   final KiwiWatermelonOptions options;
-  final String role = 'none';
+  final String role;
   late KiwiWatermelonActionAccess access;
 
-  KiwiCommandAnalyser({required this.options}){
-    access= KiwiWatermelonActionAccess(capabilities: options.capabilities);
+  KiwiCommandAnalyser({required this.options, required this.role}) {
+    access = KiwiWatermelonActionAccess(capabilities: options.capabilities);
   }
 
   KiwiWatermelonAction parseSingleCommand(KiwiWatermelonTokenStream stream) {
@@ -49,8 +49,10 @@ class KiwiCommandAnalyser {
       case CommandTypes.INCR:
         final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
             options: options);
-        if (!access.incr(key, role: role)){
-          throw KiwiWatermelonSemanticException('Access denied for $role attempting to incr $key', stream.current);
+        if (!access.incr(key, role: role)) {
+          throw KiwiWatermelonSemanticException(
+              'Access denied for $role attempting to incr $key',
+              stream.current);
         }
         return KiwiWatermelonActionFactory.incr(key);
 

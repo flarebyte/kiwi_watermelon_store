@@ -21,10 +21,11 @@ class KiwiWatermelonSyntaxAnalysis {
 
 class KiwiWatermelonSyntaxAnalyzer {
   final KiwiWatermelonOptions options;
+  final String role;
   late KiwiCommandAnalyser commandAnalyser;
 
-  KiwiWatermelonSyntaxAnalyzer({required this.options}) {
-    commandAnalyser = KiwiCommandAnalyser(options: options);
+  KiwiWatermelonSyntaxAnalyzer({required this.options, required this.role}) {
+    commandAnalyser = KiwiCommandAnalyser(options: options, role: role);
   }
 
   KiwiWatermelonSyntaxAnalysis _success(List<KiwiWatermelonAction> actions) {
