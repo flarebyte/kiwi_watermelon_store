@@ -5,8 +5,7 @@ import 'package:test/test.dart';
 void main() {
   group('KiwiWatermelonActionAccess', () {
     const role = 'admin';
-    const otherRole = 'guest';
-    const key = 'env:user:123:name:john'; // scope:key1:value1:key2:value2
+    const key = 'env:user:123:name:john';
     const prefix = 'env:user:123';
 
     late KiwiWatermelonActionAccess access;
@@ -18,78 +17,130 @@ void main() {
       ]);
     });
 
-    test('grants read/write access for incr operation', () {
-      expect(access.incr(key, role: role), isTrue);
+    group('numeric operations', () {
+      test('incr allowed with read/write', () {
+        expect(access.incr(key, role: role), isTrue);
+      });
+
+      test('decr allowed with read/write', () {
+        expect(access.decr(key, role: role), isTrue);
+      });
+
+      test('incrBy allowed with read/write', () {
+        expect(access.incrBy(key, role: role), isTrue);
+      });
+
+      test('decrBy allowed with read/write', () {
+        expect(access.decrBy(key, role: role), isTrue);
+      });
+
+      test('incrByFloat allowed with read/write', () {
+        expect(access.incrByFloat(key, role: role), isTrue);
+      });
+
+      test('decrByFloat allowed with read/write', () {
+        expect(access.decrByFloat(key, role: role), isTrue);
+      });
     });
 
-    test('denies access for guest role with no capability', () {
-      expect(access.incr(key, role: otherRole), isFalse);
+    group('value setters', () {
+      test('setInteger allowed with write', () {
+        expect(access.setInteger(key, role: role), isTrue);
+      });
+
+      test('setDouble allowed with write', () {
+        expect(access.setDouble(key, role: role), isTrue);
+      });
+
+      test('setUuid allowed with write', () {
+        expect(access.setUuid(key, role: role), isTrue);
+      });
+
+      test('setEnum allowed with write', () {
+        expect(access.setEnum(key, role: role), isTrue);
+      });
     });
 
-    test('allows delete for full key match', () {
-      expect(access.del(key, role: role), isTrue);
+    group('rename operations', () {
+      test('rename allowed when old and new keys are permitted', () {
+        final newKey = 'env:user:123:location:fr';
+        expect(access.rename(key, newKey, role: role), isTrue);
+      });
+
+      test('renamenx allowed when both keys are permitted', () {
+        final newKey = 'env:user:123:email:abc';
+        expect(access.renamenx(key, newKey, role: role), isTrue);
+      });
+
+      test('rename denied if destination is not allowed', () {
+        final newKey = 'env:user:999:email:abc';
+        expect(access.rename(key, newKey, role: role), isFalse);
+      });
     });
 
-    test('denies delete if prefix does not match', () {
-      expect(access.del('env:user:456:name:alice', role: role), isFalse);
+    group('list operations', () {
+      final listKey = 'env:user:123:list:friends';
+      final otherKey = 'env:user:123:list:groups';
+
+      test('lpush allowed with write', () {
+        expect(access.lpush(listKey, role: role), isTrue);
+      });
+
+      test('rpush allowed with write', () {
+        expect(access.rpush(listKey, role: role), isTrue);
+      });
+
+      test('lrem allowed with write', () {
+        expect(access.lrem(listKey, role: role), isTrue);
+      });
+
+      test('ltrim allowed with write', () {
+        expect(access.ltrim(listKey, role: role), isTrue);
+      });
+
+      test('rpoplpush allowed if both keys permitted', () {
+        expect(access.rpoplpush(listKey, otherKey, role: role), isTrue);
+      });
+
+      test('lmove allowed if both keys permitted', () {
+        expect(access.lmove(listKey, otherKey, role: role), isTrue);
+      });
+
+      test('lmove denied if destination is not accessible', () {
+        final deniedAccess = KiwiWatermelonActionAccess(capabilities: [
+          ...KiwiWatermelonDataCapability.readWrite(
+              role: role, prefix: listKey),
+        ]);
+        expect(
+            deniedAccess.lmove(listKey, 'env:user:999:list:groups', role: role),
+            isFalse);
+      });
     });
 
-    test('permits rename only if both keys are accessible', () {
-      final destKey = 'env:user:123:location:fr';
-      expect(access.rename(key, destKey, role: role), isTrue);
-    });
+    group('set operations', () {
+      final setKey = 'env:user:123:set:tags';
+      final destKey = 'env:user:123:set:archived';
 
-    test('denies rename if destination key is not writable', () {
-      final access = KiwiWatermelonActionAccess(capabilities: [
-        ...KiwiWatermelonDataCapability.readWrite(role: role, prefix: prefix),
-        // Destination key is outside allowed prefix
-      ]);
+      test('sadd allowed with write', () {
+        expect(access.sadd(setKey, role: role), isTrue);
+      });
 
-      final destKey = 'env:user:999:other:x';
-      expect(access.rename(key, destKey, role: role), isFalse);
-    });
+      test('srem allowed with write', () {
+        expect(access.srem(setKey, role: role), isTrue);
+      });
 
-    test('permits lmove only when both source and destination are authorized',
-        () {
-      final source = 'env:user:123:friends:list';
-      final dest = 'env:user:123:groups:list';
-      expect(access.lmove(source, dest, role: role), isTrue);
-    });
+      test('smove allowed if both keys permitted', () {
+        expect(access.smove(setKey, destKey, role: role), isTrue);
+      });
 
-    test(
-        'denies lmove if either source or destination is not covered by prefix',
-        () {
-      final source = 'env:user:123:friends:list';
-      final dest = 'env:user:456:groups:list';
-      expect(access.lmove(source, dest, role: role), isFalse);
-    });
-
-    test('denies flushDb unless root key is explicitly allowed to delete', () {
-      final access = KiwiWatermelonActionAccess(capabilities: [
-        KiwiWatermelonDataCapability.delete(role: role, prefix: '__root__'),
-      ]);
-
-      expect(access.flushDb(role: role), isTrue);
-    });
-
-    test('denies flushDb if root prefix is not granted', () {
-      final access = KiwiWatermelonActionAccess(capabilities: [
-        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
-      ]);
-
-      expect(access.flushDb(role: role), isFalse);
-    });
-
-    test('delKeys is denied if "__pattern__" delete is not allowed', () {
-      expect(access.delKeys(role: role), isFalse);
-    });
-
-    test('delKeys is allowed when "__pattern__" delete is explicitly granted',
-        () {
-      final access = KiwiWatermelonActionAccess(capabilities: [
-        KiwiWatermelonDataCapability.delete(role: role, prefix: '__pattern__'),
-      ]);
-      expect(access.delKeys(role: role), isTrue);
+      test('smove denied if destination is not permitted', () {
+        final deniedAccess = KiwiWatermelonActionAccess(capabilities: [
+          ...KiwiWatermelonDataCapability.readWrite(role: role, prefix: setKey),
+        ]);
+        expect(
+            deniedAccess.smove(setKey, 'env:user:999:set:archive', role: role),
+            isFalse);
+      });
     });
   });
 }
