@@ -6,9 +6,7 @@ import 'tokeniser.dart';
 
 /// Represents a strictly accepted literal parsed from a command stream.
 sealed class ParsedLiteral {
-  final KiwiWatermelonToken token;
-
-  const ParsedLiteral(this.token);
+  const ParsedLiteral();
 
   /// Returns the string representation of the literal value.
   String get asString;
@@ -28,28 +26,28 @@ sealed class ParsedLiteral {
 
 final class ParsedInteger extends ParsedLiteral {
   final int value;
-  const ParsedInteger(this.value, super.token);
+  const ParsedInteger(this.value);
   @override
   String get asString => value.toString();
 }
 
 final class ParsedFloat extends ParsedLiteral {
   final double value;
-  const ParsedFloat(this.value, super.token);
+  const ParsedFloat(this.value);
   @override
   String get asString => value.toString();
 }
 
 final class ParsedUuid extends ParsedLiteral {
   final String value;
-  const ParsedUuid(this.value, super.token);
+  const ParsedUuid(this.value);
   @override
   String get asString => value;
 }
 
 final class ParsedEnum extends ParsedLiteral {
   final String value;
-  const ParsedEnum(this.value, super.token);
+  const ParsedEnum(this.value);
   @override
   String get asString => value;
 }
@@ -212,7 +210,7 @@ class KiwiTokenStreamFlyweight {
     }
   }
 
-  /// Checks if the current token is float).
+  /// Checks if the current token is float.
   ///
   /// Returns `true` if the current token is a float; otherwise, `false`.
   static bool isFloat(KiwiWatermelonTokenStream tokens) {
@@ -248,6 +246,19 @@ class KiwiTokenStreamFlyweight {
     return uuidToken.text;
   }
 
+  /// Checks if the current token is int, float, uuid or enum.
+  ///
+  /// Returns `true` if the current token is a int, float, uuid or enum; otherwise, `false`.
+  static bool isStructuredLiteral(
+    KiwiWatermelonTokenStream stream, {
+    required List<String> enumKeywords,
+  }) {
+    return isNumber(stream) ||
+        isFloat(stream) ||
+        isUuid(stream) ||
+        isAnyKeyword(stream, enumKeywords);
+  }
+
   /// Consumes and classifies a literal token (int, float, UUID, or enum keyword).
   ///
   /// Returns a [ParsedLiteral] subtype.
@@ -258,22 +269,22 @@ class KiwiTokenStreamFlyweight {
   }) {
     if (isNumber(stream)) {
       final value = consumeInteger(stream);
-      return ParsedInteger(value, stream.current);
+      return ParsedInteger(value);
     }
 
     if (isFloat(stream)) {
       final value = consumeDouble(stream);
-      return ParsedFloat(value, stream.current);
+      return ParsedFloat(value);
     }
 
     if (isUuid(stream)) {
       final value = consumeUuid(stream);
-      return ParsedUuid(value, stream.current);
+      return ParsedUuid(value);
     }
 
     if (isAnyKeyword(stream, enumKeywords)) {
       final value = consumeIdentifier(stream).text;
-      return ParsedEnum(value, stream.current);
+      return ParsedEnum(value);
     }
 
     throw KiwiWatermelonSemanticException(
@@ -293,7 +304,7 @@ class KiwiTokenStreamFlyweight {
   }) {
     final result = <ParsedLiteral>[];
 
-    while (!stream.isAtEnd) {
+    while (isStructuredLiteral(stream, enumKeywords: enumKeywords)) {
       result.add(consumeStructuredLiteral(stream, enumKeywords: enumKeywords));
     }
 
