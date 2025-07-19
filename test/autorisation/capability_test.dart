@@ -27,7 +27,8 @@ void main() {
     });
 
     test('creates delete capability with default allow effect', () {
-      final cap = KiwiWatermelonDataCapability.delete(role: role, prefix: prefix);
+      final cap =
+          KiwiWatermelonDataCapability.delete(role: role, prefix: prefix);
 
       expect(cap.access, KiwiWatermelonDataAccess.delete);
       expect(cap.effect, KiwiWatermelonPolicyEffect.allow);
@@ -54,13 +55,15 @@ void main() {
       );
 
       expect(caps.length, 3);
-      expect(caps.map((c) => c.access), containsAll([
-        KiwiWatermelonDataAccess.read,
-        KiwiWatermelonDataAccess.write,
-        KiwiWatermelonDataAccess.delete,
-      ]));
-      expect(caps.every((c) => c.effect == KiwiWatermelonPolicyEffect.deny), isTrue);
+      expect(
+          caps.map((c) => c.access),
+          containsAll([
+            KiwiWatermelonDataAccess.read,
+            KiwiWatermelonDataAccess.write,
+            KiwiWatermelonDataAccess.delete,
+          ]));
+      expect(caps.every((c) => c.effect == KiwiWatermelonPolicyEffect.deny),
+          isTrue);
     });
   });
 }
-
