@@ -53,6 +53,66 @@ void main() {
           isTrue);
     });
 
+    test('canDelete returns true if delete is allowed', () {
+      final manager = KiwiWatermelonAutorisationManager(
+        capabilities: [
+          KiwiWatermelonDataCapability.delete(role: 'admin', prefix: 'res:'),
+        ],
+      );
+
+      expect(manager.canDelete(role: 'admin', key: 'res:item1'), isTrue);
+    });
+
+    test('canDelete returns false if delete is denied', () {
+      final manager = KiwiWatermelonAutorisationManager(
+        capabilities: [
+          KiwiWatermelonDataCapability.delete(
+            role: 'admin',
+            prefix: 'res:',
+            effect: KiwiWatermelonPolicyEffect.deny,
+          ),
+        ],
+      );
+
+      expect(manager.canDelete(role: 'admin', key: 'res:item1'), isFalse);
+    });
+
+    test('canReadWriteDelete returns true when all capabilities are allowed',
+        () {
+      final manager = KiwiWatermelonAutorisationManager(
+        capabilities: KiwiWatermelonDataCapability.readWriteDel(
+          role: 'admin',
+          prefix: 'doc:',
+        ),
+      );
+
+      expect(
+          manager.canReadWriteDelete(role: 'admin', key: 'doc:page1'), isTrue);
+    });
+
+    test('canReadWriteDelete returns false if one capability is denied', () {
+      final caps = KiwiWatermelonDataCapability.readWriteDel(
+        role: 'admin',
+        prefix: 'doc:',
+      );
+
+      // Override write to be denied
+      final modified = [
+        caps[0], // read (allow)
+        KiwiWatermelonDataCapability.write(
+          role: 'admin',
+          prefix: 'doc:',
+          effect: KiwiWatermelonPolicyEffect.deny,
+        ),
+        caps[2], // delete (allow)
+      ];
+
+      final manager = KiwiWatermelonAutorisationManager(capabilities: modified);
+
+      expect(
+          manager.canReadWriteDelete(role: 'admin', key: 'doc:page1'), isFalse);
+    });
+
     group('edge cases', () {
       test('deny overrides allow when both exist for the same role/key/access',
           () {
