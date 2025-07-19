@@ -1,4 +1,5 @@
-import '../capability/capability.dart';
+import '../autorisation/autorisation_manager.dart';
+import '../autorisation/capability.dart';
 
 class KiwiWatermelonActionAccess {
   late KiwiWatermelonAutorisationManager autorisation;

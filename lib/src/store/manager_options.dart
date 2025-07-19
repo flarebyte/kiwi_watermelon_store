@@ -1,4 +1,4 @@
-import '../capability/capability.dart';
+import '../autorisation/capability.dart';
 
 class KiwiWatermelonOptions {
   final List<String> prefixes;

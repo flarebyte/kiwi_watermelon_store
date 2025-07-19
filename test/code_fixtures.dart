@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:kiwi_watermelon_store/src/capability/capability.dart';
+import 'package:kiwi_watermelon_store/src/autorisation/capability.dart';
 import 'package:kiwi_watermelon_store/src/store/manager_options.dart';
 
 typedef RedisValue = Object; // convention: int, double, or Uuid
