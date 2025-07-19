@@ -22,21 +22,6 @@ class KiwiTokenStreamFlyweight {
         contextual: contextual);
   }
 
-  /// Checks if the next token is a comma (`comma`) without consuming it.
-  ///
-  /// Returns `true` if the next token is a comma; otherwise, `false`.
-  static bool peekIsComma(KiwiWatermelonTokenStream tokens) {
-    return tokens.peekMatchesType(TokenTypes.comma);
-  }
-
-  /// Consumes the next token if it is a comma (`comma`).
-  ///
-  /// Throws a [KiwiWatermelonSemanticException] if the next token is not a comma.
-  static void consumeComma(KiwiWatermelonTokenStream tokens,
-      {String? contextual}) {
-    tokens.consumeAndValidate(TokenTypes.comma, contextual: contextual);
-  }
-
   /// Checks if the next token is a semicolon (`semicolon`) without consuming it.
   ///
   /// Returns `true` if the next token is a semicolon; otherwise, `false`.
@@ -65,13 +50,6 @@ class KiwiTokenStreamFlyweight {
   static void consumeColon(KiwiWatermelonTokenStream tokens,
       {String? contextual}) {
     tokens.consumeAndValidate(TokenTypes.colon, contextual: contextual);
-  }
-
-  /// Checks if the current token is a comma (`comma`).
-  ///
-  /// Returns `true` if the current token is a comma; otherwise, `false`.
-  static bool isComma(KiwiWatermelonTokenStream tokens) {
-    return tokens.matchType(TokenTypes.comma);
   }
 
   /// Checks if the current token is a semicolon (`semicolon`).
