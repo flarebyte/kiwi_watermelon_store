@@ -4,6 +4,7 @@ import '../action/action_access.dart';
 import '../action/action_factory.dart';
 import '../action/base_action.dart';
 import '../store/manager_options.dart';
+import 'literal.dart';
 import 'semantic_exception.dart';
 import 'token.dart';
 import 'token_stream.dart';
