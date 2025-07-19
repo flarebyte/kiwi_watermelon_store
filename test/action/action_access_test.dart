@@ -143,4 +143,68 @@ void main() {
       });
     });
   });
+  group('deletion operations', () {
+    const key = 'env:user:123:data:name';
+    const role = 'admin';
+
+    test('flushDb allowed when __root__ delete capability exists', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: '__root__'),
+      ]);
+
+      expect(access.flushDb(role: role), isTrue);
+    });
+
+    test('flushDb denied without __root__ delete capability', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
+      ]);
+
+      expect(access.flushDb(role: role), isFalse);
+    });
+
+    test('delKeys allowed when __pattern__ delete capability exists', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: '__pattern__'),
+      ]);
+
+      expect(access.delKeys(role: role), isTrue);
+    });
+
+    test('delKeys denied without __pattern__ delete capability', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
+      ]);
+
+      expect(access.delKeys(role: role), isFalse);
+    });
+
+    test('del returns true if role can delete key', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
+      ]);
+
+      expect(access.del(key, role: role), isTrue);
+    });
+
+    test('del returns false if role cannot delete key', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:999'),
+      ]);
+
+      expect(access.del(key, role: role), isFalse);
+    });
+
+    test('del is denied if effect is explicitly deny', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(
+          role: role,
+          prefix: 'env:user:123',
+          effect: KiwiWatermelonPolicyEffect.deny,
+        ),
+      ]);
+
+      expect(access.del(key, role: role), isFalse);
+    });
+  });
 }
