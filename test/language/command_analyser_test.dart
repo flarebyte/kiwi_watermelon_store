@@ -1,6 +1,9 @@
 import 'package:kiwi_watermelon_store/src/action/base_action.dart';
 import 'package:kiwi_watermelon_store/src/action/incr_action.dart';
+import 'package:kiwi_watermelon_store/src/action/key_action.dart';
+import 'package:kiwi_watermelon_store/src/action/list_action.dart';
 import 'package:kiwi_watermelon_store/src/action/set_action.dart';
+import 'package:kiwi_watermelon_store/src/action/sets_action.dart';
 import 'package:kiwi_watermelon_store/src/language/command_analyser.dart';
 import 'package:kiwi_watermelon_store/src/language/semantic_exception.dart';
 import 'package:kiwi_watermelon_store/src/language/token_stream.dart';
@@ -116,6 +119,137 @@ void main() {
 
     test('throws SemanticException on malformed parameter', () {
       expect(() => parseSingleCommand('SET env:budget unknown'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('SADD analyser', () {
+    test('parses SADD with valid UUIDs', () {
+      final action = parseSingleCommand(
+        'SADD env:users:roles:admin 660cba17-a6f4-43d3-bf5f-ebc359c69e9c 9a7256a7-5268-4fe3-b5fc-bf27a105a8ba',
+      );
+      expect(action, isA<KiwiSAddAction>());
+    });
+
+    test('throws on missing members', () {
+      expect(() => parseSingleCommand('SADD env:users:roles:admin'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+  group('SREM analyser', () {
+    test('parses SREM with integers', () {
+      final action = parseSingleCommand('SREM env:users:roles:guest 1 2 3');
+      expect(action, isA<KiwiSRemAction>());
+    });
+
+    test('throws on missing members', () {
+      expect(() => parseSingleCommand('SREM env:users:roles:guest'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('LPUSH analyser', () {
+    test('parses LPUSH with mixed literals', () {
+      final action = parseSingleCommand(
+          'LPUSH env:queue:jobs:pending 123 75df7c47-4599-4cfb-8443-5f4546c743db 42.5');
+      expect(action, isA<LPushAction>());
+    });
+
+    test('throws on missing values', () {
+      expect(() => parseSingleCommand('LPUSH env:queue:jobs:pending'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+  group('RPUSH analyser', () {
+    test('parses RPUSH with valid numbers', () {
+      final action = parseSingleCommand('RPUSH env:queue:jobs:complete 1 2');
+      expect(action, isA<KiwiRPushAction>());
+    });
+
+    test('throws on missing values', () {
+      expect(() => parseSingleCommand('RPUSH env:queue:jobs:complete'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('SMOVE analyser', () {
+    test('parses SMOVE with valid UUID', () {
+      final action = parseSingleCommand(
+        'SMOVE env:users:roles:temp env:users:roles:active a15838ce-e8d8-4374-b862-b8fdf611fa5a',
+      );
+      expect(action, isA<KiwiSMoveAction>());
+    });
+
+    test('throws on missing member', () {
+      expect(() => parseSingleCommand('SMOVE env:src env:dest'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('LREM analyser', () {
+    test('parses LREM with UUID and count', () {
+      final action = parseSingleCommand(
+        'LREM env:queue:jobs:failed 2 fead3654-abe1-4719-b89c-b837440ec16d',
+      );
+      expect(action, isA<KiwiLRemAction>());
+    });
+
+    test('throws on missing value', () {
+      expect(() => parseSingleCommand('LREM env:queue:jobs:failed 2'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+
+    test('throws on missing count', () {
+      expect(() => parseSingleCommand('LREM env:queue:jobs:failed'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('RPOPLPUSH analyser', () {
+    test('parses RPOPLPUSH with source and destination', () {
+      final action =
+          parseSingleCommand('RPOPLPUSH env:queue:active env:queue:retry');
+      expect(action, isA<KiwiRPopLPushAction>());
+    });
+
+    test('throws on missing destination', () {
+      expect(() => parseSingleCommand('RPOPLPUSH env:queue:active'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('LMOVE analyser', () {
+    test('parses LMOVE with direction', () {
+      final action =
+          parseSingleCommand('LMOVE env:queue:one env:queue:two LEFT RIGHT');
+      expect(action, isA<KiwiLMoveAction>());
+    });
+
+    test('throws on missing direction', () {
+      expect(() => parseSingleCommand('LMOVE env:queue:one env:queue:two LEFT'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+  group('RENAME analyser', () {
+    test('parses RENAME with old and new keys', () {
+      final action = parseSingleCommand('RENAME env:key:one env:key:two');
+      expect(action, isA<KiwiRenameAction>());
+    });
+
+    test('throws on missing new key', () {
+      expect(() => parseSingleCommand('RENAME env:key:one'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('RENAMENX analyser', () {
+    test('parses RENAMENX with old and new keys', () {
+      final action = parseSingleCommand('RENAMENX env:tmp:a env:tmp:b');
+      expect(action, isA<KiwiRenameNXAction>());
+    });
+
+    test('throws on missing new key', () {
+      expect(() => parseSingleCommand('RENAMENX env:tmp:a'),
           throwsA(isA<KiwiWatermelonSemanticException>()));
     });
   });

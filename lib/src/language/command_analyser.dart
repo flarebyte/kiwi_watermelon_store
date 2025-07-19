@@ -158,12 +158,16 @@ class KiwiCommandAnalyser {
       case CommandTypes.LPUSH:
         {
           final key = _compositeKey(stream);
+          final firstLiteral =
+              KiwiTokenStreamFlyweight.consumeStructuredLiteral(stream,
+                  enumKeywords: options.getEnums());
 
           final literals = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
             stream,
             enumKeywords: options.getEnums(),
           );
-          final values = literals.map((l) => l.asString).toList();
+          final values =
+              [firstLiteral, ...literals].map((l) => l.asString).toList();
 
           _assert(access.lpush(key, role: role), command, key);
 
@@ -173,12 +177,16 @@ class KiwiCommandAnalyser {
       case CommandTypes.RPUSH:
         {
           final key = _compositeKey(stream);
+          final firstLiteral =
+              KiwiTokenStreamFlyweight.consumeStructuredLiteral(stream,
+                  enumKeywords: options.getEnums());
 
           final literals = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
             stream,
             enumKeywords: options.getEnums(),
           );
-          final values = literals.map((l) => l.asString).toList();
+          final values =
+              [firstLiteral, ...literals].map((l) => l.asString).toList();
 
           _assert(access.rpush(key, role: role), command, key);
 
@@ -242,6 +250,9 @@ class KiwiCommandAnalyser {
       case CommandTypes.SADD:
         {
           final key = _compositeKey(stream);
+          final firstLiteral =
+              KiwiTokenStreamFlyweight.consumeStructuredLiteral(stream,
+                  enumKeywords: options.getEnums());
 
           final literals = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
             stream,
@@ -252,7 +263,7 @@ class KiwiCommandAnalyser {
 
           return KiwiWatermelonActionFactory.sadd(
             key,
-            literals.map((l) => l.asString).toList(),
+            ([firstLiteral, ...literals]).map((l) => l.asString).toList(),
             separator: ',', // this is still internal to Redis-style encoding
           );
         }
@@ -261,11 +272,15 @@ class KiwiCommandAnalyser {
         {
           final key = _compositeKey(stream);
 
+          final firstLiteral =
+              KiwiTokenStreamFlyweight.consumeStructuredLiteral(stream,
+                  enumKeywords: options.getEnums());
           final literals = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
             stream,
             enumKeywords: options.getEnums(),
           );
-          final members = literals.map((l) => l.asString).toList();
+          final members =
+              [firstLiteral, ...literals].map((l) => l.asString).toList();
 
           _assert(access.srem(key, role: role), command, key);
 
