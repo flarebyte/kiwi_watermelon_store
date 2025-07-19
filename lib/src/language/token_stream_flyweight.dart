@@ -4,6 +4,56 @@ import 'token.dart';
 import 'token_stream.dart';
 import 'tokeniser.dart';
 
+/// Represents a strictly accepted literal parsed from a command stream.
+sealed class ParsedLiteral {
+  final KiwiWatermelonToken token;
+
+  const ParsedLiteral(this.token);
+
+  /// Returns the string representation of the literal value.
+  String get asString;
+
+  T valueAs<T>() {
+    if (this is ParsedInteger && T == int)
+      return (this as ParsedInteger).value as T;
+    if (this is ParsedFloat && T == double)
+      return (this as ParsedFloat).value as T;
+    if (this is ParsedUuid && T == String)
+      return (this as ParsedUuid).value as T;
+    if (this is ParsedEnum && T == String)
+      return (this as ParsedEnum).value as T;
+    throw StateError('Invalid type access on ParsedLiteral');
+  }
+}
+
+final class ParsedInteger extends ParsedLiteral {
+  final int value;
+  const ParsedInteger(this.value, super.token);
+  @override
+  String get asString => value.toString();
+}
+
+final class ParsedFloat extends ParsedLiteral {
+  final double value;
+  const ParsedFloat(this.value, super.token);
+  @override
+  String get asString => value.toString();
+}
+
+final class ParsedUuid extends ParsedLiteral {
+  final String value;
+  const ParsedUuid(this.value, super.token);
+  @override
+  String get asString => value;
+}
+
+final class ParsedEnum extends ParsedLiteral {
+  final String value;
+  const ParsedEnum(this.value, super.token);
+  @override
+  String get asString => value;
+}
+
 /// Provides flyweight static methods for common token consumption and peeking
 /// operations on [KiwiWatermelonTokenStream].
 ///
@@ -196,5 +246,57 @@ class KiwiTokenStreamFlyweight {
     final uuidToken =
         tokens.consumeAndValidate(TokenTypes.uuid, contextual: contextual);
     return uuidToken.text;
+  }
+
+  /// Consumes and classifies a literal token (int, float, UUID, or enum keyword).
+  ///
+  /// Returns a [ParsedLiteral] subtype.
+  /// Throws [KiwiWatermelonSemanticException] if no supported literal is found.
+  static ParsedLiteral consumeStructuredLiteral(
+    KiwiWatermelonTokenStream stream, {
+    required List<String> enumKeywords,
+  }) {
+    if (isNumber(stream)) {
+      final value = consumeInteger(stream);
+      return ParsedInteger(value, stream.current);
+    }
+
+    if (isFloat(stream)) {
+      final value = consumeDouble(stream);
+      return ParsedFloat(value, stream.current);
+    }
+
+    if (isUuid(stream)) {
+      final value = consumeUuid(stream);
+      return ParsedUuid(value, stream.current);
+    }
+
+    if (isAnyKeyword(stream, enumKeywords)) {
+      final value = consumeIdentifier(stream).text;
+      return ParsedEnum(value, stream.current);
+    }
+
+    throw KiwiWatermelonSemanticException(
+      'Expected int, float, UUID, or enum',
+      stream.current,
+    );
+  }
+
+  /// Consumes and parses all remaining space-separated literal arguments in the stream.
+  ///
+  /// Each argument must be a valid int, float, UUID, or enum keyword (from [enumKeywords]).
+  ///
+  /// Throws [KiwiWatermelonSemanticException] on first invalid token.
+  static List<ParsedLiteral> consumeStructuredLiterals(
+    KiwiWatermelonTokenStream stream, {
+    required List<String> enumKeywords,
+  }) {
+    final result = <ParsedLiteral>[];
+
+    while (!stream.isAtEnd) {
+      result.add(consumeStructuredLiteral(stream, enumKeywords: enumKeywords));
+    }
+
+    return result;
   }
 }
