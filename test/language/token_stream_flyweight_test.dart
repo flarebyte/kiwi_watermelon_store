@@ -1,3 +1,4 @@
+import 'package:kiwi_watermelon_store/src/language/literal.dart';
 import 'package:kiwi_watermelon_store/src/language/semantic_exception.dart';
 import 'package:kiwi_watermelon_store/src/language/token_stream.dart';
 import 'package:kiwi_watermelon_store/src/language/token_stream_flyweight.dart';
@@ -210,6 +211,142 @@ void main() {
     test('returns false when current token is not a UUID', () {
       final result = KiwiTokenStreamFlyweight.isUuid(toStream('other'));
       expect(result, isFalse);
+    });
+  });
+
+  group('isStructuredLiteral', () {
+    const enumKeywords = ['RED', 'GREEN', 'BLUE'];
+    test('returns true for int', () {
+      final stream = toStream('42');
+      expect(
+          KiwiTokenStreamFlyweight.isStructuredLiteral(stream,
+              enumKeywords: enumKeywords),
+          isTrue);
+    });
+
+    test('returns true for float', () {
+      final stream = toStream('3.14');
+      expect(
+          KiwiTokenStreamFlyweight.isStructuredLiteral(stream,
+              enumKeywords: enumKeywords),
+          isTrue);
+    });
+
+    test('returns true for UUID', () {
+      final stream = toStream('e3ff1563-6977-4824-800a-be7118b22deb');
+      expect(
+          KiwiTokenStreamFlyweight.isStructuredLiteral(stream,
+              enumKeywords: enumKeywords),
+          isTrue);
+    });
+
+    test('returns true for enum keyword', () {
+      final stream = toStream('GREEN');
+      expect(
+          KiwiTokenStreamFlyweight.isStructuredLiteral(stream,
+              enumKeywords: enumKeywords),
+          isTrue);
+    });
+
+    test('returns false for non-literal', () {
+      final stream = toStream('unrecognized');
+      expect(
+          KiwiTokenStreamFlyweight.isStructuredLiteral(stream,
+              enumKeywords: enumKeywords),
+          isFalse);
+    });
+  });
+
+  group('consumeStructuredLiteral', () {
+    const enumKeywords = ['RED', 'GREEN', 'BLUE'];
+    test('parses integer literal', () {
+      final literal = KiwiTokenStreamFlyweight.consumeStructuredLiteral(
+        toStream('123'),
+        enumKeywords: enumKeywords,
+      );
+      expect(literal, isA<ParsedInteger>());
+      expect((literal as ParsedInteger).value, 123);
+    });
+
+    test('parses float literal', () {
+      final literal = KiwiTokenStreamFlyweight.consumeStructuredLiteral(
+        toStream('3.14'),
+        enumKeywords: enumKeywords,
+      );
+      expect(literal, isA<ParsedFloat>());
+      expect((literal as ParsedFloat).value, 3.14);
+    });
+
+    test('parses UUID literal', () {
+      final literal = KiwiTokenStreamFlyweight.consumeStructuredLiteral(
+        toStream('e3ff1563-6977-4824-800a-be7118b22deb'),
+        enumKeywords: enumKeywords,
+      );
+      expect(literal, isA<ParsedUuid>());
+      expect((literal as ParsedUuid).value,
+          'e3ff1563-6977-4824-800a-be7118b22deb');
+    });
+
+    test('parses enum keyword literal', () {
+      final literal = KiwiTokenStreamFlyweight.consumeStructuredLiteral(
+        toStream('RED'),
+        enumKeywords: enumKeywords,
+      );
+      expect(literal, isA<ParsedEnum>());
+      expect((literal as ParsedEnum).value, 'RED');
+    });
+
+    test('throws for invalid literal', () {
+      expect(
+        () => KiwiTokenStreamFlyweight.consumeStructuredLiteral(
+          toStream('invalid'),
+          enumKeywords: enumKeywords,
+        ),
+        throwsA(isA<KiwiWatermelonSemanticException>()),
+      );
+    });
+  });
+
+  group('consumeStructuredLiterals', () {
+    const enumKeywords = ['RED', 'GREEN', 'BLUE'];
+    test('parses multiple literals in stream', () {
+      final stream =
+          toStream('123 3.14 GREEN e3ff1563-6977-4824-800a-be7118b22deb');
+
+      final result = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
+        stream,
+        enumKeywords: enumKeywords,
+      );
+
+      expect(result.length, 4);
+      expect(result[0], isA<ParsedInteger>());
+      expect(result[1], isA<ParsedFloat>());
+      expect(result[2], isA<ParsedEnum>());
+      expect(result[3], isA<ParsedUuid>());
+    });
+
+    test('stops at first invalid token', () {
+      final stream = toStream('123 GREEN STOP 456');
+
+      final result = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
+        stream,
+        enumKeywords: enumKeywords,
+      );
+
+      expect(result.length, 2);
+      expect(result[0], isA<ParsedInteger>());
+      expect(result[1], isA<ParsedEnum>());
+    });
+
+    test('returns empty list when no literals present', () {
+      final stream = toStream('STOP');
+
+      final result = KiwiTokenStreamFlyweight.consumeStructuredLiterals(
+        stream,
+        enumKeywords: enumKeywords,
+      );
+
+      expect(result, isEmpty);
     });
   });
 }
