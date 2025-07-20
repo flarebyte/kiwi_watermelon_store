@@ -349,4 +349,68 @@ void main() {
       expect(result, isEmpty);
     });
   });
+
+  group('Asterisk', () {
+    test('returns true when current token is an asterisk', () {
+      final stream = toStream('*');
+      final result = KiwiTokenStreamFlyweight.isAsterisk(stream);
+      expect(result, isTrue);
+    });
+
+    test('returns false when current token is not an asterisk', () {
+      final stream = toStream('x');
+      final result = KiwiTokenStreamFlyweight.isAsterisk(stream);
+      expect(result, isFalse);
+    });
+
+    test('consumes asterisk successfully', () {
+      final stream = toStream('*');
+      expect(() => KiwiTokenStreamFlyweight.consumeAsterisk(stream),
+          returnsNormally);
+      expect(stream.isAtEnd, isTrue);
+    });
+
+    test('consumeAsterisk throws if not asterisk', () {
+      final stream = toStream('foo');
+      expect(() => KiwiTokenStreamFlyweight.consumeAsterisk(stream),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+  group('Pattern Key', () {
+    test('parses single-segment pattern', () {
+      final stream = toStream('env');
+      final result = KiwiTokenStreamFlyweight.consumePatternKey(stream);
+      expect(result, equals('env'));
+    });
+
+    test('parses key with one wildcard segment', () {
+      final stream = toStream('env:*');
+      final result = KiwiTokenStreamFlyweight.consumePatternKey(stream);
+      expect(result, equals('env:*'));
+    });
+
+    test('parses full multi-segment key with wildcard at end', () {
+      final stream = toStream('cache:views:*');
+      final result = KiwiTokenStreamFlyweight.consumePatternKey(stream);
+      expect(result, equals('cache:views:*'));
+    });
+
+    test('parses key with wildcard in the middle', () {
+      final stream = toStream('env:*:color');
+      final result = KiwiTokenStreamFlyweight.consumePatternKey(stream);
+      expect(result, equals('env:*:color'));
+    });
+
+    test('throws if key is malformed (e.g., starts with colon)', () {
+      final stream = toStream(':foo');
+      expect(() => KiwiTokenStreamFlyweight.consumePatternKey(stream),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+
+    test('throws if segment is not identifier or asterisk', () {
+      final stream = toStream('env:123');
+      expect(() => KiwiTokenStreamFlyweight.consumePatternKey(stream),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
 }

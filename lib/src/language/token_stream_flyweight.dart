@@ -241,4 +241,52 @@ class KiwiTokenStreamFlyweight {
 
     return result;
   }
+
+  /// Returns `true` if the current token is an asterisk (`*`), otherwise `false`.
+  static bool isAsterisk(KiwiWatermelonTokenStream tokens) {
+    return tokens.matchType(TokenTypes.asterisk);
+  }
+
+  /// Consumes the next token if it is an asterisk (`*`).
+  ///
+  /// Throws [KiwiWatermelonSemanticException] if the token is not an asterisk.
+  static void consumeAsterisk(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
+    tokens.consumeAndValidate(TokenTypes.asterisk, contextual: contextual);
+  }
+
+  /// Consumes a pattern-based key, allowing `*` as a segment.
+  ///
+  /// Accepts input like:
+  /// - `env:user:*`
+  /// - `env:*`
+  /// - `env:shape:red:*`
+  ///
+  /// Each segment must be an identifier or an asterisk, delimited by colons.
+  ///
+  /// Throws [KiwiWatermelonSemanticException] if malformed.
+  static String consumePatternKey(KiwiWatermelonTokenStream tokens) {
+    final buffer = StringBuffer();
+
+    void expectSegment() {
+      if (isAsterisk(tokens)) {
+        consumeAsterisk(tokens);
+        buffer.write('*');
+      } else {
+        final ident = consumeIdentifier(tokens);
+        buffer.write(ident.text);
+      }
+    }
+
+    // First segment
+    expectSegment();
+
+    while (isColon(tokens)) {
+      consumeColon(tokens);
+      buffer.write(':');
+      expectSegment();
+    }
+
+    return buffer.toString();
+  }
 }
