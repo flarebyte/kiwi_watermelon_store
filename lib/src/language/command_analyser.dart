@@ -60,6 +60,9 @@ const List<String> userCommands = [
   CommandTypes.SMOVE,
   CommandTypes.RENAME,
   CommandTypes.RENAMENX,
+  CommandTypes.DEL,
+  CommandTypes.DELKEYS,
+  CommandTypes.FLUSHDB
 ];
 
 /// Interprets command streams into executable actions based on role and authorization policy.
@@ -325,6 +328,55 @@ class KiwiCommandAnalyser {
           _assert(access.renamenx(oldKey, newKey, role: role), command, oldKey,
               [newKey]);
           return KiwiWatermelonActionFactory.renamenx(oldKey, newKey);
+        }
+
+      case CommandTypes.DEL:
+        {
+          final firstKey = KiwiTokenStreamFlyweight.consumeCompositeVariable(
+              stream,
+              options: options);
+          final otherKeys = <String>[];
+
+          while (!stream.isAtEnd) {
+            otherKeys.add(KiwiTokenStreamFlyweight.consumeCompositeVariable(
+                stream,
+                options: options));
+          }
+
+          _assert(
+              access.del(firstKey, role: role), command, firstKey, otherKeys);
+
+          return KiwiWatermelonActionFactory.del([firstKey, ...otherKeys]);
+        }
+
+      case CommandTypes.DELKEYS:
+        {
+          final firstPattern =
+              KiwiTokenStreamFlyweight.consumePatternKey(stream);
+          final otherPatterns = <String>[];
+
+          while (!stream.isAtEnd) {
+            otherPatterns
+                .add(KiwiTokenStreamFlyweight.consumePatternKey(stream));
+          }
+
+          _assert(
+              access.delKeys(role: role), command, firstPattern, otherPatterns);
+
+          return KiwiWatermelonActionFactory.delKeys(
+              [firstPattern, ...otherPatterns]);
+        }
+
+      case CommandTypes.FLUSHDB:
+        {
+          if (!stream.isAtEnd) {
+            throw KiwiWatermelonSemanticException(
+                'FLUSHDB does not take arguments', stream.current);
+          }
+
+          _assert(access.flushDb(role: role), command, '');
+
+          return KiwiWatermelonActionFactory.flushDb();
         }
 
       default:
