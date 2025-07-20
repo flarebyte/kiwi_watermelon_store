@@ -413,4 +413,53 @@ void main() {
           throwsA(isA<KiwiWatermelonSemanticException>()));
     });
   });
+  group('consumePatternKeys', () {
+    test('parses a single pattern key', () {
+      final stream = toStream('env:users:*');
+      final result = KiwiTokenStreamFlyweight.consumePatternKeys(stream);
+      expect(result, equals(['env:users:*']));
+    });
+
+    test('parses multiple pattern keys', () {
+      final stream = toStream('cache:views:* cache:users:*');
+      final result = KiwiTokenStreamFlyweight.consumePatternKeys(stream);
+      expect(result, equals(['cache:views:*', 'cache:users:*']));
+    });
+
+    test('parses pattern with wildcard in middle', () {
+      final stream = toStream('env:*:shape');
+      final result = KiwiTokenStreamFlyweight.consumePatternKeys(stream);
+      expect(result, equals(['env:*:shape']));
+    });
+
+    test('parses patterns with only identifiers (no wildcards)', () {
+      final stream = toStream('env:user:name env:user:email');
+      final result = KiwiTokenStreamFlyweight.consumePatternKeys(stream);
+      expect(result, equals(['env:user:name', 'env:user:email']));
+    });
+
+    test('throws when key starts with colon', () {
+      final stream = toStream(':invalid:key');
+      expect(
+        () => KiwiTokenStreamFlyweight.consumePatternKeys(stream),
+        throwsA(isA<KiwiWatermelonSemanticException>()),
+      );
+    });
+
+    test('throws when trailing colon is not followed by segment', () {
+      final stream = toStream('env:users:*:');
+      expect(
+        () => KiwiTokenStreamFlyweight.consumePatternKeys(stream),
+        throwsA(isA<KiwiWatermelonSemanticException>()),
+      );
+    });
+
+    test('throws when segment is numeric (invalid token)', () {
+      final stream = toStream('env:123');
+      expect(
+        () => KiwiTokenStreamFlyweight.consumePatternKeys(stream),
+        throwsA(isA<KiwiWatermelonSemanticException>()),
+      );
+    });
+  });
 }

@@ -289,4 +289,23 @@ class KiwiTokenStreamFlyweight {
 
     return buffer.toString();
   }
+
+  /// Consumes multiple space-separated pattern keys from the stream.
+  ///
+  /// Each key may include `*` wildcards, and segments must be delimited by colons (`:`).
+  ///
+  /// Example:
+  ///   `cache:views:* cache:users:*` → ['cache:views:*', 'cache:users:*']
+  ///
+  /// Throws [KiwiWatermelonSemanticException] if any key is malformed.
+  static List<String> consumePatternKeys(KiwiWatermelonTokenStream stream) {
+    final keys = <String>[];
+
+    while (!stream.isAtEnd) {
+      final key = consumePatternKey(stream);
+      keys.add(key);
+    }
+
+    return keys;
+  }
 }
