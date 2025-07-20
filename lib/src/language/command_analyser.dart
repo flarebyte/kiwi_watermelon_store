@@ -34,6 +34,11 @@ class CommandTypes {
   // Key commands
   static const String RENAME = 'RENAME';
   static const String RENAMENX = 'RENAMENX';
+
+  //Del commands
+  static const String DEL = 'DEL';
+  static const String DELKEYS = 'DELKEYS';
+  static const String FLUSHDB = 'FLUSHDB';
 }
 
 const List<String> userCommands = [

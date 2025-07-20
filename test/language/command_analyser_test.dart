@@ -1,4 +1,5 @@
 import 'package:kiwi_watermelon_store/src/action/base_action.dart';
+import 'package:kiwi_watermelon_store/src/action/del_action.dart';
 import 'package:kiwi_watermelon_store/src/action/incr_action.dart';
 import 'package:kiwi_watermelon_store/src/action/key_action.dart';
 import 'package:kiwi_watermelon_store/src/action/list_action.dart';
@@ -250,6 +251,54 @@ void main() {
 
     test('throws on missing new key', () {
       expect(() => parseSingleCommand('RENAMENX env:tmp:a'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('DEL analyser', () {
+    test('parses DEL with one key', () {
+      final action = parseSingleCommand('DEL env:user:123:name');
+      expect(action, isA<KiwiDelAction>());
+    });
+
+    test('parses DEL with multiple keys', () {
+      final action =
+          parseSingleCommand('DEL env:user:123:name env:user:456:age');
+      expect(action, isA<KiwiDelAction>());
+      expect((action as KiwiDelAction).keys.length, 2);
+    });
+
+    test('throws on empty input', () {
+      expect(() => parseSingleCommand('DEL'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+
+  group('DELKEYS analyser', () {
+    test('parses DELKEYS with one pattern', () {
+      final action = parseSingleCommand('DELKEYS env:user:*');
+      expect(action, isA<KiwiDelKeysAction>());
+    });
+
+    test('parses DELKEYS with multiple patterns', () {
+      final action = parseSingleCommand('DELKEYS env:user:* env:order:*');
+      expect(action, isA<KiwiDelKeysAction>());
+      expect((action as KiwiDelKeysAction).patterns.length, 2);
+    });
+
+    test('throws on empty input', () {
+      expect(() => parseSingleCommand('DELKEYS'),
+          throwsA(isA<KiwiWatermelonSemanticException>()));
+    });
+  });
+  group('FLUSHDB analyser', () {
+    test('parses FLUSHDB with no arguments', () {
+      final action = parseSingleCommand('FLUSHDB');
+      expect(action, isA<KiwiFlushDbAction>());
+    });
+
+    test('throws if FLUSHDB is followed by arguments', () {
+      expect(() => parseSingleCommand('FLUSHDB something'),
           throwsA(isA<KiwiWatermelonSemanticException>()));
     });
   });
