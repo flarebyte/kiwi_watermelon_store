@@ -348,8 +348,8 @@ class KiwiCommandAnalyser {
           final otherPatterns =
               KiwiTokenStreamFlyweight.consumePatternKeys(stream);
 
-          _assert(
-              access.delKeys(role: role), command, firstPattern, otherPatterns);
+          _assert(access.delKeys([firstPattern, ...otherPatterns], role: role),
+              command, firstPattern, otherPatterns);
 
           return KiwiWatermelonActionFactory.delKeys(
               [firstPattern, ...otherPatterns]);

@@ -129,8 +129,9 @@ class KiwiWatermelonActionAccess {
   }
 
   /// Returns `true` if [role] can delete keys by pattern.
-  bool delKeys({String role = 'none'}) {
-    return autorisation.canDelete(role: role, key: '__pattern__');
+  bool delKeys(List<String> patternKeys, {String role = 'none'}) {
+    return patternKeys.every(
+        (patternKey) => autorisation.canDelete(role: role, key: patternKey));
   }
 
   /// Returns `true` if [role] can delete [key].

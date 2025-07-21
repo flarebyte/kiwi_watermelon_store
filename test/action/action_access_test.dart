@@ -163,20 +163,28 @@ void main() {
       expect(access.flushDb(role: role), isFalse);
     });
 
-    test('delKeys allowed when __pattern__ delete capability exists', () {
-      final access = KiwiWatermelonActionAccess(capabilities: [
-        KiwiWatermelonDataCapability.delete(role: role, prefix: '__pattern__'),
-      ]);
-
-      expect(access.delKeys(role: role), isTrue);
-    });
-
-    test('delKeys denied without __pattern__ delete capability', () {
+    test('delKeys allowed if role can delete key', () {
       final access = KiwiWatermelonActionAccess(capabilities: [
         KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
       ]);
 
-      expect(access.delKeys(role: role), isFalse);
+      expect(
+          access.delKeys(
+              ['env:user:123', 'env:user:123:a', 'env:user:123:d:e:f'],
+              role: role),
+          isTrue);
+    });
+
+    test('delKeys denied if role cannot delete key', () {
+      final access = KiwiWatermelonActionAccess(capabilities: [
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
+      ]);
+
+      expect(
+          access.delKeys(
+              ['env:user:123', 'env:user:123:a', 'env:user:123:d:e:f'],
+              role: role),
+          isFalse);
     });
 
     test('del returns true if role can delete key', () {
