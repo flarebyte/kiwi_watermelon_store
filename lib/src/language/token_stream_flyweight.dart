@@ -1,3 +1,5 @@
+import 'package:kiwi_watermelon_store/src/language/tokeniser_helper.dart';
+
 import '../store/manager_options.dart';
 import 'literal.dart';
 import 'semantic_exception.dart';
@@ -66,6 +68,13 @@ class KiwiTokenStreamFlyweight {
     return tokens.matchType(TokenTypes.colon);
   }
 
+  /// Checks if the current token is an identifier.
+  ///
+  /// Returns `true` if the current token is an identifier; otherwise, `false`.
+  static bool isIdentifier(KiwiWatermelonTokenStream tokens) {
+    return tokens.matchType(TokenTypes.identifier);
+  }
+
   /// Checks if the current token is an identifier with specific [text]
   static bool isAnyKeyword(
       KiwiWatermelonTokenStream tokens, List<String> keywords) {
@@ -98,8 +107,11 @@ class KiwiTokenStreamFlyweight {
     while (maxSegments > 0 && isColon(tokens)) {
       maxSegments = maxSegments - 1;
       consumeColon(tokens, contextual: "composite variable");
-      final partOfName =
-          consumeIdentifier(tokens, contextual: "composite variable name").text;
+      final String partOfName = isNumber(tokens)
+          ? consumeInteger(tokens, contextual: "composite variable name")
+              .toString()
+          : consumeIdentifier(tokens, contextual: "composite variable name")
+              .text;
       compositeName = "$compositeName:$partOfName";
     }
     final varName = "${prefixToken.text}:${varToken.text}$compositeName";
@@ -313,7 +325,7 @@ class KiwiTokenStreamFlyweight {
   static List<String> consumePatternKeys(KiwiWatermelonTokenStream stream) {
     final keys = <String>[];
 
-    while (stream.matchType(TokenTypes.identifier)) {
+    while (isIdentifier(stream)) {
       final key = consumePatternKey(stream);
       keys.add(key);
     }

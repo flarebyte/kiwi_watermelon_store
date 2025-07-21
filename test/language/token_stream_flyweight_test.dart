@@ -105,6 +105,18 @@ void main() {
     });
   });
 
+  group('isIdentifier', () {
+    test('returns true when current token is identifier', () {
+      final result = KiwiTokenStreamFlyweight.isIdentifier(toStream('hello'));
+      expect(result, isTrue);
+    });
+
+    test('returns false when current token is not identifier', () {
+      final result = KiwiTokenStreamFlyweight.isIdentifier(toStream('12'));
+      expect(result, isFalse);
+    });
+  });
+
   group('Any keyword Methods', () {
     test('isAnyKeyword returns true for known keyword', () {
       expect(
@@ -139,7 +151,10 @@ void main() {
       'env:flag',
       'env:on_off:yes:color:blue',
       'env:on_off:yes :color:blue',
-      'env : on_off : yes : color : blue'
+      'env : on_off : yes : color : blue',
+      'env:on_off:yes:code:21',
+      'env:on_off:yes:code:21:22:23',
+      'env: on_off: yes:code:21: or : 22',
     ]) {
       test('consumes composite variable $expected', () {
         final actual = KiwiTokenStreamFlyweight.consumeCompositeVariable(
@@ -156,7 +171,8 @@ void main() {
     for (final unsupported in [
       'env:flag:',
       'env:flag::red',
-      'env:long:$longVar'
+      'env:long:$longVar',
+      '12:flag:',
     ]) {
       test('consumeCompositeVariable throws if not a valid one', () {
         expect(
