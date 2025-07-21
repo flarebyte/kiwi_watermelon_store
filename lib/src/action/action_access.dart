@@ -134,7 +134,7 @@ class KiwiWatermelonActionAccess {
   }
 
   /// Returns `true` if [role] can delete [key].
-  bool del(String key, {String role = 'none'}) {
-    return autorisation.canDelete(role: role, key: key);
+  bool del(List<String> keys, {String role = 'none'}) {
+    return keys.every((key) => autorisation.canDelete(role: role, key: key));
   }
 }

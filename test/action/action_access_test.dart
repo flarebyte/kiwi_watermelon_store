@@ -184,7 +184,10 @@ void main() {
         KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
       ]);
 
-      expect(access.del(key, role: role), isTrue);
+      expect(
+          access.del(['env:user:123', 'env:user:123:a', 'env:user:123:d:e:f'],
+              role: role),
+          isTrue);
     });
 
     test('del returns false if role cannot delete key', () {
@@ -192,7 +195,7 @@ void main() {
         KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:999'),
       ]);
 
-      expect(access.del(key, role: role), isFalse);
+      expect(access.del(['env:user:123', 'env:user:15'], role: role), isFalse);
     });
 
     test('del is denied if effect is explicitly deny', () {
@@ -204,7 +207,7 @@ void main() {
         ),
       ]);
 
-      expect(access.del(key, role: role), isFalse);
+      expect(access.del([key], role: role), isFalse);
     });
   });
 }

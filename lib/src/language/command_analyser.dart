@@ -335,8 +335,8 @@ class KiwiCommandAnalyser {
           final firstKey = _compositeKey(stream);
           final otherKeys = _compositeKeys(stream);
 
-          _assert(
-              access.del(firstKey, role: role), command, firstKey, otherKeys);
+          _assert(access.del([firstKey, ...otherKeys], role: role), command,
+              firstKey, otherKeys);
 
           return KiwiWatermelonActionFactory.del([firstKey, ...otherKeys]);
         }
