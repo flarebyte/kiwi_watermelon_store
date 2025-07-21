@@ -62,6 +62,30 @@ String? extractUuidAt(String code, int start) {
   return isUuid(candidate) ? candidate : null;
 }
 
+/// Validates whether a string matches the expected SHA-256 hash format.
+///
+/// The expected format is: `sha256$<salt>$<hash>`, where:
+/// - `<salt>` is a 128-bit value encoded as 32 hexadecimal characters.
+/// - `<hash>` is a SHA-256 hash encoded as 64 hexadecimal characters.
+///
+/// This method is case-insensitive and does not verify the correctness of
+/// the hash computation—only the structure.
+///
+/// Example:
+/// ```dart
+/// isHash('sha256$5f2d0c8a1e4f3b9d7a3e6f1c4a8b9d0c$9c56cc51b8d95d02d07a3d1d5662630a179cf9b9568e5479c879c2bd10a1a157');
+/// // Returns: true
+/// ```
+///
+/// Returns `true` if the string is a valid SHA-256 hash format, otherwise `false`.
+bool isHash(String token) {
+  final regex = RegExp(
+    r'^sha256\$[a-f0-9]{32}\$[a-f0-9]{64}$',
+    caseSensitive: false,
+  );
+  return regex.hasMatch(token);
+}
+
 /// Returns `true` if [token] is a float (e.g., `12.4`, `0.75`).
 bool isFloat(String token) => RegExp(r'^\d+\.\d+$').hasMatch(token);
 

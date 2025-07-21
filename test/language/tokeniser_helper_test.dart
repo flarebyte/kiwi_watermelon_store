@@ -223,4 +223,40 @@ void main() {
       expect(isKeyChar('@'), isFalse);
     });
   });
+  group('isHash', () {
+    test('returns true for a valid sha256\$<salt>\$<hash> format', () {
+      final validToken =
+          'sha256\$5f2d0c8a1e4f3b9d7a3e6f1c4a8b9d0c\$9c56cc51b8d95d02d07a3d1d5662630a179cf9b9568e5479c879c2bd10a1a157';
+      expect(isHash(validToken), isTrue);
+    });
+
+    test('rejects missing sha256 prefix', () {
+      final invalidToken =
+          '5f2d0c8a1e4f3b9d7a3e6f1c4a8b9d0c\$9c56cc51b8d95d02d07a3d1d5662630a179cf9b9568e5479c879c2bd10a1a157';
+      expect(isHash(invalidToken), isFalse);
+    });
+
+    test('rejects invalid salt length', () {
+      final invalidToken =
+          'sha256\$abcd\$9c56cc51b8d95d02d07a3d1d5662630a179cf9b9568e5479c879c2bd10a1a157';
+      expect(isHash(invalidToken), isFalse);
+    });
+
+    test('rejects invalid hash length', () {
+      final invalidToken = 'sha256\$5f2d0c8a1e4f3b9d7a3e6f1c4a8b9d0c\$abcd';
+      expect(isHash(invalidToken), isFalse);
+    });
+
+    test('rejects non-hexadecimal characters', () {
+      final invalidToken =
+          'sha256\$5f2d0c8a1e4f3b9d7a3e6f1c4a8b9d0c\$zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz';
+      expect(isHash(invalidToken), isFalse);
+    });
+
+    test('accepts uppercase hexadecimal characters', () {
+      final validToken =
+          'sha256\$5F2D0C8A1E4F3B9D7A3E6F1C4A8B9D0C\$9C56CC51B8D95D02D07A3D1D5662630A179CF9B9568E5479C879C2BD10A1A157';
+      expect(isHash(validToken), isTrue);
+    });
+  });
 }
