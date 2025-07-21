@@ -361,8 +361,8 @@ class KiwiCommandAnalyser {
             throw KiwiWatermelonSemanticException(
                 'FLUSHDB does not take arguments', stream.current);
           }
-
-          _assert(access.flushDb(role: role), command, '');
+          final scopes = options.prefixes.map((p) => "$p:").toList();
+          _assert(access.flushDb(scopes, role: role), command, '');
 
           return KiwiWatermelonActionFactory.flushDb();
         }

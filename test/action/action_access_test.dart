@@ -147,20 +147,20 @@ void main() {
     const key = 'env:user:123:data:name';
     const role = 'admin';
 
-    test('flushDb allowed when __root__ delete capability exists', () {
+    test('flushDb allowed when capability exists', () {
       final access = KiwiWatermelonActionAccess(capabilities: [
-        KiwiWatermelonDataCapability.delete(role: role, prefix: '__root__'),
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:'),
       ]);
 
-      expect(access.flushDb(role: role), isTrue);
+      expect(access.flushDb(['env:'], role: role), isTrue);
     });
 
-    test('flushDb denied without __root__ delete capability', () {
+    test('flushDb denied without delete capability', () {
       final access = KiwiWatermelonActionAccess(capabilities: [
-        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:user:123'),
+        KiwiWatermelonDataCapability.delete(role: role, prefix: 'env:'),
       ]);
 
-      expect(access.flushDb(role: role), isFalse);
+      expect(access.flushDb(['env:', 'user:'], role: role), isFalse);
     });
 
     test('delKeys allowed if role can delete key', () {
@@ -170,7 +170,7 @@ void main() {
 
       expect(
           access.delKeys(
-              ['env:user:123', 'env:user:123:a', 'env:user:123:d:e:f'],
+              ['env:user:123', 'env:user:123:*', 'env:user:123:d:e:f'],
               role: role),
           isTrue);
     });
@@ -182,7 +182,7 @@ void main() {
 
       expect(
           access.delKeys(
-              ['env:user:123', 'env:user:123:a', 'env:user:123:d:e:f'],
+              ['env:user:123', 'env:user:124:*', 'env:user:123:d:e:f'],
               role: role),
           isFalse);
     });

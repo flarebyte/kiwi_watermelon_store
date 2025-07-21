@@ -123,9 +123,9 @@ class KiwiWatermelonActionAccess {
   }
 
   /// Returns `true` if [role] can flush the entire DB.
-  bool flushDb({String role = 'none'}) {
-    // DB-level operations might be guarded by a specific key prefix
-    return autorisation.canDelete(role: role, key: '__root__');
+  bool flushDb(List<String> prefixes, {String role = 'none'}) {
+    return prefixes
+        .every((prefix) => autorisation.canDelete(role: role, key: prefix));
   }
 
   /// Returns `true` if [role] can delete keys by pattern.
