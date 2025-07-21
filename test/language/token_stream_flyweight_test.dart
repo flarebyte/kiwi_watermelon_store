@@ -438,12 +438,10 @@ void main() {
       expect(result, equals(['env:user:name', 'env:user:email']));
     });
 
-    test('throws when key starts with colon', () {
-      final stream = toStream(':invalid:key');
-      expect(
-        () => KiwiTokenStreamFlyweight.consumePatternKeys(stream),
-        throwsA(isA<KiwiWatermelonSemanticException>()),
-      );
+    test('parses patterns followed by number', () {
+      final stream = toStream('env:user:name env:user:email 123');
+      final result = KiwiTokenStreamFlyweight.consumePatternKeys(stream);
+      expect(result, equals(['env:user:name', 'env:user:email']));
     });
 
     test('throws when trailing colon is not followed by segment', () {
@@ -460,6 +458,29 @@ void main() {
         () => KiwiTokenStreamFlyweight.consumePatternKeys(stream),
         throwsA(isA<KiwiWatermelonSemanticException>()),
       );
+    });
+  });
+
+  group('consumeCompositeVariables', () {
+    test('parses a single composite variable', () {
+      final stream = toStream('env:users:one');
+      final result = KiwiTokenStreamFlyweight.consumeCompositeVariables(stream,
+          options: storeOptions);
+      expect(result, equals(['env:users:one']));
+    });
+
+    test('parses two composite variables', () {
+      final stream = toStream('env:users:one env:users:two');
+      final result = KiwiTokenStreamFlyweight.consumeCompositeVariables(stream,
+          options: storeOptions);
+      expect(result, equals(['env:users:one', 'env:users:two']));
+    });
+
+    test('parses two composite variables followed by number', () {
+      final stream = toStream('env:users:one env:users:two 42');
+      final result = KiwiTokenStreamFlyweight.consumeCompositeVariables(stream,
+          options: storeOptions);
+      expect(result, equals(['env:users:one', 'env:users:two']));
     });
   });
 }

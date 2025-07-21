@@ -85,7 +85,7 @@ class KiwiTokenStreamFlyweight {
     return isIdentifier && hasKeyword;
   }
 
-  /// Composite a composite variable (ex: env:flag:red)
+  /// Comsume a composite variable (env:flag:red)
   static String consumeCompositeVariable(KiwiWatermelonTokenStream tokens,
       {required KiwiWatermelonOptions options}) {
     final prefixToken =
@@ -118,6 +118,18 @@ class KiwiTokenStreamFlyweight {
     }
 
     return varName;
+  }
+
+  /// Consume a list of composite variables
+  static List<String> consumeCompositeVariables(
+      KiwiWatermelonTokenStream tokens,
+      {required KiwiWatermelonOptions options}) {
+    final otherKeys = <String>[];
+
+    while (isAnyKeyword(tokens, options.prefixes)) {
+      otherKeys.add(consumeCompositeVariable(tokens, options: options));
+    }
+    return otherKeys;
   }
 
   /// Checks if the current token is number).
@@ -301,7 +313,7 @@ class KiwiTokenStreamFlyweight {
   static List<String> consumePatternKeys(KiwiWatermelonTokenStream stream) {
     final keys = <String>[];
 
-    while (!stream.isAtEnd) {
+    while (stream.matchType(TokenTypes.identifier)) {
       final key = consumePatternKey(stream);
       keys.add(key);
     }

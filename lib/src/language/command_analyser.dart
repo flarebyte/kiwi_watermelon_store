@@ -329,12 +329,10 @@ class KiwiCommandAnalyser {
               [newKey]);
           return KiwiWatermelonActionFactory.renamenx(oldKey, newKey);
         }
-
+      // ---------- DEL COMMANDS ----------
       case CommandTypes.DEL:
         {
-          final firstKey = KiwiTokenStreamFlyweight.consumeCompositeVariable(
-              stream,
-              options: options);
+          final firstKey = _compositeKey(stream);
           final otherKeys = <String>[];
 
           while (!stream.isAtEnd) {
@@ -403,5 +401,16 @@ class KiwiCommandAnalyser {
   String _compositeKey(KiwiWatermelonTokenStream stream) {
     return KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
         options: options);
+  }
+
+  /// Parses a composite key based on domain conventions and token stream.
+  List<String> _compositeKeys(KiwiWatermelonTokenStream stream) {
+    final otherKeys = <String>[];
+
+    while (KiwiTokenStreamFlyweight.isAnyKeyword(stream, options.prefixes)) {
+      otherKeys.add(KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
+          options: options));
+    }
+    return otherKeys;
   }
 }
