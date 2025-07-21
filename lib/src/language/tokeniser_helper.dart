@@ -86,6 +86,24 @@ bool isHash(String token) {
   return regex.hasMatch(token);
 }
 
+/// Attempts to extract a SHA-256 formatted hash token at a specific offset.
+///
+/// The expected format is `sha256$<32-hex-salt>$<64-hex-hash>`,
+/// with a total fixed length of 6 (prefix) + 1 + 32 + 1 + 64 = 104 characters.
+///
+/// Returns the extracted token if it matches the format at the given position;
+/// otherwise returns `null`.
+String? extractHashAt(String code, int start) {
+  const tokenLength = 104;
+
+  if (start < 0 || start + tokenLength > code.length) {
+    return null;
+  }
+
+  final candidate = code.substring(start, start + tokenLength);
+  return isHash(candidate) ? candidate : null;
+}
+
 /// Returns `true` if [token] is a float (e.g., `12.4`, `0.75`).
 bool isFloat(String token) => RegExp(r'^\d+\.\d+$').hasMatch(token);
 

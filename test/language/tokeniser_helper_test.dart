@@ -259,4 +259,48 @@ void main() {
       expect(isHash(validToken), isTrue);
     });
   });
+
+  group('extractHashAt', () {
+    const validHash =
+        'sha256\$5f2d0c8a1e4f3b9d7a3e6f1c4a8b9d0c\$9c56cc51b8d95d02d07a3d1d5662630a179cf9b9568e5479c879c2bd10a1a157';
+    const tokenLength = 104;
+
+    test('extracts valid hash at position 0', () {
+      final code = validHash;
+      final result = extractHashAt(code, 0);
+      expect(result, equals(validHash));
+    });
+
+    test('extracts valid hash at non-zero position', () {
+      final code = '>>>$validHash<<<';
+      final result = extractHashAt(code, 3);
+      expect(result, equals(validHash));
+    });
+
+    test('returns null if hash is not at given position', () {
+      final code = '>>>$validHash<<<';
+      final result = extractHashAt(code, 0);
+      expect(result, isNull);
+    });
+
+    test('returns null for invalid format at position', () {
+      final invalidToken =
+          'sha256\$abcd\$9c56cc51b8d95d02d07a3d1d5662630a179cf9b9568e5479c879c2bd10a1a157';
+      final code = '---$invalidToken---';
+      final result = extractHashAt(code, 3);
+      expect(result, isNull);
+    });
+
+    test('returns null when start is out of bounds', () {
+      final code = validHash;
+      expect(extractHashAt(code, -1), isNull);
+      expect(extractHashAt(code, code.length), isNull);
+      expect(extractHashAt(code, code.length - tokenLength + 1), isNull);
+    });
+
+    test('returns null when substring is too short', () {
+      final shortCode = validHash.substring(0, tokenLength - 1);
+      expect(extractHashAt(shortCode, 0), isNull);
+    });
+  });
 }
