@@ -199,6 +199,21 @@ class KiwiTokenStreamFlyweight {
     return uuidToken.text;
   }
 
+  /// Checks if the current token is a Hash
+  ///
+  /// Returns `true` if the current token is a Hash; otherwise, `false`.
+  static bool isHash(KiwiWatermelonTokenStream tokens) {
+    return tokens.matchType(TokenTypes.hash);
+  }
+
+  /// Consume and return a Hash
+  static String consumeHash(KiwiWatermelonTokenStream tokens,
+      {String? contextual}) {
+    final hashToken =
+        tokens.consumeAndValidate(TokenTypes.hash, contextual: contextual);
+    return hashToken.text;
+  }
+
   /// Checks if the current token is int, float, uuid or enum.
   ///
   /// Returns `true` if the current token is a int, float, uuid or enum; otherwise, `false`.
@@ -235,13 +250,18 @@ class KiwiTokenStreamFlyweight {
       return ParsedUuid(value);
     }
 
+    if (isHash(stream)) {
+      final value = consumeHash(stream);
+      return ParsedHash(value);
+    }
+
     if (isAnyKeyword(stream, enumKeywords)) {
       final value = consumeIdentifier(stream).text;
       return ParsedEnum(value);
     }
 
     throw KiwiWatermelonSemanticException(
-      'Expected int, float, UUID, or enum',
+      'Expected int, float, UUID, hash, or enum',
       stream.current,
     );
   }

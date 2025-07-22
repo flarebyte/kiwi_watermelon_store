@@ -230,6 +230,19 @@ void main() {
     });
   });
 
+  group('Hash', () {
+    test('returns true when current token is a Hash', () {
+      final result = KiwiTokenStreamFlyweight.isHash(toStream(
+          'sha256\$a7b3c9d1e5f9a1b2c3d4e5f6a7b9c9d7\$3479a7bb4815615597400a97baa30aca8151eab8a60a706359c8aaa851096400'));
+      expect(result, isTrue);
+    });
+
+    test('returns false when current token is not a Hash', () {
+      final result = KiwiTokenStreamFlyweight.isUuid(toStream('other'));
+      expect(result, isFalse);
+    });
+  });
+
   group('isStructuredLiteral', () {
     const enumKeywords = ['RED', 'GREEN', 'BLUE'];
     test('returns true for int', () {

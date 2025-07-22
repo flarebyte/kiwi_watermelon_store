@@ -56,6 +56,10 @@ void main() {
         expect(access.setUuid(key, role: role), isTrue);
       });
 
+      test('setHash allowed with write', () {
+        expect(access.setHash(key, role: role), isTrue);
+      });
+
       test('setEnum allowed with write', () {
         expect(access.setEnum(key, role: role), isTrue);
       });

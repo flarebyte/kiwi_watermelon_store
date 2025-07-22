@@ -113,6 +113,12 @@ void main() {
       expect(action, isA<KiwiSetUuidAction>());
     });
 
+    test('parse SET hash', () {
+      final action = parseSingleCommand(
+          'SET env:level1:ctf sha256\$a7b3c9d1e5f9a1b2c3d4e5f6a7b9c9d7\$e633a510808d08e023b80429732c5805a32de6d63cd8965d3d7e3288b8c5cde8');
+      expect(action, isA<KiwiSetHashAction>());
+    });
+
     test('parse SET enum', () {
       final action = parseSingleCommand('SET env:report true');
       expect(action, isA<KiwiSetEnumAction>());

@@ -45,7 +45,7 @@ class KiwiSetHashAction extends KiwiSetStringAction {
     if (!validate) {
       return;
     }
-    if (!isDash(value)) {
+    if (!isHash(value)) {
       throw Exception("The value should be a hash but is $value");
     }
   }
