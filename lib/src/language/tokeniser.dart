@@ -7,6 +7,7 @@ class TokenTypes {
   static const String number = 'number';
   static const String float = 'float';
   static const String uuid = 'uuid';
+  static const String hash = 'hash';
   static const String comma = 'comma';
   static const String semicolon = 'semicolon';
   static const String colon = 'colon';
@@ -92,6 +93,19 @@ class KiwiWatermelonTokeniser {
           tokens.add(KiwiWatermelonToken(
             type: TokenTypes.uuid,
             text: maybeUuid,
+            startIndex: tokenStartIndex,
+            endIndex: index,
+            startPosition: startPosition,
+            endPosition: KiwiWatermelonPosition(row: line, column: column),
+          ));
+          continue;
+        }
+        final maybeHash = extractHashAt(code, index);
+        if (maybeHash != null) {
+          index = index + maybeHash.length;
+          tokens.add(KiwiWatermelonToken(
+            type: TokenTypes.hash,
+            text: maybeHash,
             startIndex: tokenStartIndex,
             endIndex: index,
             startPosition: startPosition,

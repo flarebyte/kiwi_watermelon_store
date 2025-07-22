@@ -63,6 +63,12 @@ class KiwiWatermelonActionFactory {
     return KiwiSetUuidAction(key, value, validate: validate);
   }
 
+  /// Returns an action to set the Hash value at [key] to [value].
+  static KiwiSetHashAction setHash(String key, String value,
+      {bool validate = true}) {
+    return KiwiSetHashAction(key, value, validate: validate);
+  }
+
   /// Returns an action to set the UUID value at [key] to [value].
   static KiwiSetEnumAction setEnum(String key, String value,
       {required KiwiWatermelonOptions options, bool validate = true}) {

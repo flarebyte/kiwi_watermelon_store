@@ -39,6 +39,13 @@ final class ParsedUuid extends ParsedLiteral {
   String get asString => value;
 }
 
+final class ParsedHash extends ParsedLiteral {
+  final String value;
+  const ParsedHash(this.value);
+  @override
+  String get asString => value;
+}
+
 final class ParsedEnum extends ParsedLiteral {
   final String value;
   const ParsedEnum(this.value);

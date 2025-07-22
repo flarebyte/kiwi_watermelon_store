@@ -39,6 +39,18 @@ class KiwiSetUuidAction extends KiwiSetStringAction {
   }
 }
 
+class KiwiSetHashAction extends KiwiSetStringAction {
+  KiwiSetHashAction(String key, String value, {bool validate = true})
+      : super(key, value) {
+    if (!validate) {
+      return;
+    }
+    if (!isDash(value)) {
+      throw Exception("The value should be a hash but is $value");
+    }
+  }
+}
+
 class KiwiSetEnumAction extends KiwiSetStringAction {
   KiwiSetEnumAction(String key, String value,
       {required KiwiWatermelonOptions options, bool validate = true})

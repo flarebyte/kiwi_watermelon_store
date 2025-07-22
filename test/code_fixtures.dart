@@ -45,6 +45,10 @@ class QuickQueryMaker {
     return "SET $prefix:$name $value";
   }
 
+  String setHash(String name, String salt, String value) {
+    return "SET $prefix:$name sha256\$$salt\$$value";
+  }
+
   String incrBy(String name, int value) {
     return "INCRBY $prefix:$name $value";
   }
@@ -182,6 +186,8 @@ final List<String> validCommands = [
       'session:users:1234:token', 'b81cdae6-86d1-447f-811f-d23ab70e6d98'),
   maker.setUUID(
       'session:users:a__b:token', '12345678-1234-4234-8234-123456789012'),
+  maker.setHash('expected:hash', 'a7b3c9d1e5f0a1b2c3d4e5f6a7b8c9d0',
+      '282a3baa5910f2e8b942876988f7c32c013ced2f147ddfaad207a10b99f36918'),
 
   // INCR/DECR
   maker.incrBy('metrics:api:calls:version:2', 10),

@@ -156,6 +156,10 @@ class KiwiCommandAnalyser {
               _assert(access.setUuid(key, role: role), command, key);
               return KiwiWatermelonActionFactory.setUuid(key, value,
                   validate: false);
+            case ParsedHash(:final value):
+              _assert(access.setHash(key, role: role), command, key);
+              return KiwiWatermelonActionFactory.setHash(key, value,
+                  validate: false);
             case ParsedEnum(:final value):
               _assert(access.setEnum(key, role: role), command, key);
               return KiwiWatermelonActionFactory.setEnum(key, value,

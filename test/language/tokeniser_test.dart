@@ -30,11 +30,11 @@ void main() async {
         final tokenTypes = tokens.map((token) => token.type).toList();
         final tokentexts = tokens.map((token) => token.text).toList();
         final expected = tokenInfos[command];
-        expect(tokenTypes, equals(expected?.types));
-        expect(tokentexts, equals(expected?.texts));
         // tokenInfos[command] =
         //     TokenInfo(code: command, types: tokenTypes, texts: tokentexts);
         // await store.save(tokenInfos);
+        expect(tokenTypes, equals(expected?.types));
+        expect(tokentexts, equals(expected?.texts));
       });
     }
   });

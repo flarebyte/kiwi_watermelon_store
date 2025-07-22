@@ -57,6 +57,11 @@ class KiwiWatermelonActionAccess {
     return autorisation.canWrite(key: key, role: role);
   }
 
+  /// Returns `true` if [role] can set a hash at [key].
+  bool setHash(String key, {String role = 'none'}) {
+    return autorisation.canWrite(key: key, role: role);
+  }
+
   /// Returns `true` if [role] can set an enum at [key].
   bool setEnum(String key, {String role = 'none'}) {
     return autorisation.canWrite(key: key, role: role);
