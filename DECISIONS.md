@@ -394,3 +394,48 @@ the behavior of the Redis commands.
 -   **BITFIELD overflow fail**
     Use `overflow fail` and attempt to increment beyond limit, expecting error.
     _Validates failure behavior on type overflow\._
+
+**SETBIT Examples**:
+
+-   `SETBIT key 5 1`
+    _Set bit at offset 5 to 1; changes "00000000" to "00100000"._
+
+-   `SETBIT key 0 1`
+    _Set bit at offset 0 (MSB of byte) to 1; changes "00000000" to "10000000"._
+
+-   `SETBIT key 7 1`
+    _Set LSB of the first byte to 1; affects the rightmost bit._
+
+-   `SETBIT key 15 1`
+    _Sets the first bit of the second byte; auto-expands binary string._
+
+-   `SETBIT key 5 0`
+    _Clear bit at offset 5; used to turn off a bit._
+
+**BITFIELD SET Examples**:
+
+-   `BITFIELD key SET i8 0 127`
+    _Set an 8-bit signed int starting at offset 0 to 127._
+
+-   `BITFIELD key SET u4 4 9`
+    _Set 4-bit unsigned value at offset 4 to 9._
+
+-   `BITFIELD key SET i5 10 -3`
+    _Set signed 5-bit integer at offset 10 to -3._
+
+**BITFIELD INCRBY Examples**:
+
+-   `BITFIELD key INCRBY i6 0 1`
+    _Increment a signed 6-bit value at offset 0 by 1._
+
+-   `BITFIELD key INCRBY u3 3 5`
+    _Increment 3-bit unsigned value at offset 3 by 5 (wraps if needed)._
+
+-   `BITFIELD key OVERFLOW SAT INCRBY u5 0 40`
+    _Saturate at max 31 if result exceeds limit._
+
+-   `BITFIELD key OVERFLOW WRAP INCRBY i4 4 -10`
+    _Wrap around negative overflow in 4-bit signed int._
+
+-   `BITFIELD key OVERFLOW FAIL INCRBY u3 0 8`
+    _Fails if incrementing exceeds max for 3-bit unsigned (7)._
