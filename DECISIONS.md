@@ -352,3 +352,45 @@ recognition and ease of use to streamline onboarding and minimize cognitive
 load, especially in environments influenced by generative AI. The command
 model should remain flexible to allow for future extensions beyond Redis
 semantics as needed, while keeping the initial scope focused and minimal.
+
+## Bit manipulation
+
+Design a Dart-based reimplementation of Redis-like bit-level operations,
+specifically the `SETBIT` and `BITFIELD` commands, as part of a new scripting
+language. The implementation should allow manipulating and querying
+individual bits or groups of bits in a string-like binary value, adhering to
+the behavior of the Redis commands.
+
+### Use Cases
+
+-   **SETBIT basic**
+    Set the bit at offset 10 to 1 in a binary string.
+    _Used to toggle individual bits for flags or binary storage._
+
+-   **SETBIT on new key**
+    Set a bit at offset 3 on a non-existent binary string.
+    _The key is implicitly created with all bits initialized to 0._
+
+-   **SETBIT overwrite**
+    Set bit 5 to 0 where bit 5 was previously 1.
+    _Used to unset or reset individual binary flags._
+
+-   **BITFIELD SET**
+    Set an unsigned 5-bit integer at offset 1 to 23.
+    _Writes multi-bit integer values into a bitfield structure._
+
+-   **BITFIELD INCRBY**
+    Increment a 4-bit signed integer at offset 12 by 3.
+    _Supports atomic operations for counters in compact binary form._
+
+-   **BITFIELD overflow wrap**
+    Use the `overflow wrap` option and increment a 3-bit unsigned value at offset 0 by 5.
+    _Emulates modular arithmetic with wrapping on overflow\._
+
+-   **BITFIELD overflow sat**
+    Use the `overflow sat` option to cap values at max/min on overflow.
+    _Prevents rollover beyond type limits._
+
+-   **BITFIELD overflow fail**
+    Use `overflow fail` and attempt to increment beyond limit, expecting error.
+    _Validates failure behavior on type overflow\._
