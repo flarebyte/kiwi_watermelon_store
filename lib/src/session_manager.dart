@@ -21,7 +21,7 @@ abstract class KiwiWatermelonBaseSessionManager {
   BaseStringDataStore mainStore();
 }
 
-class KiwiWatermelonSessionManager<A> extends KiwiWatermelonBaseSessionManager {
+class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   final KiwiWatermelonOptions options;
   final KiwiWatermelonBaseFactory factory;
   late BaseStringDataStore store;
