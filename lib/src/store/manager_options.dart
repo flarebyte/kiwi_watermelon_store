@@ -2,7 +2,6 @@ import '../autorisation/capability.dart';
 
 class KiwiWatermelonOptions {
   final List<String> prefixes;
-  final List<String> userPrefixes;
   final Map<String, String> mapping;
   final bool Function(String) variableValidator;
   final List<KiwiWatermelonDataCapability> capabilities;
@@ -14,14 +13,8 @@ class KiwiWatermelonOptions {
   KiwiWatermelonOptions(
       {required this.prefixes,
       required this.mapping,
-      required this.userPrefixes,
       required this.variableValidator,
-      required this.capabilities}) {
-    if (!arePrefixesIncluded(userPrefixes, prefixes)) {
-      throw Exception(
-          "All user prefixes [$userPrefixes] should be included in all prefixes");
-    }
-  }
+      required this.capabilities});
 
   /// Checks if the given reference starts with any of the supported prefixes.
   ///
@@ -46,10 +39,6 @@ class KiwiWatermelonOptions {
       final prefixesDisplay = prefixes.map((prefix) => "$prefix:").join(", ");
       throw Exception("The ref $ref should start with any of $prefixesDisplay");
     }
-  }
-
-  bool isUserPrefix(String ref) {
-    return userPrefixes.any((prefix) => ref.startsWith("$prefix:"));
   }
 
   /// Determines whether the given [text] represents a valid variable.

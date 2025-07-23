@@ -12,8 +12,7 @@ class KiwiWatermelonApi {
   }) {
     return KiwiWatermelonOptions(
       prefixes: prefixes,
-      userPrefixes: [],
-      mapping: mapping ?? const {},
+      mapping: mapping ?? const {'true': 'T', 'false': 'F'},
       variableValidator: variableValidator ?? _defaultValidator,
       capabilities: capabilities ?? const [],
     );

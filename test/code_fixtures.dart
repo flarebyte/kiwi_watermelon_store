@@ -1,7 +1,7 @@
 import 'dart:math';
 
+import 'package:kiwi_watermelon_store/src/api.dart';
 import 'package:kiwi_watermelon_store/src/autorisation/capability.dart';
-import 'package:kiwi_watermelon_store/src/store/manager_options.dart';
 
 typedef RedisValue = Object; // convention: int, double, or Uuid
 
@@ -230,13 +230,5 @@ final capabilities = [
   KiwiWatermelonDataCapability.read(role: a_team, prefix: 'admin:public')
 ];
 
-final storeOptions = KiwiWatermelonOptions(
-  mapping: {'true': 'T', 'false': 'F'},
-  prefixes: ['env'],
-  userPrefixes: ['env'],
-  capabilities: capabilities,
-  variableValidator: (String variableName) {
-    // A valid variable name must start with a letter and may contain letters and digits.
-    return RegExp(r'^[a-zA-Z][a-zA-Z0-9_:]*$').hasMatch(variableName);
-  },
-);
+final storeOptions = KiwiWatermelonApi.createOptions(
+    prefixes: ['env'], capabilities: capabilities);
