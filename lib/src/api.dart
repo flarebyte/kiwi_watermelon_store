@@ -1,4 +1,6 @@
 import 'autorisation/capability.dart';
+import 'language/syntax_analyser.dart';
+import 'language/tokeniser.dart';
 import 'store/manager_options.dart';
 
 class KiwiWatermelonApi {
@@ -20,4 +22,15 @@ class KiwiWatermelonApi {
 
   static bool _defaultValidator(String name) =>
       RegExp(r'^[a-zA-Z][a-zA-Z0-9_:]*$').hasMatch(name);
+
+  /// create a Tokeniser
+  static KiwiWatermelonTokeniser createTokeniser() {
+    return KiwiWatermelonTokeniser();
+  }
+
+  /// create a syntax analyser
+  static createSyntaxAnalyser(
+      {required KiwiWatermelonOptions options, required String role}) {
+    return KiwiWatermelonSyntaxAnalyser(options: options, role: role);
+  }
 }

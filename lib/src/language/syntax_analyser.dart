@@ -19,12 +19,12 @@ class KiwiWatermelonSyntaxAnalysis {
   }
 }
 
-class KiwiWatermelonSyntaxAnalyzer {
+class KiwiWatermelonSyntaxAnalyser {
   final KiwiWatermelonOptions options;
   final String role;
   late KiwiCommandAnalyser commandAnalyser;
 
-  KiwiWatermelonSyntaxAnalyzer({required this.options, required this.role}) {
+  KiwiWatermelonSyntaxAnalyser({required this.options, required this.role}) {
     commandAnalyser = KiwiCommandAnalyser(options: options, role: role);
   }
 
