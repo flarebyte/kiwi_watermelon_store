@@ -335,3 +335,107 @@ This behavior supports flexible workflows like:
 -   Optional configurations:
     -   Maximum number of auto-savepoints (with oldest overwritten or pruned)
     -   Whether to exclude no-op queries from triggering savepoints
+
+## Threads
+
+The core operations should be executed synchronously on the main thread
+without involving `Future`, `async/await`, or `Isolate`. This constraint
+simplifies both the implementation and API surface, and aims to avoid
+premature optimization or complexity.
+
+## Syntax refinements
+
+The strategy is to adopt a simplified, familiar command syntax inspired by
+Redis for modifying key-value data, using a limited subset of its language
+such as `SET`, `GET`, `DEL`, and `INCR`. This leverages Redis's widespread
+recognition and ease of use to streamline onboarding and minimize cognitive
+load, especially in environments influenced by generative AI. The command
+model should remain flexible to allow for future extensions beyond Redis
+semantics as needed, while keeping the initial scope focused and minimal.
+
+## Bit manipulation
+
+Design a Dart-based reimplementation of Redis-like bit-level operations,
+specifically the `SETBIT` and `BITFIELD` commands, as part of a new scripting
+language. The implementation should allow manipulating and querying
+individual bits or groups of bits in a string-like binary value, adhering to
+the behavior of the Redis commands.
+
+### Use Cases
+
+-   **SETBIT basic**
+    Set the bit at offset 10 to 1 in a binary string.
+    _Used to toggle individual bits for flags or binary storage._
+
+-   **SETBIT on new key**
+    Set a bit at offset 3 on a non-existent binary string.
+    _The key is implicitly created with all bits initialized to 0._
+
+-   **SETBIT overwrite**
+    Set bit 5 to 0 where bit 5 was previously 1.
+    _Used to unset or reset individual binary flags._
+
+-   **BITFIELD SET**
+    Set an unsigned 5-bit integer at offset 1 to 23.
+    _Writes multi-bit integer values into a bitfield structure._
+
+-   **BITFIELD INCRBY**
+    Increment a 4-bit signed integer at offset 12 by 3.
+    _Supports atomic operations for counters in compact binary form._
+
+-   **BITFIELD overflow wrap**
+    Use the `overflow wrap` option and increment a 3-bit unsigned value at offset 0 by 5.
+    _Emulates modular arithmetic with wrapping on overflow\._
+
+-   **BITFIELD overflow sat**
+    Use the `overflow sat` option to cap values at max/min on overflow.
+    _Prevents rollover beyond type limits._
+
+-   **BITFIELD overflow fail**
+    Use `overflow fail` and attempt to increment beyond limit, expecting error.
+    _Validates failure behavior on type overflow\._
+
+**SETBIT Examples**:
+
+-   `SETBIT key 5 1`
+    _Set bit at offset 5 to 1; changes "00000000" to "00100000"._
+
+-   `SETBIT key 0 1`
+    _Set bit at offset 0 (MSB of byte) to 1; changes "00000000" to "10000000"._
+
+-   `SETBIT key 7 1`
+    _Set LSB of the first byte to 1; affects the rightmost bit._
+
+-   `SETBIT key 15 1`
+    _Sets the first bit of the second byte; auto-expands binary string._
+
+-   `SETBIT key 5 0`
+    _Clear bit at offset 5; used to turn off a bit._
+
+**BITFIELD SET Examples**:
+
+-   `BITFIELD key SET i8 0 127`
+    _Set an 8-bit signed int starting at offset 0 to 127._
+
+-   `BITFIELD key SET u4 4 9`
+    _Set 4-bit unsigned value at offset 4 to 9._
+
+-   `BITFIELD key SET i5 10 -3`
+    _Set signed 5-bit integer at offset 10 to -3._
+
+**BITFIELD INCRBY Examples**:
+
+-   `BITFIELD key INCRBY i6 0 1`
+    _Increment a signed 6-bit value at offset 0 by 1._
+
+-   `BITFIELD key INCRBY u3 3 5`
+    _Increment 3-bit unsigned value at offset 3 by 5 (wraps if needed)._
+
+-   `BITFIELD key OVERFLOW SAT INCRBY u5 0 40`
+    _Saturate at max 31 if result exceeds limit._
+
+-   `BITFIELD key OVERFLOW WRAP INCRBY i4 4 -10`
+    _Wrap around negative overflow in 4-bit signed int._
+
+-   `BITFIELD key OVERFLOW FAIL INCRBY u3 0 8`
+    _Fails if incrementing exceeds max for 3-bit unsigned (7)._

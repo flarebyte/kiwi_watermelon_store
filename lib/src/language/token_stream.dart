@@ -1,4 +1,4 @@
-import '../model/token.dart';
+import 'token.dart';
 import 'semantic_exception.dart';
 import 'tokeniser.dart';
 
@@ -97,28 +97,26 @@ class KiwiWatermelonTokenStream {
 
   String friendlyToken(String token) {
     switch (token) {
-      case TokenTypes.lparen:
-        return 'left parenthesis "("';
-      case TokenTypes.rparen:
-        return 'right parenthesis ")"';
-      case TokenTypes.operatorType:
-        return 'operator (or, and, not)';
       case TokenTypes.identifier:
         return 'identifier';
       case TokenTypes.number:
         return 'number';
-      case TokenTypes.equal:
-        return 'equal "="';
+      case TokenTypes.float:
+        return 'floating-point number';
+      case TokenTypes.uuid:
+        return 'UUID';
       case TokenTypes.comma:
         return 'comma ","';
       case TokenTypes.semicolon:
         return 'semicolon ";"';
       case TokenTypes.colon:
         return 'colon ":"';
+      case TokenTypes.asterisk:
+        return 'asterisk "*"';
       case TokenTypes.comment:
         return 'comment "# ..."';
       case TokenTypes.unknown:
-        return 'unknown';
+        return 'unknown character';
       default:
         return token;
     }

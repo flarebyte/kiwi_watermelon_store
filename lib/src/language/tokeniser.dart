@@ -1,17 +1,17 @@
-import '../model/token.dart';
+import 'token.dart';
 import 'tokeniser_helper.dart';
 
 /// Defines all supported token types for the Rhapsody language.
 class TokenTypes {
   static const String identifier = 'identifier';
   static const String number = 'number';
-  static const String operatorType = 'operator';
-  static const String equal = 'equal';
-  static const String lparen = 'lparen';
-  static const String rparen = 'rparen';
+  static const String float = 'float';
+  static const String uuid = 'uuid';
+  static const String hash = 'hash';
   static const String comma = 'comma';
   static const String semicolon = 'semicolon';
   static const String colon = 'colon';
+  static const String asterisk = 'asterisk';
   static const String comment = 'comment';
   static const String unknown = 'unknown';
 }
@@ -85,21 +85,45 @@ class KiwiWatermelonTokeniser {
         continue;
       }
 
-      // Identify identifiers and keywords.
+      // Identify identifiers or UUIDs.
       if (isLetter(currentChar)) {
-        while (index < code.length && isLetterOrDigitOr_(code[index])) {
+        final maybeUuid = extractUuidAt(code, index);
+        if (maybeUuid != null) {
+          index = index + 36;
+          tokens.add(KiwiWatermelonToken(
+            type: TokenTypes.uuid,
+            text: maybeUuid,
+            startIndex: tokenStartIndex,
+            endIndex: index,
+            startPosition: startPosition,
+            endPosition: KiwiWatermelonPosition(row: line, column: column),
+          ));
+          continue;
+        }
+        final maybeHash = extractHashAt(code, index);
+        if (maybeHash != null) {
+          index = index + maybeHash.length;
+          tokens.add(KiwiWatermelonToken(
+            type: TokenTypes.hash,
+            text: maybeHash,
+            startIndex: tokenStartIndex,
+            endIndex: index,
+            startPosition: startPosition,
+            endPosition: KiwiWatermelonPosition(row: line, column: column),
+          ));
+          continue;
+        }
+        while (index < code.length && (isLetterOrDigitOr_(code[index]))) {
           index++;
           column++;
         }
         final String tokenText = code.substring(tokenStartIndex, index);
-        String tokenType = TokenTypes.identifier;
-        if (tokenText == 'and' || tokenText == 'or' || tokenText == 'not') {
-          tokenType = TokenTypes.operatorType;
-        }
+
         final KiwiWatermelonPosition endPosition =
             KiwiWatermelonPosition(row: line, column: column);
+
         tokens.add(KiwiWatermelonToken(
-          type: tokenType,
+          type: TokenTypes.identifier,
           text: tokenText,
           startIndex: tokenStartIndex,
           endIndex: index,
@@ -109,17 +133,45 @@ class KiwiWatermelonTokeniser {
         continue;
       }
 
-      // Identify numeric literals.
+      // Identify number, float, or UUID (starting with digit).
       if (isDigit(currentChar)) {
-        while (index < code.length && isDigit(code[index])) {
-          index++;
-          column++;
+        final maybeUuid = extractUuidAt(code, index);
+        if (maybeUuid != null) {
+          index = index + 36;
+          tokens.add(KiwiWatermelonToken(
+            type: TokenTypes.uuid,
+            text: maybeUuid,
+            startIndex: tokenStartIndex,
+            endIndex: index,
+            startPosition: startPosition,
+            endPosition: KiwiWatermelonPosition(row: line, column: column),
+          ));
+          continue;
         }
+
+        // Standard number or float
+        bool hasDot = false;
+        while (index < code.length) {
+          if (isDigit(code[index])) {
+            index++;
+            column++;
+          } else if (!hasDot &&
+              code[index] == '.' &&
+              index + 1 < code.length &&
+              isDigit(code[index + 1])) {
+            hasDot = true;
+            index++;
+            column++;
+          } else {
+            break;
+          }
+        }
+
         final String tokenText = code.substring(tokenStartIndex, index);
         final KiwiWatermelonPosition endPosition =
             KiwiWatermelonPosition(row: line, column: column);
         tokens.add(KiwiWatermelonToken(
-          type: TokenTypes.number,
+          type: hasDot ? TokenTypes.float : TokenTypes.number,
           text: tokenText,
           startIndex: tokenStartIndex,
           endIndex: index,
@@ -132,15 +184,6 @@ class KiwiWatermelonTokeniser {
       // Process single-character tokens.
       String tokenType;
       switch (currentChar) {
-        case '=':
-          tokenType = TokenTypes.equal;
-          break;
-        case '(':
-          tokenType = TokenTypes.lparen;
-          break;
-        case ')':
-          tokenType = TokenTypes.rparen;
-          break;
         case ',':
           tokenType = TokenTypes.comma;
           break;
@@ -150,9 +193,13 @@ class KiwiWatermelonTokeniser {
         case ':':
           tokenType = TokenTypes.colon;
           break;
+        case '*':
+          tokenType = TokenTypes.asterisk;
+          break;
         default:
           tokenType = TokenTypes.unknown;
       }
+
       index++;
       column++;
       final String tokenText = code.substring(tokenStartIndex, index);

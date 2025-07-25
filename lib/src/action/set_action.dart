@@ -1,27 +1,65 @@
-import '../data_store.dart';
-import 'action_event.dart';
+import '../../kiwi_watermelon_store.dart';
+import '../language/tokeniser_helper.dart';
+import '../store/manager_options.dart';
+import 'action_patch.dart';
 import 'action_result.dart';
 import 'base_action.dart';
 
-class KiwiSetAction extends KiwiWatermelonAction {
+class KiwiSetStringAction extends KiwiWatermelonAction {
   final String key;
 
-  final num value;
+  final String value;
 
-  KiwiSetAction({required this.key, required this.value});
+  KiwiSetStringAction(this.key, this.value);
 
   @override
-  KiwiWatermelonActionResult execute(KiwiWatermelonDataStore store) {
-    final previousValue = store.get(key);
-    final undo = previousValue == null
-        ? KiwiActionPatch(updates: {}, deletions: [key])
-        : KiwiActionPatch(
-            updates: {}.putIfAbsent(key, () => value.toString()),
-            deletions: []);
-    store.set(key, value.toString());
-    final KiwiActionEvent event = KiwiActionEvent(
-        redo: KiwiActionPatch(updates: {key: value.toString()}, deletions: []),
-        undo: undo);
-    return new KiwiWatermelonActionResult(event: event);
+  KiwiWatermelonActionResult execute(BaseStringDataStore store) {
+    return new KiwiWatermelonActionResult(
+        patch: KiwiWatermelonPatch(updates: {key: value}, deletions: []));
+  }
+}
+
+class KiwiSetIntegerAction extends KiwiSetStringAction {
+  KiwiSetIntegerAction(String key, int value) : super(key, value.toString());
+}
+
+class KiwiSetFloatAction extends KiwiSetStringAction {
+  KiwiSetFloatAction(String key, double value) : super(key, value.toString());
+}
+
+class KiwiSetUuidAction extends KiwiSetStringAction {
+  KiwiSetUuidAction(String key, String value, {bool validate = true})
+      : super(key, value) {
+    if (!validate) {
+      return;
+    }
+    if (!isUuid(value)) {
+      throw Exception("The value should be an UUID but is $value");
+    }
+  }
+}
+
+class KiwiSetHashAction extends KiwiSetStringAction {
+  KiwiSetHashAction(String key, String value, {bool validate = true})
+      : super(key, value) {
+    if (!validate) {
+      return;
+    }
+    if (!isHash(value)) {
+      throw Exception("The value should be a hash but is $value");
+    }
+  }
+}
+
+class KiwiSetEnumAction extends KiwiSetStringAction {
+  KiwiSetEnumAction(String key, String value,
+      {required KiwiWatermelonOptions options, bool validate = true})
+      : super(key, value) {
+    if (!validate) {
+      return;
+    }
+    if (!options.isEnum(value)) {
+      throw Exception("The value should be an enumeration but is $value");
+    }
   }
 }

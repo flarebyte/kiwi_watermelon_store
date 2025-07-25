@@ -1,7 +1,15 @@
-import 'action_event.dart';
+import 'action_patch.dart';
+
+class KiwiWatermelonActionError {
+  final String message;
+  final List<String> keys;
+
+  KiwiWatermelonActionError({required this.message, required this.keys});
+}
 
 class KiwiWatermelonActionResult {
-  final KiwiActionEvent? event;
+  final KiwiWatermelonPatch? patch;
+  final KiwiWatermelonActionError? error;
 
-  KiwiWatermelonActionResult({required this.event});
+  KiwiWatermelonActionResult({this.patch, this.error});
 }

@@ -10,7 +10,8 @@ A key value store that can be used on the device
 
 Highlights:
 
--   todo
+-   Strings, lists, sets.
+-   Scripting
 
 A few examples:
 
@@ -36,6 +37,7 @@ todo dart code here
 -   [Overview of Flarebyte.com ecosystem
     :factory:](https://github.com/flarebyte/overview)
 -   [Dart dependencies](DEPENDENCIES.md)
+-   [Internal dependencies](INTERNAL-DEPENDENCIES.md)
 -   [Usage](USAGE.md)
 -   [Example](example/example.dart)
 

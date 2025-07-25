@@ -1,14 +1,14 @@
 /// Represents a key-value data store that supports prefix validation
 /// and optional typed value decoding.
-abstract class BaseDataStore {
+abstract class BaseTypedDataStore<T> {
   /// Retrieves the string value associated with [key], or `null` if not found.
-  String? get(String key);
+  T? get(String key);
 
   ///The value for the given key, or null if key is not in the map.
-  String? operator [](String key);
+  T? operator [](String key);
 
   /// Associates the [value] with the given [key], replacing any existing value.
-  void set(String key, String value);
+  void set(String key, T value);
 
   /// Removes the entry associated with [key], if it exists.
   void remove(String key);
@@ -17,5 +17,16 @@ abstract class BaseDataStore {
   void clear();
 
   /// Add multiple values at once
-  void addAll(Map<String, String> other);
+  void addAll(Map<String, T> other);
+
+  /// Convert to Unmodifiable Map
+  Map<String, T> toUnmodifiableMap();
+
+  Iterable<String> get keys;
+
+  bool containsKey(String key);
 }
+
+/// Represents a key-value data store that supports prefix validation
+/// and optional typed value decoding.
+abstract class BaseStringDataStore extends BaseTypedDataStore<String> {}
