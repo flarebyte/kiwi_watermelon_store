@@ -16,6 +16,8 @@ abstract class KiwiWatermelonBaseSessionManager {
   void restore(String key);
 
   BaseStringDataStore mainStore();
+
+  PatchEventBus? get eventBus;
 }
 
 class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
@@ -27,13 +29,15 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   KiwiWatermelonOnViewUpdate? onUpdate;
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
-  final PatchEventBus? eventBus;
+  bool useEventBus;
+  late PatchEventBus? _eventBus;
 
   KiwiWatermelonSessionManager(
       {required this.options,
       required this.factory,
       this.onUpdate,
-      this.eventBus}) {
+      this.useEventBus = false})
+      : _eventBus = useEventBus ? PatchEventBus() : null {
     store = factory.createStringDataStore(options: options);
     patchExecutor = KiwiPatchExecutor(options: options);
   }
@@ -104,6 +108,9 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   void executePatch(KiwiWatermelonPatch patch) {
     patchExecutor.executePatch(store, patch);
     onUpdate!(patch);
-    eventBus?.publish(patch);
+    _eventBus?.publish(patch);
   }
+
+  @override
+  PatchEventBus? get eventBus => _eventBus;
 }
