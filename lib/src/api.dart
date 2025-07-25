@@ -41,10 +41,12 @@ class KiwiWatermelonApi {
   static KiwiWatermelonSessionManager createSessionManager(
       {required KiwiWatermelonOptions options,
       required KiwiWatermelonBaseFactory? factory,
-      required KiwiWatermelonOnViewUpdate? onUpdate}) {
+      required KiwiWatermelonOnViewUpdate? onUpdate,
+      bool useEventBus = false}) {
     return KiwiWatermelonSessionManager(
         options: options,
         factory: factory ?? KiwiWatermelonDefaultFactory(),
-        onUpdate: onUpdate);
+        onUpdate: onUpdate,
+        useEventBus: useEventBus);
   }
 }

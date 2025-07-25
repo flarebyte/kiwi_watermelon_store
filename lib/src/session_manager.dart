@@ -14,6 +14,7 @@ abstract class KiwiWatermelonBaseSessionManager {
 
   void save(String key);
   void restore(String key);
+  void dispose();
 
   BaseStringDataStore mainStore();
 
@@ -97,6 +98,8 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     if (restorable != null) {
       store.clear();
       store.addAll(restorable);
+      _eventBus?.publish(KiwiWatermelonEvent(
+          eventType: KiwiWatermelonEventType.restore, readStore: store));
     }
   }
 
@@ -108,9 +111,17 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   void executePatch(KiwiWatermelonPatch patch) {
     patchExecutor.executePatch(store, patch);
     onUpdate!(patch);
-    _eventBus?.publish(patch);
+    _eventBus?.publish(KiwiWatermelonEvent(
+        patch: patch,
+        eventType: KiwiWatermelonEventType.update,
+        readStore: store));
   }
 
   @override
   PatchEventBus? get eventBus => _eventBus;
+
+  @override
+  void dispose() {
+    _eventBus?.dispose();
+  }
 }
