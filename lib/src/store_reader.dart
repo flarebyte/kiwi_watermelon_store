@@ -1,15 +1,26 @@
 import '../kiwi_watermelon_store.dart';
 import 'select/select_action_result.dart';
 import 'select/select_base_action.dart';
-import 'store/manager_options.dart';
 
 class KiwiWatermelonStringStoreReader {
 
-  final KiwiWatermelonOptions options;
-  KiwiWatermelonStringStoreReader({required this.options});
+  final BaseReadTypedDataStore<String> stringStore;
+  KiwiWatermelonStringStoreReader({required this.stringStore});
 
-   KiwiWatermelonSelectActionResult<String> queryString(KiwiWatermelonSelectQuery<String> query, BaseReadTypedDataStore<String> store){
-      return query.execute(store);
+   KiwiWatermelonSelectActionResult<String> queryString(KiwiWatermelonSelectQuery<String> query){
+      return query.execute(stringStore);
+   }
+
+}
+
+class KiwiWatermelonAnyStoreReader<T> {
+
+  final BaseReadTypedDataStore<String> stringStore;
+  final BaseReadTypedDataStore<T> anyStore;
+  KiwiWatermelonAnyStoreReader({required this.stringStore, required this.anyStore});
+
+   KiwiWatermelonSelectActionResult<T> queryAny(KiwiWatermelonSelectQuery<T> query){
+      return query.execute(anyStore);
    }
 
 }
