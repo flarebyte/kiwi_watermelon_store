@@ -1,7 +1,6 @@
-import 'package:kiwi_watermelon_store/src/view_manager.dart';
-
 import '../kiwi_watermelon_store.dart';
 import 'action/base_action.dart';
+import 'event_bus.dart';
 import 'factory.dart';
 import 'listener/handler.dart';
 import 'patch_executor.dart';
@@ -16,8 +15,6 @@ abstract class KiwiWatermelonBaseSessionManager {
   void save(String key);
   void restore(String key);
 
-  void registerViewManager(KiwiWatermelonViewManager manager);
-
   BaseStringDataStore mainStore();
 }
 
@@ -30,10 +27,13 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
   KiwiWatermelonOnViewUpdate? onUpdate;
   List<KiwiRedoUndo> undoStack = [];
   List<KiwiRedoUndo> redoStack = [];
-  List<KiwiWatermelonViewManager> viewManagers = [];
+  final PatchEventBus? eventBus;
 
   KiwiWatermelonSessionManager(
-      {required this.options, required this.factory, this.onUpdate}) {
+      {required this.options,
+      required this.factory,
+      this.onUpdate,
+      this.eventBus}) {
     store = factory.createStringDataStore(options: options);
     patchExecutor = KiwiPatchExecutor(options: options);
   }
@@ -101,16 +101,9 @@ class KiwiWatermelonSessionManager extends KiwiWatermelonBaseSessionManager {
     return store;
   }
 
-  @override
-  void registerViewManager(KiwiWatermelonViewManager manager) {
-    viewManagers.add(manager);
-  }
-
   void executePatch(KiwiWatermelonPatch patch) {
     patchExecutor.executePatch(store, patch);
-    for (var viewManager in viewManagers) {
-      viewManager.applyPatch(patch);
-    }
     onUpdate!(patch);
+    eventBus?.publish(patch);
   }
 }
