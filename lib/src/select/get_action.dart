@@ -5,7 +5,7 @@ import 'package:kiwi_watermelon_store/src/store/data_store.dart';
 import 'select_base_action.dart';
 
 /// get a string
-class KiwiGetStringAction extends KiwiWatermelonSelectAction<String> {
+class KiwiGetStringAction extends KiwiWatermelonSelectQuery<String> {
   final String key;
   KiwiGetStringAction({required this.key});
   
