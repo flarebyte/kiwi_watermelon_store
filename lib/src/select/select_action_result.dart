@@ -1,9 +1,9 @@
 
 class KiwiWatermelonSelectActionError {
   final String message;
-  final List<String> keys;
+  final String code;
 
-  KiwiWatermelonSelectActionError({required this.message, required this.keys});
+  KiwiWatermelonSelectActionError({required this.message, required this.code});
 }
 
 class KiwiWatermelonSelectActionResult<T> {
