@@ -9,13 +9,11 @@ import 'token_stream_flyweight.dart';
 
 class ReadCommandTypes {
   static const String GET = 'GET';
-  static const String JOIN = 'JOIN';
 }
 
 const List<String> readUserCommands = [
   ReadCommandTypes.GET,
-  ReadCommandTypes.JOIN
-]
+];
 
 /// Interprets command streams into executable actions based on role and authorization policy.
 class KiwiReadCommandAnalyser {
@@ -34,28 +32,29 @@ class KiwiReadCommandAnalyser {
   /// Parses a single command from the [stream] and returns a corresponding action.
   ///
   /// Performs authorization checks and throws [KiwiWatermelonAccessException] if the role is not allowed.
-  KiwiWatermelonSelectQuery<String> parseSingleCommand(KiwiWatermelonTokenStream stream) {
+  KiwiWatermelonSelectQuery<String> parseSingleCommand(
+      KiwiWatermelonTokenStream stream) {
     if (!KiwiTokenStreamFlyweight.isAnyKeyword(stream, readUserCommands)) {
       throw KiwiWatermelonSemanticException(
           "Expected a command", stream.current);
     }
 
     final command = KiwiTokenStreamFlyweight.consumeIdentifier(stream);
-switch (command.text) {
+    switch (command.text) {
       case ReadCommandTypes.GET:
         {
           final key = KiwiTokenStreamFlyweight.consumeCompositeVariable(stream,
-        options: options);
+              options: options);
           _assert(access.get(key, role: role), command, key);
           return KiwiWatermelonReadActionFactory.get(key);
         }
-         default:
+      default:
         throw KiwiWatermelonSemanticException(
             "Unknown read command: ${command.text}", stream.current);
-}
+    }
   }
 
-/// Helper to check access and throw a standard access exception.
+  /// Helper to check access and throw a standard access exception.
   void _assert(bool allowed, KiwiWatermelonToken command, String key,
       [List<String> others = const []]) {
     if (!allowed) {
@@ -68,5 +67,4 @@ switch (command.text) {
       );
     }
   }
-
 }
