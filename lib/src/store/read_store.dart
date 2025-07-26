@@ -41,7 +41,7 @@ class KiwiWatermelonLazyReadStore<T> extends BaseGetTypedDataStore<T> {
   final Map<String, T> _store = <String, T>{};
   final KiwiWatermelonStringTransformer<T> transformer;
 
-KiwiWatermelonLazyReadStore({required this.transformer});
+  KiwiWatermelonLazyReadStore({required this.transformer});
   @override
   get(String code) {
     final existing = _store[code];
@@ -56,18 +56,48 @@ KiwiWatermelonLazyReadStore({required this.transformer});
 
     return transformed;
   }
-
 }
 
-class KiwiWatermelonDynamicSore<T> extends BaseGetTypedDataStore<T> {
+class KiwiWatermelonDynamicStore<T> extends BaseGetTypedDataStore<T> {
   final KiwiWatermelonStringTransformer<T> transformer;
 
-  KiwiWatermelonDynamicSore({required this.transformer});
+  KiwiWatermelonDynamicStore({required this.transformer});
 
   @override
   get(String key) {
     final transformed = transformer(key);
     return transformed;
   }
+}
 
+class KiwiWatermelonMultiStore extends BaseGetTypedDataStore<String> {
+  final Map<String, BaseGetTypedDataStore<String>> stores;
+  late Map<String, String> mapping = {};
+
+  KiwiWatermelonMultiStore({required this.stores}) {
+    //a store may have multiple prefixes separated by coma
+    for (var key in stores.keys) {
+      final innerKeys = key.split(',');
+      for (var innerKey in innerKeys) {
+        mapping[innerKey] = key;
+      }
+    }
+  }
+
+  @override
+  get(String key) {
+    final [prefix, _] = key.split(':');
+
+    final storeKey = mapping[prefix];
+    if (storeKey == null) {
+      return null;
+    } else {
+      final store = stores[storeKey];
+      if (store == null) {
+        return null;
+      } else {
+        return store.get(key);
+      }
+    }
+  }
 }
