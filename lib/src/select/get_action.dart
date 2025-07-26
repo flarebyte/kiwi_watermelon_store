@@ -7,7 +7,7 @@ import 'select_base_action.dart';
 /// get a string
 class KiwiGetStringAction extends KiwiWatermelonSelectQuery<String> {
   final String key;
-  KiwiGetStringAction({required this.key});
+  KiwiGetStringAction(this.key);
 
   @override
   KiwiWatermelonSelectActionResult<String> execute(
