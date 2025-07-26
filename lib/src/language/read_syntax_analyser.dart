@@ -1,3 +1,4 @@
+import '../action/read_action_factory.dart';
 import '../select/select_base_action.dart';
 import '../store/manager_options.dart';
 import 'analysis_failure.dart';
@@ -10,7 +11,6 @@ import 'token_stream_flyweight.dart';
 class KiwiWatermelonReadSyntaxAnalysis {
   final KiwiWatermelonAnalysisFailure? failure;
   final List<KiwiWatermelonSelectQuery<String>> actions;
-
   KiwiWatermelonReadSyntaxAnalysis({required this.actions, this.failure});
 
   bool isValid() {
@@ -23,32 +23,45 @@ class KiwiWatermelonReadSyntaxAnalyser {
   final KiwiWatermelonOptions options;
   final String role;
   late KiwiReadCommandAnalyser commandAnalyser;
+  static const String JOIN = 'JOIN';
 
-  KiwiWatermelonReadSyntaxAnalyser({required this.options, required this.role}) {
+  KiwiWatermelonReadSyntaxAnalyser(
+      {required this.options, required this.role}) {
     commandAnalyser = KiwiReadCommandAnalyser(options: options, role: role);
   }
 
-  KiwiWatermelonReadSyntaxAnalysis _success(List<KiwiWatermelonSelectQuery<String>> actions) {
+  KiwiWatermelonReadSyntaxAnalysis _success(
+      List<KiwiWatermelonSelectQuery<String>> actions) {
     return KiwiWatermelonReadSyntaxAnalysis(actions: actions);
   }
 
-  KiwiWatermelonReadSyntaxAnalysis _failure(KiwiWatermelonAnalysisFailure failure) {
+  KiwiWatermelonReadSyntaxAnalysis _failure(
+      KiwiWatermelonAnalysisFailure failure) {
     return KiwiWatermelonReadSyntaxAnalysis(actions: [], failure: failure);
   }
 
   KiwiWatermelonReadSyntaxAnalysis analyse(List<KiwiWatermelonToken> tokens) {
     final stream = KiwiWatermelonTokenStream(tokens);
-    final actions = <KiwiWatermelonSelectQuery<String>>[];
+    final tmpActions = <KiwiWatermelonSelectQuery<String>>[];
 
     try {
       while (!stream.isAtEnd) {
-        final action = commandAnalyser.parseSingleCommand(stream);
-        actions.add(action);
+        final isNextJoin =
+            KiwiTokenStreamFlyweight.isAnyKeyword(stream, [JOIN]);
+        if (isNextJoin) {
+          final joinAction = parseJoin(stream, tmpActions);
+          tmpActions.clear();
+          tmpActions.add(joinAction);
+        } else {
+          final action = commandAnalyser.parseSingleCommand(stream);
+          tmpActions.add(action);
+        }
+
         if (!stream.isAtEnd) {
           KiwiTokenStreamFlyweight.consumeSemicolon(stream);
         }
       }
-      return _success(actions);
+      return _success(tmpActions);
     } catch (e) {
       if (e is KiwiWatermelonSemanticException) {
         return _failure(KiwiWatermelonAnalysisFailure(
@@ -62,6 +75,30 @@ class KiwiWatermelonReadSyntaxAnalyser {
         ));
       }
       rethrow;
+    }
+  }
+
+  KiwiWatermelonSelectQuery<String> parseJoin(KiwiWatermelonTokenStream stream,
+      List<KiwiWatermelonSelectQuery<String>> childActions) {
+    if (childActions.length < 2) {
+      throw KiwiWatermelonSemanticException(
+          'JOIN expect at least two actions but got ${childActions.length}',
+          stream.current);
+    }
+    KiwiTokenStreamFlyweight.consumeIdentifier(stream);
+    final separator = KiwiTokenStreamFlyweight.consumeIdentifier(stream);
+    switch (separator.text) {
+      case 'coma':
+        {
+          return KiwiWatermelonReadActionFactory.join(',', childActions);
+        }
+      case 'space':
+        {
+          return KiwiWatermelonReadActionFactory.join(' ', childActions);
+        }
+      default:
+        throw KiwiWatermelonSemanticException(
+            'JOIN should use a known separator', stream.current);
     }
   }
 }
