@@ -11,7 +11,7 @@ class KiwiGetStringAction extends KiwiWatermelonSelectQuery<String> {
   
   @override
   KiwiWatermelonSelectActionResult<String> execute(
-      BaseReadTypedDataStore<String> store) {
+      BaseGetTypedDataStore<String> store) {
     return KiwiWatermelonSelectActionResult(value: store.get(key));
   }
 }

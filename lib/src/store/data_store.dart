@@ -4,7 +4,9 @@ abstract class BaseGetTypedDataStore<T> {
   T? get(String key);
 
   ///The value for the given key, or null if key is not in the map.
-  T? operator [](String key);
+  T? operator [](String key) {
+    return get(key);
+  }
 
 }
 /// Read only datastore
