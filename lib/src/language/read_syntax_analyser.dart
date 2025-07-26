@@ -10,8 +10,8 @@ import 'token_stream_flyweight.dart';
 
 class KiwiWatermelonReadSyntaxAnalysis {
   final KiwiWatermelonAnalysisFailure? failure;
-  final List<KiwiWatermelonSelectQuery<String>> actions;
-  KiwiWatermelonReadSyntaxAnalysis({required this.actions, this.failure});
+  final KiwiWatermelonSelectQuery<String>? action;
+  KiwiWatermelonReadSyntaxAnalysis({this.action, this.failure});
 
   bool isValid() {
     final invalid = failure != null;
@@ -31,13 +31,13 @@ class KiwiWatermelonReadSyntaxAnalyser {
   }
 
   KiwiWatermelonReadSyntaxAnalysis _success(
-      List<KiwiWatermelonSelectQuery<String>> actions) {
-    return KiwiWatermelonReadSyntaxAnalysis(actions: actions);
+      KiwiWatermelonSelectQuery<String>? action) {
+    return KiwiWatermelonReadSyntaxAnalysis(action: action);
   }
 
   KiwiWatermelonReadSyntaxAnalysis _failure(
       KiwiWatermelonAnalysisFailure failure) {
-    return KiwiWatermelonReadSyntaxAnalysis(actions: [], failure: failure);
+    return KiwiWatermelonReadSyntaxAnalysis(failure: failure);
   }
 
   KiwiWatermelonReadSyntaxAnalysis analyse(List<KiwiWatermelonToken> tokens) {
@@ -61,7 +61,15 @@ class KiwiWatermelonReadSyntaxAnalyser {
           KiwiTokenStreamFlyweight.consumeSemicolon(stream);
         }
       }
-      return _success(tmpActions);
+      if (tmpActions.isEmpty) {
+        return _failure(failureAtStart('There are no command'));
+      }
+      if (tmpActions.length == 1) {
+        return _success(tmpActions.first);
+      } else {
+        return _success(KiwiWatermelonReadActionFactory.join(' ', tmpActions));
+      }
+      ;
     } catch (e) {
       if (e is KiwiWatermelonSemanticException) {
         return _failure(KiwiWatermelonAnalysisFailure(
@@ -100,5 +108,17 @@ class KiwiWatermelonReadSyntaxAnalyser {
         throw KiwiWatermelonSemanticException(
             'JOIN should use a known separator', stream.current);
     }
+  }
+
+  KiwiWatermelonAnalysisFailure failureAtStart(String message) {
+    return KiwiWatermelonAnalysisFailure(
+      message: message,
+      position: KiwiWatermelonPosition(row: 0, column: 0),
+      index: 0,
+      errorType: 'Syntax Analysis Error',
+      contextCode: '',
+      expected: '',
+      suggestion: 'There are no script',
+    );
   }
 }
