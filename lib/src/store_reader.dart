@@ -9,7 +9,7 @@ class KiwiWatermelonStringStoreReader {
   KiwiWatermelonStringStoreReader({required this.lazyQueryStore});
 
   KiwiWatermelonSelectActionResult<String> queryString(
-      String query, BaseReadTypedDataStore<String> store) {
+      String query, BaseGetTypedDataStore<String> store) {
     final KiwiWatermelonSelectQuery<String>? queryObj =
         lazyQueryStore.get(query);
     if (queryObj == null) {
@@ -22,14 +22,34 @@ class KiwiWatermelonStringStoreReader {
   }
 }
 
-class KiwiWatermelonAnyStoreReader<T> {
-  final BaseReadTypedDataStore<String> stringStore;
+class KiwiWatermelonTwoHopsAnyStoreReader<T> {
+  final KiwiWatermelonLazyReadStore<KiwiWatermelonSelectQuery<String>>
+      lazyQueryStore;
   final BaseReadTypedDataStore<T> anyStore;
-  KiwiWatermelonAnyStoreReader(
-      {required this.stringStore, required this.anyStore});
+  KiwiWatermelonTwoHopsAnyStoreReader(
+      {required this.lazyQueryStore, required this.anyStore});
 
   KiwiWatermelonSelectActionResult<T> queryAny(
-      KiwiWatermelonSelectQuery<T> query) {
-    return query.execute(anyStore);
+      String query, BaseGetTypedDataStore<String> stringStore) {
+    final KiwiWatermelonSelectQuery<String>? queryObj =
+        lazyQueryStore.get(query);
+    if (queryObj == null) {
+      return KiwiWatermelonSelectActionResult(
+          error: KiwiWatermelonSelectActionError(
+              message: 'Invalid read query', code: query));
+    } else {
+      final mainKeyResult = queryObj.execute(stringStore);
+      if (mainKeyResult.error != null) {
+        return KiwiWatermelonSelectActionResult(error: mainKeyResult.error);
+      }
+
+      final mainKey = mainKeyResult.value;
+      if (mainKey == null || mainKey.isEmpty) {
+        return KiwiWatermelonSelectActionResult(value: null);
+      } else {
+        final secondHopValue = anyStore.get(mainKey);
+        return KiwiWatermelonSelectActionResult(value: secondHopValue);
+      }
+    }
   }
 }
