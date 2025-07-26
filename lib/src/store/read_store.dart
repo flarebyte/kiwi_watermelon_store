@@ -37,16 +37,11 @@ class KiwiWatermelonReadStore<T> extends BaseReadTypedDataStore<T> {
 
 typedef KiwiWatermelonStringTransformer<T> = T? Function(String code);
 
-class KiwiWatermelonLazyReadStore<T> {
+class KiwiWatermelonLazyReadStore<T> extends BaseGetTypedDataStore<T> {
   final Map<String, T> _store = <String, T>{};
   final KiwiWatermelonStringTransformer<T> transformer;
 
-  KiwiWatermelonLazyReadStore({required this.transformer});
-
-  operator [](String code) {
-    return get(code);
-  }
-
+  @override
   get(String code) {
     final existing = _store[code];
     if (existing != null) {
@@ -59,5 +54,28 @@ class KiwiWatermelonLazyReadStore<T> {
     }
 
     return transformed;
+  }
+
+  KiwiWatermelonLazyReadStore({required this.transformer});
+  @override
+  operator [](String code) {
+    return get(code);
+  }
+}
+
+class KiwiWatermelonDynamicSore<T> extends BaseGetTypedDataStore<T> {
+  final KiwiWatermelonStringTransformer<T> transformer;
+
+  KiwiWatermelonDynamicSore({required this.transformer});
+
+  @override
+  get(String key) {
+    final transformed = transformer(key);
+    return transformed;
+  }
+
+  @override
+  operator [](String key) {
+    return get(key);
   }
 }

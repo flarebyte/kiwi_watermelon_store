@@ -1,10 +1,14 @@
 /// Read only datastore
-abstract class BaseReadTypedDataStore<T> {
+abstract class BaseGetTypedDataStore<T> {
   /// Retrieves the string value associated with [key], or `null` if not found.
   T? get(String key);
 
   ///The value for the given key, or null if key is not in the map.
   T? operator [](String key);
+
+}
+/// Read only datastore
+abstract class BaseReadTypedDataStore<T> extends BaseGetTypedDataStore<T>{
 
   /// Convert to Unmodifiable Map
   Map<String, T> toUnmodifiableMap();
