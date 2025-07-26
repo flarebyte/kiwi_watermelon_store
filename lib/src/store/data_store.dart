@@ -7,11 +7,10 @@ abstract class BaseGetTypedDataStore<T> {
   T? operator [](String key) {
     return get(key);
   }
-
 }
-/// Read only datastore
-abstract class BaseReadTypedDataStore<T> extends BaseGetTypedDataStore<T>{
 
+/// Read only datastore
+abstract class BaseReadTypedDataStore<T> extends BaseGetTypedDataStore<T> {
   /// Convert to Unmodifiable Map
   Map<String, T> toUnmodifiableMap();
 

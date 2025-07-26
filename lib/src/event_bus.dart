@@ -13,7 +13,8 @@ class KiwiWatermelonEvent {
   final BaseReadTypedDataStore<String> readStore;
   final KiwiWatermelonEventType eventType;
 
-  KiwiWatermelonEvent({this.patch, required this.readStore, required this.eventType});
+  KiwiWatermelonEvent(
+      {this.patch, required this.readStore, required this.eventType});
 }
 
 class PatchEventBus {

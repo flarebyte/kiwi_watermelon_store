@@ -1,4 +1,3 @@
-
 class KiwiWatermelonSelectActionError {
   final String message;
   final String code;

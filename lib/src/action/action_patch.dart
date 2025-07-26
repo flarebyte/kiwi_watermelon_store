@@ -8,11 +8,11 @@ class KiwiWatermelonPatch {
   KiwiWatermelonPatch({required this.updates, required this.deletions});
 
   revertPatch(BaseStringDataStore store) {
-    //todo
+    // todo
   }
 
   static KiwiWatermelonPatch mergePatches(List<KiwiWatermelonPatch> patches) {
-    //todo
+    // todo
     return patches[0];
   }
 }
@@ -32,7 +32,7 @@ class KiwiPatches {
 
   static KiwiPatches splitPatch(
       KiwiWatermelonOptions options, KiwiWatermelonPatch patch) {
-    //todo
+    // todo
     return KiwiPatches(admin: patch, user: patch);
   }
 }

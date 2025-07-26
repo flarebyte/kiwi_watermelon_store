@@ -8,6 +8,6 @@ class KiwiPatchExecutor {
   KiwiPatchExecutor({required this.options});
 
   void executePatch(BaseStringDataStore store, KiwiWatermelonPatch patch) {
-    //todo
+    // todo
   }
 }

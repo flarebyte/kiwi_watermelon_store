@@ -8,7 +8,7 @@ import 'select_base_action.dart';
 class KiwiGetStringAction extends KiwiWatermelonSelectQuery<String> {
   final String key;
   KiwiGetStringAction({required this.key});
-  
+
   @override
   KiwiWatermelonSelectActionResult<String> execute(
       BaseGetTypedDataStore<String> store) {
