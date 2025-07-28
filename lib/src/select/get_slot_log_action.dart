@@ -5,13 +5,13 @@ import 'package:kiwi_watermelon_store/src/store/data_store.dart';
 import 'select_base_action.dart';
 
 /// get a string
-/// GETSLOTINDEX <value> <min_value> <max_value> <num_slots>
-class KiwiGetSlotIndexAction extends KiwiWatermelonSelectQuery<String> {
+/// GETSLOTINDEXLOG <value> <min_value> <max_value> <num_slots> [BASE <log_base>]
+class KiwiGetSlotIndexLogAction extends KiwiWatermelonSelectQuery<String> {
   final String key;
   final int minValue;
   final int maxValue;
   final int numSlots;
-  KiwiGetSlotIndexAction(this.key, this.minValue, this.maxValue, this.numSlots);
+  KiwiGetSlotIndexLogAction(this.key, this.minValue, this.maxValue, this.numSlots);
 
   @override
   KiwiWatermelonSelectActionResult<String> execute(
