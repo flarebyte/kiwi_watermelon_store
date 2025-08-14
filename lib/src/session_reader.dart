@@ -5,15 +5,15 @@ import 'store_holder.dart';
 abstract class KiwiWatermelonBaseSessionReader {
   String? performStringQuery(KiwiWatermelonSelectQuery<String> queryObj);
 
-  KiwiWatermelonStoreHolder storeHolder();
+  KiwiWatermelonReadStoreHolder storeHolder();
 }
 
 class KiwiWatermelonSessionReader extends KiwiWatermelonBaseSessionReader {
   final KiwiWatermelonOptions options;
-  late KiwiWatermelonStoreHolder mainStoreHolder;
+  late KiwiWatermelonReadStoreHolder readStoreHolder;
 
   KiwiWatermelonSessionReader(
-      {required this.options, required this.mainStoreHolder});
+      {required this.options, required this.readStoreHolder});
 
   @override
   String? performStringQuery(KiwiWatermelonSelectQuery<String> queryObj) {
@@ -21,7 +21,7 @@ class KiwiWatermelonSessionReader extends KiwiWatermelonBaseSessionReader {
   }
 
   @override
-  KiwiWatermelonStoreHolder storeHolder() {
-    return mainStoreHolder;
+  KiwiWatermelonReadStoreHolder storeHolder() {
+    return readStoreHolder;
   }
 }

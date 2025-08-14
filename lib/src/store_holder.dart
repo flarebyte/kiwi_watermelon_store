@@ -1,15 +1,14 @@
 import '../kiwi_watermelon_store.dart';
 
-class KiwiWatermelonStoreHolder {
-  BaseStringDataStore _store;
+class KiwiWatermelonReadStoreHolder {
+  BaseGetTypedDataStore<String> _store;
 
-  BaseStringDataStore get store => _store;
+  BaseGetTypedDataStore<String> get store => _store;
 
-  set store(BaseStringDataStore value) {
+  set store(BaseGetTypedDataStore<String> value) {
     _store = value;
   }
 
-  KiwiWatermelonStoreHolder({required BaseStringDataStore dataStore})
+  KiwiWatermelonReadStoreHolder({required BaseGetTypedDataStore<String> dataStore})
       : _store = dataStore;
-
 }
